@@ -1,0 +1,621 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Juan's Focus Board · Today</title>
+  <style>
+    :root {
+      --bg: #0f1117;
+      --surface: #1a1d27;
+      --surface2: #22263a;
+      --border: #2e3348;
+      --accent-blue: #4f8ef7;
+      --accent-green: #34c785;
+      --accent-yellow: #f5c542;
+      --accent-red: #f06e6e;
+      --accent-purple: #a78bfa;
+      --accent-orange: #fb923c;
+      --text: #e8eaf0;
+      --text-muted: #6b7280;
+      --text-dim: #9ca3af;
+      --tag-bg: #2a2f44;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      font-size: 14px;
+      min-height: 100vh;
+    }
+
+    /* ── Header ── */
+    header {
+      background: var(--surface);
+      border-bottom: 1px solid var(--border);
+      padding: 18px 28px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+    .header-left { display: flex; align-items: center; gap: 14px; }
+    .logo { font-size: 22px; }
+    .header-title { font-size: 17px; font-weight: 700; letter-spacing: -0.3px; }
+    .header-date { font-size: 12px; color: var(--text-muted); margin-top: 2px; }
+    .refresh-row { display: flex; align-items: center; gap: 12px; }
+    .refresh-btn {
+      background: var(--accent-blue);
+      color: #fff;
+      border: none;
+      border-radius: 8px;
+      padding: 7px 16px;
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      transition: opacity .15s;
+    }
+    .refresh-btn:hover { opacity: .85; }
+    .last-updated { font-size: 11px; color: var(--text-muted); }
+
+    /* ── Stat bar ── */
+    .stat-bar {
+      display: flex;
+      gap: 12px;
+      padding: 18px 28px;
+      flex-wrap: wrap;
+    }
+    .stat-chip {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 12px 20px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex: 1;
+      min-width: 160px;
+    }
+    .stat-icon { font-size: 20px; }
+    .stat-num { font-size: 24px; font-weight: 700; line-height: 1; }
+    .stat-label { font-size: 11px; color: var(--text-muted); margin-top: 2px; text-transform: uppercase; letter-spacing: .5px; }
+
+    /* ── Grid layout ── */
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(360px, 1fr));
+      gap: 16px;
+      padding: 0 28px 36px;
+    }
+
+    /* ── Card ── */
+    .card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+    }
+    .card-header {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 14px 18px 12px;
+      border-bottom: 1px solid var(--border);
+    }
+    .card-icon { font-size: 18px; }
+    .card-title { font-size: 13px; font-weight: 700; text-transform: uppercase; letter-spacing: .6px; }
+    .card-count {
+      margin-left: auto;
+      background: var(--tag-bg);
+      border-radius: 20px;
+      padding: 2px 10px;
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--text-dim);
+    }
+
+    /* ── Items ── */
+    .item {
+      padding: 12px 18px;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      gap: 12px;
+      align-items: flex-start;
+      transition: background .12s;
+      text-decoration: none;
+      color: inherit;
+    }
+    .item:last-child { border-bottom: none; }
+    .item:hover { background: var(--surface2); }
+    .item-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      flex-shrink: 0;
+      margin-top: 5px;
+    }
+    .item-body { flex: 1; min-width: 0; }
+    .item-title {
+      font-size: 13px;
+      font-weight: 500;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      line-height: 1.4;
+    }
+    .item-meta {
+      font-size: 11px;
+      color: var(--text-muted);
+      margin-top: 3px;
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      align-items: center;
+    }
+    .item-sub {
+      font-size: 12px;
+      color: var(--text-dim);
+      margin-top: 4px;
+      line-height: 1.4;
+      overflow: hidden;
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+    }
+    .badge {
+      display: inline-block;
+      padding: 1px 7px;
+      border-radius: 10px;
+      font-size: 10px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: .4px;
+    }
+    .badge-now    { background: #ef4444; color: #fff; }
+    .badge-soon   { background: #f59e0b; color: #000; }
+    .badge-dm     { background: #4f46e5; color: #fff; }
+    .badge-group  { background: #0891b2; color: #fff; }
+    .badge-action { background: #16a34a; color: #fff; }
+    .badge-task   { background: #7c3aed; color: #fff; }
+
+    /* ── Time line (calendar) ── */
+    .time-label {
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--accent-blue);
+      white-space: nowrap;
+      flex-shrink: 0;
+      min-width: 90px;
+      margin-top: 2px;
+    }
+
+    /* ── Empty state ── */
+    .empty {
+      padding: 24px 18px;
+      color: var(--text-muted);
+      font-size: 13px;
+      text-align: center;
+    }
+
+    /* ── Footer ── */
+    footer {
+      text-align: center;
+      padding: 16px;
+      font-size: 11px;
+      color: var(--text-muted);
+      border-top: 1px solid var(--border);
+    }
+
+    /* ── Animations ── */
+    @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:.4} }
+    .live-dot {
+      width: 7px; height: 7px;
+      border-radius: 50%;
+      background: var(--accent-green);
+      display: inline-block;
+      animation: pulse 2s infinite;
+      margin-right: 5px;
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <div class="header-left">
+    <span class="logo">🎯</span>
+    <div>
+      <div class="header-title">Juan's Focus Board</div>
+      <div class="header-date" id="headerDate"></div>
+    </div>
+  </div>
+  <div class="refresh-row">
+    <span class="last-updated"><span class="live-dot"></span>Updated <span id="lastUpdated">just now</span></span>
+    <button class="refresh-btn" onclick="window.location.reload()">↻ Refresh</button>
+  </div>
+</header>
+
+<!-- Stat bar -->
+<div class="stat-bar">
+  <div class="stat-chip">
+    <span class="stat-icon">📅</span>
+    <div>
+      <div class="stat-num" style="color:var(--accent-blue)">4</div>
+      <div class="stat-label">Meetings today</div>
+    </div>
+  </div>
+  <div class="stat-chip">
+    <span class="stat-icon">💬</span>
+    <div>
+      <div class="stat-num" style="color:var(--accent-purple)">5</div>
+      <div class="stat-label">Slack threads</div>
+    </div>
+  </div>
+  <div class="stat-chip">
+    <span class="stat-icon">📧</span>
+    <div>
+      <div class="stat-num" style="color:var(--accent-yellow)">2</div>
+      <div class="stat-label">Action emails</div>
+    </div>
+  </div>
+  <div class="stat-chip">
+    <span class="stat-icon">✅</span>
+    <div>
+      <div class="stat-num" style="color:var(--accent-green)">12</div>
+      <div class="stat-label">Open app tests</div>
+    </div>
+  </div>
+</div>
+
+<div class="grid">
+
+  <!-- ── CALENDAR ── -->
+  <div class="card">
+    <div class="card-header">
+      <span class="card-icon">📅</span>
+      <span class="card-title" style="color:var(--accent-blue)">Calendar — Today</span>
+      <span class="card-count">4 events</span>
+    </div>
+
+    <a class="item" href="https://www.google.com/calendar/event?eid=MnZyYjlvcTVtZjRzOXJmcGkyb2RicTJpaXJfMjAyNjA0MjBUMTUwMDAwWiBqdWFuLnZhc2NvbmV6QHNpbXBsaXQtc29sdXRpb25zLmNvbQ" target="_blank">
+      <div class="time-label">10:00 – 11:00</div>
+      <div class="item-dot" style="background:var(--accent-blue)"></div>
+      <div class="item-body">
+        <div class="item-title">Weekly del Norte</div>
+        <div class="item-meta">
+          <span class="badge badge-soon">Upcoming</span>
+          David Anaya · 6 attendees
+        </div>
+        <div class="item-sub">Recurring team sync — Google Meet</div>
+      </div>
+    </a>
+
+    <a class="item" href="https://www.google.com/calendar/event?eid=M2cyYzhzbnZvYW92bTN2bmo5M2NxMTZtOWlfMjAyNjA0MjBUMTYwMDAwWiBqdWFuLnZhc2NvbmV6QHNpbXBsaXQtc29sdXRpb25zLmNvbQ" target="_blank">
+      <div class="time-label">11:00 – 11:30</div>
+      <div class="item-dot" style="background:var(--accent-purple)"></div>
+      <div class="item-body">
+        <div class="item-title">Juan Diego / David</div>
+        <div class="item-meta">
+          <span class="badge badge-soon">1:1</span>
+          David Anaya · Google Meet
+        </div>
+        <div class="item-sub">One-on-one with David Anaya — 30 min</div>
+      </div>
+    </a>
+
+    <a class="item" href="https://www.google.com/calendar/event?eid=MXRnZGxtNHAyNmtiaThqdm45dGoydGg1YnMganVhbi52YXNjb25lekBzaW1wbGl0LXNvbHV0aW9ucy5jb20" target="_blank">
+      <div class="time-label">12:00 – 13:00</div>
+      <div class="item-dot" style="background:var(--accent-orange)"></div>
+      <div class="item-body">
+        <div class="item-title">SIM Banco Popular Dominicano</div>
+        <div class="item-meta">
+          <span class="badge badge-action">Client</span>
+          Organized by you
+        </div>
+        <div class="item-sub">Client session — added today</div>
+      </div>
+    </a>
+
+    <div class="item" style="opacity:.55; pointer-events:none;">
+      <div class="time-label">13:00 – 14:00</div>
+      <div class="item-dot" style="background:var(--text-muted)"></div>
+      <div class="item-body">
+        <div class="item-title">🍽 Almuerzo</div>
+        <div class="item-meta">Recurring block</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── SLACK ── -->
+  <div class="card">
+    <div class="card-header">
+      <span class="card-icon">💬</span>
+      <span class="card-title" style="color:var(--accent-purple)">Slack — Needs Reply</span>
+      <span class="card-count">5 threads</span>
+    </div>
+
+    <!-- Action item from David -->
+    <a class="item" href="https://simplit-solutions.slack.com/archives/D09QK6CCSN8/p1776703318387429" target="_blank">
+      <div class="item-dot" style="background:var(--accent-red)"></div>
+      <div class="item-body">
+        <div class="item-title">⚡ Add Willy to all PEX conversations</div>
+        <div class="item-meta">
+          <span class="badge badge-action">Action needed</span>
+          DM · David Anaya · 11:41
+        </div>
+        <div class="item-sub">"Mister. @Willy es la persona que tienes que subir a todas las conversas de PEX"</div>
+      </div>
+    </a>
+
+    <!-- Francisca asking about videos -->
+    <a class="item" href="https://simplit-solutions.slack.com/archives/C0ASPD30CF9/p1776695176016229" target="_blank">
+      <div class="item-dot" style="background:var(--accent-yellow)"></div>
+      <div class="item-body">
+        <div class="item-title">Video status update requested</div>
+        <div class="item-meta">
+          <span class="badge badge-group">Group DM</span>
+          Francisca · Luigi · Camilo · 09:26
+        </div>
+        <div class="item-sub">"¿cómo vamos con los videos? Camilo está a full pendiente de esto esta semana"</div>
+      </div>
+    </a>
+
+    <!-- Johann about preliminary tests -->
+    <a class="item" href="https://simplit-solutions.slack.com/archives/D0A87QNPTT2/p1776698460907339" target="_blank">
+      <div class="item-dot" style="background:var(--accent-blue)"></div>
+      <div class="item-body">
+        <div class="item-title">Pruebas preliminares — Johann defining today</div>
+        <div class="item-meta">
+          <span class="badge badge-dm">DM</span>
+          Johann Pinzon · 10:21
+        </div>
+        <div class="item-sub">"Hoy dejo definido el tema de pruebas preliminares"</div>
+      </div>
+    </a>
+
+    <!-- David / Willy joining sessions -->
+    <a class="item" href="https://simplit-solutions.slack.com/archives/D09QK6CCSN8/p1776703332140089" target="_blank">
+      <div class="item-dot" style="background:var(--accent-purple)"></div>
+      <div class="item-body">
+        <div class="item-title">Willy joins follow-up sessions & trip</div>
+        <div class="item-meta">
+          <span class="badge badge-dm">DM</span>
+          David Anaya · 11:42
+        </div>
+        <div class="item-sub">"Nos va a acompañar en las sesiones de seguimiento y en el viaje"</div>
+      </div>
+    </a>
+
+    <!-- Victor Gonzalez group thread -->
+    <a class="item" href="https://simplit-solutions.slack.com/archives/C0A8GMNKWB0/p1776697935861099?thread_ts=1776384356.859559&cid=C0A8GMNKWB0" target="_blank">
+      <div class="item-dot" style="background:var(--accent-green)"></div>
+      <div class="item-body">
+        <div class="item-title">SOLes work items thread</div>
+        <div class="item-meta">
+          <span class="badge badge-group">Group DM</span>
+          Víctor, Tomas, David · 10:12
+        </div>
+        <div class="item-sub">"si son cosas a trabajar mejor SOLes"</div>
+      </div>
+    </a>
+  </div>
+
+  <!-- ── EMAIL ── -->
+  <div class="card">
+    <div class="card-header">
+      <span class="card-icon">📧</span>
+      <span class="card-title" style="color:var(--accent-yellow)">Email — Action Items</span>
+      <span class="card-count">2 priority</span>
+    </div>
+
+    <div class="item">
+      <div class="item-dot" style="background:var(--accent-red)"></div>
+      <div class="item-body">
+        <div class="item-title">⚡ Your commitments due today</div>
+        <div class="item-meta">
+          <span class="badge badge-action">Due today</span>
+          diio · soporte@diio.com · Apr 17
+        </div>
+        <div class="item-sub">David Anaya: Enviar la propuesta comercial por correo — check diio for full list</div>
+      </div>
+    </div>
+
+    <div class="item">
+      <div class="item-dot" style="background:var(--accent-yellow)"></div>
+      <div class="item-body">
+        <div class="item-title">Meeting analyses ready to review</div>
+        <div class="item-meta">
+          <span class="badge" style="background:#0f766e;color:#fff">diio</span>
+          soporte@diio.com · Apr 16
+        </div>
+        <div class="item-sub">TDR Transportes + SimpliRoute — Predicción de éxito: Alto. Also: Traspaso FF Rica</div>
+      </div>
+    </div>
+
+    <div class="item" style="opacity:.6;">
+      <div class="item-dot" style="background:var(--text-muted)"></div>
+      <div class="item-body">
+        <div class="item-title">Minuta — Capacitación Globaltech</div>
+        <div class="item-meta">diio · Apr 15</div>
+        <div class="item-sub">Meeting minutes from Globaltech commercial training session</div>
+      </div>
+    </div>
+
+    <div class="item" style="opacity:.45;">
+      <div class="item-dot" style="background:var(--text-muted)"></div>
+      <div class="item-body">
+        <div class="item-title">🎬 Loom views — your videos are getting traction</div>
+        <div class="item-meta">Atlassian / Loom · multiple</div>
+        <div class="item-sub">3.5 Intercambio territorios, 1.1 Carga clientes/vendedores, 1.2 ForceField — no action needed</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── NOTION TASKS ── -->
+  <div class="card">
+    <div class="card-header">
+      <span class="card-icon">✅</span>
+      <span class="card-title" style="color:var(--accent-green)">Notion — Open App Tests</span>
+      <span class="card-count">12 tasks</span>
+    </div>
+
+    <a class="item" href="https://www.notion.so/2d8bbd09805c8047b52cc26a113eb0ac" target="_blank">
+      <div class="item-dot" style="background:var(--accent-green)"></div>
+      <div class="item-body">
+        <div class="item-title">DEV-SOL-5065 · Motivos de rechazo en items (Pt.1)</div>
+        <div class="item-meta"><span class="badge badge-task">Mobile</span> Pruebas App</div>
+      </div>
+    </a>
+
+    <a class="item" href="https://www.notion.so/2f4bbd09805c800a8145c1346e9a5091" target="_blank">
+      <div class="item-dot" style="background:var(--accent-green)"></div>
+      <div class="item-body">
+        <div class="item-title">DEV-SOL-5065 · Motivos de rechazo en items (Pt.2)</div>
+        <div class="item-meta"><span class="badge badge-task">Mobile</span> Pruebas App</div>
+      </div>
+    </a>
+
+    <a class="item" href="https://www.notion.so/30bbbd09805c806e8057f93dfd362268" target="_blank">
+      <div class="item-dot" style="background:var(--accent-purple)"></div>
+      <div class="item-body">
+        <div class="item-title">DEV-1920 · Código de Seguridad — Pedidos Alto Valor</div>
+        <div class="item-meta"><span class="badge badge-task">Mobile</span> #431 · Validación</div>
+      </div>
+    </a>
+
+    <a class="item" href="https://www.notion.so/310bbd09805c8053a5a3c834d80f85ef" target="_blank">
+      <div class="item-dot" style="background:var(--accent-purple)"></div>
+      <div class="item-body">
+        <div class="item-title">DEV-1920 · Fase 2 — Historial de checkout en plataforma</div>
+        <div class="item-meta"><span class="badge badge-task">Mobile</span> Pruebas App</div>
+      </div>
+    </a>
+
+    <a class="item" href="https://www.notion.so/312bbd09805c8027978eccd709c0f910" target="_blank">
+      <div class="item-dot" style="background:var(--accent-blue)"></div>
+      <div class="item-body">
+        <div class="item-title">DEV-2106 · Mostrar cargas 1, 2 y 3</div>
+        <div class="item-meta"><span class="badge badge-task">Mobile</span> Pruebas App</div>
+      </div>
+    </a>
+
+    <a class="item" href="https://www.notion.so/31abbd09805c80dd8839e73933ccd622" target="_blank">
+      <div class="item-dot" style="background:var(--accent-blue)"></div>
+      <div class="item-body">
+        <div class="item-title">DEV-2220 · Obligatoriedad botón CheckIn #439</div>
+        <div class="item-meta"><span class="badge badge-task">Mobile</span> Pruebas App</div>
+      </div>
+    </a>
+
+    <a class="item" href="https://www.notion.so/326bbd09805c8024ba7fd8e036789797" target="_blank">
+      <div class="item-dot" style="background:var(--accent-orange)"></div>
+      <div class="item-body">
+        <div class="item-title">DEV-2324 · Imagen guía obligatoria solo en visita exitosa #445</div>
+        <div class="item-meta"><span class="badge badge-task">Mobile</span> Tech-Req-3222</div>
+      </div>
+    </a>
+
+    <a class="item" href="https://www.notion.so/326bbd09805c80bb954cc90c461c9495" target="_blank">
+      <div class="item-dot" style="background:var(--accent-orange)"></div>
+      <div class="item-body">
+        <div class="item-title">DEV-2366 · Filter hidden tags from mobile visit display</div>
+        <div class="item-meta"><span class="badge badge-task">Mobile</span> Pruebas App</div>
+      </div>
+    </a>
+
+    <a class="item" href="https://www.notion.so/32cbbd09805c810e80e5d70f8193121a" target="_blank">
+      <div class="item-dot" style="background:var(--accent-yellow)"></div>
+      <div class="item-body">
+        <div class="item-title">DEV-2368 · Decimal Item Loads #454</div>
+        <div class="item-meta"><span class="badge badge-task">Mobile</span> Pruebas App</div>
+      </div>
+    </a>
+
+    <a class="item" href="https://www.notion.so/32dbbd09805c81c49db4efb0cdda6658" target="_blank">
+      <div class="item-dot" style="background:var(--accent-yellow)"></div>
+      <div class="item-body">
+        <div class="item-title">DEV-2470 · Diferenciación visual de checkouts en APP</div>
+        <div class="item-meta"><span class="badge badge-task">Mobile</span> SOL-5119</div>
+      </div>
+    </a>
+
+    <a class="item" href="https://www.notion.so/333bbd09805c80a2811ee5b09acec9da" target="_blank">
+      <div class="item-dot" style="background:var(--accent-red)"></div>
+      <div class="item-body">
+        <div class="item-title">DEV-2534 · Image preview in validation extrafield card</div>
+        <div class="item-meta"><span class="badge badge-task">Mobile</span> Pruebas App</div>
+      </div>
+    </a>
+
+    <a class="item" href="https://www.notion.so/343bbd09805c8105bcdad97bf1270a22" target="_blank">
+      <div class="item-dot" style="background:var(--accent-red)"></div>
+      <div class="item-body">
+        <div class="item-title">DEV-2630 · Inconsistencia fotos de evidencia en recheckout</div>
+        <div class="item-meta"><span class="badge badge-task">Mobile</span> SOL-5781</div>
+      </div>
+    </a>
+  </div>
+
+  <!-- ── TOP PRIORITIES (summary card) ── -->
+  <div class="card" style="grid-column: 1 / -1;">
+    <div class="card-header">
+      <span class="card-icon">⚡</span>
+      <span class="card-title" style="color:var(--accent-red)">Must-do today</span>
+      <span class="card-count">3 items</span>
+    </div>
+
+    <a class="item" href="https://simplit-solutions.slack.com/archives/D09QK6CCSN8/p1776703318387429" target="_blank">
+      <div class="item-dot" style="background:var(--accent-red)"></div>
+      <div class="item-body">
+        <div class="item-title">Add Willy to all PEX conversations on Slack</div>
+        <div class="item-meta"><span class="badge badge-action">Action</span> From David Anaya via Slack DM at 11:41</div>
+      </div>
+    </a>
+
+    <div class="item">
+      <div class="item-dot" style="background:var(--accent-red)"></div>
+      <div class="item-body">
+        <div class="item-title">Review your diio commitments due today</div>
+        <div class="item-meta"><span class="badge badge-action">Due today</span> Check diio — David was to send the commercial proposal</div>
+      </div>
+    </div>
+
+    <a class="item" href="https://simplit-solutions.slack.com/archives/C0ASPD30CF9/p1776695176016229" target="_blank">
+      <div class="item-dot" style="background:var(--accent-yellow)"></div>
+      <div class="item-body">
+        <div class="item-title">Reply to Francisca about video progress status</div>
+        <div class="item-meta"><span class="badge badge-group">Group DM</span> Camilo is waiting on this all week</div>
+      </div>
+    </a>
+  </div>
+
+</div>
+
+<footer>
+  Juan Diego Vásconez · juan.vasconez@simplit-solutions.com · Auto-refreshes every 60 min when scheduled · <span id="footerTs"></span>
+</footer>
+
+<script>
+  // Date & time display
+  const now = new Date();
+  const opts = { weekday:'long', year:'numeric', month:'long', day:'numeric' };
+  document.getElementById('headerDate').textContent = now.toLocaleDateString('en-US', opts);
+  document.getElementById('footerTs').textContent = 'Generated ' + now.toLocaleTimeString('en-US', {hour:'2-digit', minute:'2-digit'});
+
+  // Live elapsed clock
+  let startTime = Date.now();
+  setInterval(() => {
+    const mins = Math.floor((Date.now() - startTime) / 60000);
+    document.getElementById('lastUpdated').textContent =
+      mins === 0 ? 'just now' : `${mins} min ago`;
+  }, 30000);
+</script>
+</body>
+</html>
