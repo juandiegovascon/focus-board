@@ -1,510 +1,575 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="es">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Juan's Focus Board — 2026-04-21</title>
+<title>Juan's Focus Board · 2026-04-23</title>
 <style>
   :root {
-    --bg:#0f1117;
-    --surface:#1a1d27;
-    --border:#2e3348;
-    --text:#e8eaf0;
-    --text-dim:#9aa0b4;
-    --text-muted:#6b7089;
-    --blue:#4f8ef7;
-    --purple:#a78bfa;
-    --yellow:#f5c542;
-    --green:#34c785;
-    --red:#f06e6e;
-    --indigo:#818cf8;
-    --cyan:#22d3ee;
-    --amber:#f59e0b;
+    --bg: #0f1117;
+    --surface: #1a1d27;
+    --surface-alt: #222636;
+    --border: #2e3348;
+    --text: #e8eaf0;
+    --text-dim: #9aa0b4;
+    --text-faint: #6b7088;
+    --blue: #4f8ef7;
+    --purple: #a78bfa;
+    --yellow: #f5c542;
+    --green: #34c785;
+    --red: #f06e6e;
+    --indigo: #818cf8;
+    --cyan: #38bdf8;
+    --amber: #fbbf24;
   }
   * { box-sizing: border-box; margin: 0; padding: 0; }
-  body {
+  html, body {
     background: var(--bg);
     color: var(--text);
-    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu, sans-serif;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
     font-size: 14px;
     line-height: 1.5;
     min-height: 100vh;
   }
-  header {
+  a { color: inherit; text-decoration: none; }
+  .wrap {
+    max-width: 1280px;
+    margin: 0 auto;
+    padding: 0 24px 48px;
+  }
+  header.sticky {
     position: sticky;
     top: 0;
-    z-index: 10;
+    z-index: 20;
     background: rgba(15, 17, 23, 0.92);
-    backdrop-filter: blur(12px);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
     border-bottom: 1px solid var(--border);
-    padding: 16px 24px;
+    padding: 18px 24px;
+    margin-bottom: 24px;
+  }
+  .header-inner {
+    max-width: 1280px;
+    margin: 0 auto;
     display: flex;
     align-items: center;
     justify-content: space-between;
+    gap: 16px;
+    flex-wrap: wrap;
   }
-  .header-left { display: flex; flex-direction: column; gap: 2px; }
-  .header-left h1 { font-size: 20px; font-weight: 700; letter-spacing: -0.3px; }
-  .header-left .subtitle { color: var(--text-dim); font-size: 12px; }
-  .header-right { display: flex; align-items: center; gap: 12px; }
-  .last-updated { color: var(--text-muted); font-size: 12px; }
+  .header-left h1 {
+    font-size: 22px;
+    font-weight: 700;
+    letter-spacing: -0.01em;
+  }
+  .header-left .date {
+    color: var(--text-dim);
+    font-size: 13px;
+    margin-top: 2px;
+  }
   .refresh-btn {
     background: var(--surface);
-    color: var(--text);
     border: 1px solid var(--border);
-    border-radius: 8px;
+    color: var(--text);
     padding: 8px 14px;
+    border-radius: 8px;
     font-size: 13px;
     font-weight: 500;
     cursor: pointer;
-    transition: all 0.15s;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    transition: background 0.15s, border-color 0.15s;
   }
-  .refresh-btn:hover { background: #242838; border-color: #3a4058; }
-
-  main { padding: 24px; max-width: 1400px; margin: 0 auto; }
-
-  .stat-bar {
+  .refresh-btn:hover { background: var(--surface-alt); border-color: var(--text-faint); }
+  .updated {
+    color: var(--text-faint);
+    font-size: 12px;
+    margin-right: 8px;
+  }
+  .stats {
     display: grid;
     grid-template-columns: repeat(4, 1fr);
     gap: 12px;
-    margin-bottom: 24px;
+    margin-bottom: 20px;
   }
   .stat {
     background: var(--surface);
     border: 1px solid var(--border);
     border-radius: 10px;
     padding: 14px 16px;
-    display: flex;
-    flex-direction: column;
-    gap: 4px;
   }
-  .stat-value { font-size: 24px; font-weight: 700; }
-  .stat-label { color: var(--text-dim); font-size: 12px; text-transform: uppercase; letter-spacing: 0.5px; }
-
-  .must-do-card {
-    background: linear-gradient(135deg, rgba(240, 110, 110, 0.08), rgba(240, 110, 110, 0.02));
-    border: 1px solid rgba(240, 110, 110, 0.35);
+  .stat .label {
+    color: var(--text-dim);
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    font-weight: 600;
+  }
+  .stat .value {
+    font-size: 26px;
+    font-weight: 700;
+    margin-top: 4px;
+    letter-spacing: -0.02em;
+  }
+  .mustdo {
+    background: linear-gradient(180deg, rgba(240, 110, 110, 0.08), rgba(240, 110, 110, 0.02));
+    border: 1px solid rgba(240, 110, 110, 0.4);
     border-radius: 12px;
     padding: 18px 20px;
-    margin-bottom: 24px;
+    margin-bottom: 20px;
   }
-  .must-do-card h2 { color: var(--red); font-size: 15px; font-weight: 700; margin-bottom: 12px; }
-
-  .grid {
+  .mustdo h2 {
+    color: var(--red);
+    font-size: 15px;
+    font-weight: 700;
+    margin-bottom: 12px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .cards {
     display: grid;
     grid-template-columns: repeat(2, 1fr);
     gap: 16px;
   }
   @media (max-width: 900px) {
-    .grid { grid-template-columns: 1fr; }
-    .stat-bar { grid-template-columns: repeat(2, 1fr); }
+    .cards { grid-template-columns: 1fr; }
+    .stats { grid-template-columns: repeat(2, 1fr); }
   }
   .card {
     background: var(--surface);
     border: 1px solid var(--border);
     border-radius: 12px;
-    padding: 18px 20px;
-    display: flex;
-    flex-direction: column;
+    padding: 16px 18px;
+    border-top: 3px solid var(--border);
   }
-  .card-header {
+  .card.calendar { border-top-color: var(--blue); }
+  .card.slack { border-top-color: var(--purple); }
+  .card.email { border-top-color: var(--yellow); }
+  .card.notion { border-top-color: var(--green); }
+  .card h3 {
+    font-size: 13px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    margin-bottom: 12px;
     display: flex;
     align-items: center;
-    justify-content: space-between;
-    margin-bottom: 14px;
-    padding-bottom: 12px;
-    border-bottom: 1px solid var(--border);
+    gap: 8px;
   }
-  .card-title { display: flex; align-items: center; gap: 10px; font-size: 15px; font-weight: 600; }
-  .card-dot { width: 10px; height: 10px; border-radius: 50%; }
+  .card.calendar h3 { color: var(--blue); }
+  .card.slack h3 { color: var(--purple); }
+  .card.email h3 { color: var(--yellow); }
+  .card.notion h3 { color: var(--green); }
   .card-count {
-    color: var(--text-muted);
-    font-size: 12px;
-    background: rgba(255, 255, 255, 0.04);
-    border: 1px solid var(--border);
-    padding: 3px 8px;
-    border-radius: 6px;
+    background: var(--surface-alt);
+    color: var(--text-dim);
+    padding: 2px 8px;
+    border-radius: 10px;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0;
   }
-
   .item {
     display: flex;
     gap: 10px;
     padding: 10px 0;
-    border-bottom: 1px solid rgba(46, 51, 72, 0.5);
+    border-bottom: 1px solid var(--border);
   }
   .item:last-child { border-bottom: none; }
-  .item-dot {
+  .item:hover .item-title { color: var(--text); }
+  .dot {
+    flex-shrink: 0;
     width: 8px;
     height: 8px;
     border-radius: 50%;
     margin-top: 7px;
-    flex-shrink: 0;
   }
+  .dot.blue { background: var(--blue); }
+  .dot.purple { background: var(--purple); }
+  .dot.yellow { background: var(--yellow); }
+  .dot.green { background: var(--green); }
+  .dot.red { background: var(--red); }
   .item-body { flex: 1; min-width: 0; }
   .item-title {
-    font-size: 13.5px;
     font-weight: 600;
+    font-size: 13.5px;
     color: var(--text);
-    display: block;
-    text-decoration: none;
+    line-height: 1.4;
     margin-bottom: 3px;
   }
-  .item-title:hover { text-decoration: underline; text-decoration-color: var(--text-muted); }
-  .item-meta { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 4px; }
+  .item-meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin-bottom: 4px;
+    align-items: center;
+  }
   .item-snippet {
     color: var(--text-dim);
     font-size: 12.5px;
+    line-height: 1.45;
     display: -webkit-box;
     -webkit-line-clamp: 2;
     -webkit-box-orient: vertical;
     overflow: hidden;
   }
-
+  .item-link {
+    display: inline-block;
+    margin-top: 4px;
+    color: var(--text-faint);
+    font-size: 11px;
+    font-weight: 500;
+  }
+  .item-link:hover { color: var(--blue); }
   .badge {
+    display: inline-block;
+    padding: 2px 8px;
+    border-radius: 10px;
     font-size: 10.5px;
     font-weight: 600;
-    padding: 2px 7px;
-    border-radius: 4px;
     text-transform: uppercase;
-    letter-spacing: 0.3px;
+    letter-spacing: 0.04em;
+    white-space: nowrap;
   }
   .badge-action { background: rgba(52, 199, 133, 0.15); color: var(--green); }
   .badge-dm { background: rgba(129, 140, 248, 0.15); color: var(--indigo); }
-  .badge-group { background: rgba(34, 211, 238, 0.15); color: var(--cyan); }
+  .badge-group { background: rgba(56, 189, 248, 0.15); color: var(--cyan); }
   .badge-task { background: rgba(167, 139, 250, 0.15); color: var(--purple); }
   .badge-now { background: rgba(240, 110, 110, 0.18); color: var(--red); }
-  .badge-soon { background: rgba(245, 158, 11, 0.15); color: var(--amber); }
-  .badge-meet { background: rgba(79, 142, 247, 0.15); color: var(--blue); }
-  .badge-conflict { background: rgba(240, 110, 110, 0.25); color: var(--red); border: 1px solid rgba(240, 110, 110, 0.5); }
-
-  footer {
-    text-align: center;
-    color: var(--text-muted);
-    font-size: 11.5px;
-    padding: 24px;
-    margin-top: 16px;
-    border-top: 1px solid var(--border);
-  }
-
-  .empty-state {
-    color: var(--text-muted);
-    font-size: 13px;
+  .badge-soon { background: rgba(251, 191, 36, 0.15); color: var(--amber); }
+  .badge-time { background: var(--surface-alt); color: var(--text-dim); }
+  .empty {
+    color: var(--text-faint);
     font-style: italic;
-    padding: 12px 0;
+    font-size: 13px;
+    padding: 10px 0;
+  }
+  footer {
+    margin-top: 32px;
+    padding-top: 16px;
+    border-top: 1px solid var(--border);
+    color: var(--text-faint);
+    font-size: 11.5px;
+    display: flex;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 8px;
   }
 </style>
 </head>
 <body>
-<header>
-  <div class="header-left">
-    <h1>⚡ Juan's Focus Board</h1>
-    <div class="subtitle" id="today-date">Tuesday, April 21, 2026 · America/Guayaquil</div>
-  </div>
-  <div class="header-right">
-    <span class="last-updated" id="last-updated">just refreshed</span>
-    <button class="refresh-btn" onclick="window.location.reload()">↻ Refresh</button>
+<header class="sticky">
+  <div class="header-inner">
+    <div class="header-left">
+      <h1>⚡ Juan's Focus Board</h1>
+      <div class="date" id="today-date">Jueves, 23 de abril de 2026</div>
+    </div>
+    <div style="display:flex; align-items:center;">
+      <span class="updated" id="updated-label">actualizado hace unos segundos</span>
+      <button class="refresh-btn" onclick="window.location.reload()">↻ Refresh</button>
+    </div>
   </div>
 </header>
 
-<main>
-  <!-- Stat bar -->
-  <div class="stat-bar">
+<div class="wrap">
+
+  <div class="stats">
     <div class="stat">
-      <div class="stat-value" style="color:var(--blue);">4</div>
-      <div class="stat-label">Meetings</div>
+      <div class="label">Reuniones</div>
+      <div class="value">0</div>
     </div>
     <div class="stat">
-      <div class="stat-value" style="color:var(--purple);">1</div>
-      <div class="stat-label">Slack threads</div>
+      <div class="label">Slack threads</div>
+      <div class="value">2</div>
     </div>
     <div class="stat">
-      <div class="stat-value" style="color:var(--yellow);">2</div>
-      <div class="stat-label">Action emails</div>
+      <div class="label">Action emails</div>
+      <div class="value">2</div>
     </div>
     <div class="stat">
-      <div class="stat-value" style="color:var(--green);">14</div>
-      <div class="stat-label">Open tasks</div>
+      <div class="label">Open tasks</div>
+      <div class="value">16</div>
     </div>
   </div>
 
-  <!-- Must-do today -->
-  <div class="must-do-card">
+  <div class="mustdo">
     <h2>⚡ Must-do today</h2>
 
     <div class="item">
-      <div class="item-dot" style="background:var(--red);"></div>
+      <div class="dot red"></div>
       <div class="item-body">
-        <a class="item-title" href="https://meet.google.com/txu-omdj-wkq" target="_blank">Scheduling conflict: Sigma Alimentos ⚠ Ramiro (QR Add-On)</a>
+        <div class="item-title">Procesar data cruda para prueba (Salvador / David Anaya)</div>
         <div class="item-meta">
-          <span class="badge badge-conflict">CONFLICT 13:00</span>
-          <span class="badge badge-now">decide now</span>
+          <span class="badge badge-now">NOW</span>
+          <span class="badge badge-group">GROUP DM</span>
+          <span class="badge badge-action">ACCIÓN</span>
         </div>
-        <div class="item-snippet">Sigma Alimentos runs 13:00–14:00 ECT (you accepted) and Ramiro / Add-On QR runs 13:00–13:30 ECT (you organize). Move, shorten, or delegate one of them before 11:00.</div>
+        <div class="item-snippet">David: "Deja todo como está en data cruda. Procésalo y de ahí vemos si tenemos que agregar o quitar algo. Pero la prueba en una primera instancia debe salir sin que le metamos mano a la data."</div>
+        <a class="item-link" href="https://simplit-solutions.slack.com/archives/C0AAA2DDQMT/p1776971904017039" target="_blank">Abrir en Slack →</a>
       </div>
     </div>
 
     <div class="item">
-      <div class="item-dot" style="background:var(--red);"></div>
+      <div class="dot red"></div>
       <div class="item-body">
-        <a class="item-title" href="https://meet.google.com/cbd-iqbu-efh" target="_blank">IA Meeting with Overhaul — 11:00 ECT (starts soon)</a>
+        <div class="item-title">Responder a Pablo Galaz – pide ayuda con avance de cliente</div>
         <div class="item-meta">
-          <span class="badge badge-meet">Google Meet</span>
-          <span class="badge badge-now">next up</span>
-          <span class="badge badge-action">Overhaul guests pending RSVP</span>
+          <span class="badge badge-now">NOW</span>
+          <span class="badge badge-dm">DM</span>
+          <span class="badge badge-action">RESPONDER</span>
         </div>
-        <div class="item-snippet">First external meeting of the day with Teddy Will and Michelissaim Sánchez from Overhaul (both still in needsAction). David, Salvador, Christian joining. Prep IA talking points.</div>
+        <div class="item-snippet">Pablo: "JD que tal… en un ratito más tengo sesión con Rica para ponerme al tanto del estatus del cliente… reforzaré lo que me comentas, y sí, necesitaré de tu ayuda al menos para buscar avanzar esto."</div>
+        <a class="item-link" href="https://simplit-solutions.slack.com/archives/D09QBECE1U3/p1776971729203919" target="_blank">Abrir DM →</a>
       </div>
     </div>
 
     <div class="item">
-      <div class="item-dot" style="background:var(--amber);"></div>
+      <div class="dot red"></div>
       <div class="item-body">
-        <a class="item-title" href="https://mail.google.com/mail/u/0/#inbox/19dabb0db440dbac" target="_blank">Reply: David Anaya — Seguimiento Estafeta + SimpliRoute</a>
+        <div class="item-title">Coordinar sesión técnica con Arturo Contreras (Tdr)</div>
         <div class="item-meta">
-          <span class="badge badge-action">reply needed</span>
-          <span class="badge badge-soon">from manager</span>
+          <span class="badge badge-soon">HOY</span>
+          <span class="badge badge-action">COMPROMISO</span>
         </div>
-        <div class="item-snippet">Follow-up on last Friday's preliminary review with Estafeta. David is compiling the next step — confirm your inputs before the Sigma call.</div>
+        <div class="item-snippet">Compromiso diio vence hoy: coordinar una sesión técnica con Arturo Contreras (Tdr). Fuente: correo "[diio] Tus Compromisos de hoy".</div>
+        <a class="item-link" href="https://mail.google.com/mail/u/0/#inbox/19db512249335de5" target="_blank">Ver correo diio →</a>
       </div>
     </div>
 
     <div class="item">
-      <div class="item-dot" style="background:var(--amber);"></div>
+      <div class="dot red"></div>
       <div class="item-body">
-        <a class="item-title" href="https://www.notion.so/33abbd09805c81b0bfb8ee8b0f619579" target="_blank">Evaluar impacto Twilio/WhatsApp — usernames migration (jun 2026)</a>
+        <div class="item-title">Revisar caso 00005701 – nuevo comentario de optimización</div>
         <div class="item-meta">
-          <span class="badge badge-task">Notion</span>
-          <span class="badge badge-soon">before May</span>
+          <span class="badge badge-soon">SOON</span>
+          <span class="badge badge-action">REVISAR</span>
         </div>
-        <div class="item-snippet">Team needs total clarity on impact before May so changes can be implemented before Twilio activates the migration in June 2026.</div>
+        <div class="item-snippet">Caso 00005701: "Volví a correr el escenario con las mismas variables y no se volvió a presentar el caso" – resultado de optimización excede capacidad. Validar y responder.</div>
+        <a class="item-link" href="https://mail.google.com/mail/u/0/#inbox/19dbadc5b98a5973" target="_blank">Abrir correo →</a>
       </div>
     </div>
   </div>
 
-  <!-- 4 cards -->
-  <div class="grid">
-    <!-- Calendar -->
-    <div class="card">
-      <div class="card-header">
-        <div class="card-title"><span class="card-dot" style="background:var(--blue);"></span>📅 Calendar</div>
-        <span class="card-count">4 meetings</span>
-      </div>
+  <div class="cards">
 
+    <div class="card calendar">
+      <h3>📅 Calendario <span class="card-count">0 reuniones</span></h3>
+      <div class="empty">Sin reuniones reales hoy. Solo bloqueos OOO y almuerzo (13:00–14:00).</div>
       <div class="item">
-        <div class="item-dot" style="background:var(--blue);"></div>
+        <div class="dot blue"></div>
         <div class="item-body">
-          <a class="item-title" href="https://www.google.com/calendar/event?eid=NWNlNGJ0aW1tYTZkanI3Z2ZhZjI2cnNsZXAganVhbi52YXNjb25lekBzaW1wbGl0LXNvbHV0aW9ucy5jb20&ctz=America/Guayaquil" target="_blank">IA Meeting with Overhaul</a>
+          <div class="item-title">Almuerzo</div>
           <div class="item-meta">
-            <span class="badge badge-now">11:00–12:00 ECT</span>
-            <span class="badge badge-meet">meet.google.com/cbd-iqbu-efh</span>
+            <span class="badge badge-time">13:00 – 14:00</span>
           </div>
-          <div class="item-snippet">David Anaya (org) · Salvador, Christian, Teddy Will, Michelissaim Sánchez (Overhaul).</div>
+          <div class="item-snippet">Bloque personal – no cuenta como reunión.</div>
         </div>
       </div>
-
       <div class="item">
-        <div class="item-dot" style="background:var(--blue);"></div>
+        <div class="dot blue"></div>
         <div class="item-body">
-          <a class="item-title" href="https://www.google.com/calendar/event?eid=NjcxYTZpcWNidWNndnJmcnRvYmpxczk4aHIganVhbi52YXNjb25lekBzaW1wbGl0LXNvbHV0aW9ucy5jb20&ctz=America/Guayaquil" target="_blank">SimpliRoute + Sigma Alimentos</a>
+          <div class="item-title">Out of office</div>
           <div class="item-meta">
-            <span class="badge badge-conflict">13:00–14:00 ECT · conflict</span>
-            <span class="badge badge-meet">meet.google.com/txu-omdj-wkq</span>
+            <span class="badge badge-time">18:00 → 09:00 (día sgte.)</span>
           </div>
-          <div class="item-snippet">Sigma Alimentos (rsalceda, lgallardom) + Numaris (Alejandro Duarte) + David, Salvador. Overlaps with Ramiro Add-On QR.</div>
-        </div>
-      </div>
-
-      <div class="item">
-        <div class="item-dot" style="background:var(--blue);"></div>
-        <div class="item-body">
-          <a class="item-title" href="https://www.google.com/calendar/event?eid=M2d0bWtoZGcwaWx1cHFyY3NpY3A3cWhyNGQganVhbi52YXNjb25lekBzaW1wbGl0LXNvbHV0aW9ucy5jb20&ctz=America/Guayaquil" target="_blank">Ramiro / Juan Diego — Add-On QR</a>
-          <div class="item-meta">
-            <span class="badge badge-conflict">13:00–13:30 ECT · conflict</span>
-            <span class="badge badge-meet">meet.google.com/ntk-ftfm-naf</span>
-          </div>
-          <div class="item-snippet">You organize. Azalea accepted; Ramiro Villar still needsAction. Overlaps fully with Sigma call.</div>
-        </div>
-      </div>
-
-      <div class="item">
-        <div class="item-dot" style="background:var(--blue);"></div>
-        <div class="item-body">
-          <a class="item-title" href="https://www.google.com/calendar/event?eid=NzY1aWViaGE3aXJrdDNhY3Z1N3NjZnN0a3EganVhbi52YXNjb25lekBzaW1wbGl0LXNvbHV0aW9ucy5jb20&ctz=America/Guayaquil" target="_blank">PaqueteExpress — Update desarrollo Zonas</a>
-          <div class="item-meta">
-            <span class="badge badge-soon">16:00–16:30 ECT</span>
-            <span class="badge badge-meet">meet.google.com/snr-qusa-emb</span>
-            <span class="badge badge-action">needs RSVP</span>
-          </div>
-          <div class="item-snippet">Guillermo Farías (org), Luis Bermúdez. Newly invited today — still needsAction on your side.</div>
+          <div class="item-snippet">Bloque recurrente fuera de oficina.</div>
         </div>
       </div>
     </div>
 
-    <!-- Slack -->
-    <div class="card">
-      <div class="card-header">
-        <div class="card-title"><span class="card-dot" style="background:var(--purple);"></span>💬 Slack</div>
-        <span class="card-count">1 referenced</span>
-      </div>
+    <div class="card slack">
+      <h3>💬 Slack <span class="card-count">2 hilos con pendiente</span></h3>
 
       <div class="item">
-        <div class="item-dot" style="background:var(--purple);"></div>
+        <div class="dot purple"></div>
         <div class="item-body">
-          <a class="item-title" href="https://slack.com/app_redirect?channel=C0AU0M6C37D&message_ts=1776744384.137159" target="_blank">Pluspetrol — Agregar Campos Extra | Tech-Req-3563</a>
+          <div class="item-title">Pablo Galaz – DM directo</div>
           <div class="item-meta">
-            <span class="badge badge-group">channel</span>
-            <span class="badge badge-action">review</span>
+            <span class="badge badge-dm">DM</span>
+            <span class="badge badge-action">RESPONDER</span>
+            <span class="badge badge-time">14:15</span>
           </div>
-          <div class="item-snippet">Slack thread referenced in Notion today — Reporte Pluspetrol, adding extra fields (Tech-Req-3563). Confirm scope with the dev team.</div>
+          <div class="item-snippet">"…necesitaré de tu ayuda al menos para buscar avanzar esto". Tiene sesión con Rica sobre estatus del cliente.</div>
+          <a class="item-link" href="https://simplit-solutions.slack.com/archives/D09QBECE1U3/p1776971729203919" target="_blank">Abrir DM →</a>
         </div>
       </div>
 
-      <div class="empty-state">Slack MCP is not connected in this session — pull additional threads live by connecting Slack, or check C0AU0M6C37D and your DMs directly.</div>
-    </div>
-
-    <!-- Email -->
-    <div class="card">
-      <div class="card-header">
-        <div class="card-title"><span class="card-dot" style="background:var(--yellow);"></span>✉️ Email</div>
-        <span class="card-count">2 actionable</span>
-      </div>
-
       <div class="item">
-        <div class="item-dot" style="background:var(--yellow);"></div>
+        <div class="dot purple"></div>
         <div class="item-body">
-          <a class="item-title" href="https://mail.google.com/mail/u/0/#inbox/19dabb0db440dbac" target="_blank">Seguimiento Estafeta + SimpliRoute — David Anaya</a>
+          <div class="item-title">David Anaya + Salvador Minutti – Group DM</div>
           <div class="item-meta">
-            <span class="badge badge-action">reply</span>
-            <span class="badge badge-dm">from manager</span>
+            <span class="badge badge-group">GROUP DM</span>
+            <span class="badge badge-action">ACCIÓN</span>
+            <span class="badge badge-time">13:45 – 14:18</span>
           </div>
-          <div class="item-snippet">Preliminary review from Friday with Estafeta team — David is aligning next steps with Juan Tapia, Alfonso Martínez and Jorge Rovira.</div>
+          <div class="item-snippet">Dirección Av. José López Portillo MZ 8, Supermanzana 62, Benito Juárez – pendiente: procesar data cruda tal cual para la prueba inicial.</div>
+          <a class="item-link" href="https://simplit-solutions.slack.com/archives/C0AAA2DDQMT/p1776971904017039" target="_blank">Abrir hilo →</a>
         </div>
       </div>
 
       <div class="item">
-        <div class="item-dot" style="background:var(--yellow);"></div>
+        <div class="dot purple"></div>
         <div class="item-body">
-          <a class="item-title" href="https://mail.google.com/mail/u/0/#inbox/19d77b76e16078ac" target="_blank">&lt;TMS&gt; minuta reunión ForceField — Grupo Rica</a>
+          <div class="item-title">Tomas Martinez – Group DM (LF Bermúdez, G. Farías)</div>
           <div class="item-meta">
-            <span class="badge badge-action">review</span>
-            <span class="badge badge-group">client thread</span>
+            <span class="badge badge-group">GROUP DM</span>
+            <span class="badge badge-time">14:16 – 14:19</span>
           </div>
-          <div class="item-snippet">Valeria Arroyo reactivated the thread yesterday with ForceField next-steps after capacitaciones with Grupo Rica (Mohammed Ullah, Wellinton Báez et al.).</div>
-        </div>
-      </div>
-
-      <div class="empty-state">Skipped: Atlassian Loom promos, auto meeting invites/acceptances.</div>
-    </div>
-
-    <!-- Notion -->
-    <div class="card">
-      <div class="card-header">
-        <div class="card-title"><span class="card-dot" style="background:var(--green);"></span>📓 Notion</div>
-        <span class="card-count">14 open</span>
-      </div>
-
-      <div class="item">
-        <div class="item-dot" style="background:var(--green);"></div>
-        <div class="item-body">
-          <a class="item-title" href="https://www.notion.so/349bbd09805c81548891c32e96605f89" target="_blank">Nestlé El Salvador — sin contrato firmado</a>
-          <div class="item-meta">
-            <span class="badge badge-task">deal</span>
-            <span class="badge badge-soon">follow-up</span>
-          </div>
-          <div class="item-snippet">Revisado en sesión 2026-04-20. Contract still unsigned — escalate or push a decision.</div>
-        </div>
-      </div>
-
-      <div class="item">
-        <div class="item-dot" style="background:var(--green);"></div>
-        <div class="item-body">
-          <a class="item-title" href="https://www.notion.so/343bbd09805c8105bcdad97bf1270a22" target="_blank">Pruebas App — [DEV-2630] SOL-5781 Re-checkout photo deletion bug</a>
-          <div class="item-meta">
-            <span class="badge badge-task">Pruebas App</span>
-          </div>
-          <div class="item-snippet">Inconsistencia al borrar fotos de evidencia en carrusel durante recheckout — latest ticket in Tasks list.</div>
-        </div>
-      </div>
-
-      <div class="item">
-        <div class="item-dot" style="background:var(--green);"></div>
-        <div class="item-body">
-          <a class="item-title" href="https://www.notion.so/33dbbd09805c80a39123ee8481d204eb" target="_blank">Pruebas App — [DEV-2559] Blocked camera permission bottom sheet</a>
-          <div class="item-meta"><span class="badge badge-task">Pruebas App</span></div>
-          <div class="item-snippet">Handle blocked camera permission with open-settings bottom sheet.</div>
-        </div>
-      </div>
-
-      <div class="item">
-        <div class="item-dot" style="background:var(--green);"></div>
-        <div class="item-body">
-          <a class="item-title" href="https://www.notion.so/32dbbd09805c81c49db4efb0cdda6658" target="_blank">Pruebas App — [DEV-2470] SOL-5119 Visual diff for checkouts in APP</a>
-          <div class="item-meta"><span class="badge badge-task">Pruebas App</span></div>
-          <div class="item-snippet">Diferenciación visual de checkouts en la app móvil.</div>
-        </div>
-      </div>
-
-      <div class="item">
-        <div class="item-dot" style="background:var(--green);"></div>
-        <div class="item-body">
-          <a class="item-title" href="https://www.notion.so/32cbbd09805c810e80e5d70f8193121a" target="_blank">Pruebas App — [DEV-2368] Decimal item loads #454</a>
-          <div class="item-meta"><span class="badge badge-task">Pruebas App</span></div>
-          <div class="item-snippet">Soporte para cargas decimales en items del flujo de visita.</div>
-        </div>
-      </div>
-
-      <div class="item">
-        <div class="item-dot" style="background:var(--green);"></div>
-        <div class="item-body">
-          <a class="item-title" href="https://www.notion.so/348bbd09805c8028b581f8ddc14404ad" target="_blank">BUG 00005699 — Orden rutas multidía entre Route Designer & Seguimiento</a>
-          <div class="item-meta">
-            <span class="badge badge-task">bug</span>
-            <span class="badge badge-soon">reported 20-04</span>
-          </div>
-          <div class="item-snippet">Inconsistencia en el orden de rutas multidía entre Route Designer y Seguimiento.</div>
-        </div>
-      </div>
-
-      <div class="item">
-        <div class="item-dot" style="background:var(--green);"></div>
-        <div class="item-body">
-          <a class="item-title" href="https://www.notion.so/1eebbd09805c809f96a1ef022ec2c18e" target="_blank">➕ Full Pruebas App backlog — open Tasks page</a>
-          <div class="item-meta"><span class="badge badge-task">backlog</span></div>
-          <div class="item-snippet">DEV-1920, DEV-2106, DEV-2220, DEV-2324, DEV-2366, DEV-2368, DEV-2470, DEV-2534, DEV-2559, DEV-2630 + Parte 1/2 motivos de rechazo.</div>
+          <div class="item-snippet">"no, ninguna diferencia… lo de los 15 min, sí ajjaja" – hilo informal, sin acción requerida inmediata.</div>
+          <a class="item-link" href="https://simplit-solutions.slack.com/archives/C0AUS4NJS21/p1776971951804879" target="_blank">Abrir hilo →</a>
         </div>
       </div>
     </div>
+
+    <div class="card email">
+      <h3>📧 Email <span class="card-count">2 con acción</span></h3>
+
+      <div class="item">
+        <div class="dot yellow"></div>
+        <div class="item-body">
+          <div class="item-title">[diio] Tus Compromisos de hoy</div>
+          <div class="item-meta">
+            <span class="badge badge-action">COMPROMISOS</span>
+            <span class="badge badge-time">Mié 22 abr</span>
+          </div>
+          <div class="item-snippet">"…puedes revisar este listado de los Compromisos que se acordaron para cumplir a más tardar hoy: 1. Arturo Contreras (Tdr) Coordinar una sesión técnica…"</div>
+          <a class="item-link" href="https://mail.google.com/mail/u/0/#inbox/19db512249335de5" target="_blank">Abrir correo →</a>
+        </div>
+      </div>
+
+      <div class="item">
+        <div class="dot yellow"></div>
+        <div class="item-body">
+          <div class="item-title">Nuevo comentario en caso 00005701</div>
+          <div class="item-meta">
+            <span class="badge badge-action">REVISAR</span>
+            <span class="badge badge-time">Hoy 10:01</span>
+          </div>
+          <div class="item-snippet">"Resultado de Optimización excede capacidad – Volví a correr el escenario con las mismas variables y no se volvió a presentar el caso." Validar y responder al case.</div>
+          <a class="item-link" href="https://mail.google.com/mail/u/0/#inbox/19dbadc5b98a5973" target="_blank">Abrir correo →</a>
+        </div>
+      </div>
+
+      <div class="item">
+        <div class="dot yellow"></div>
+        <div class="item-body">
+          <div class="item-title">[diio] Reuniones analizadas (Overhaul y Sigma Alimentos)</div>
+          <div class="item-meta">
+            <span class="badge badge-soon">REVISAR</span>
+            <span class="badge badge-time">Mar 21 abr</span>
+          </div>
+          <div class="item-snippet">Dos análisis de reuniones listos para revisar: SimpliRoute + Sigma Alimentos (muy alto) e IA Meeting con Overhaul (alto).</div>
+          <a class="item-link" href="https://mail.google.com/mail/u/0/#inbox/19db0cb6d8830777" target="_blank">Abrir correo →</a>
+        </div>
+      </div>
+    </div>
+
+    <div class="card notion">
+      <h3>📝 Notion · Tasks <span class="card-count">16 abiertas</span></h3>
+
+      <div class="item">
+        <div class="dot green"></div>
+        <div class="item-body">
+          <div class="item-title">Dashboard Reporte Operativo General — Mejoras V2</div>
+          <div class="item-meta">
+            <span class="badge badge-task">PAGE</span>
+            <span class="badge badge-soon">ACTUALIZADO HOY</span>
+          </div>
+          <div class="item-snippet">Métricas y gobernanza – documento actualizado esta mañana. Revisar cambios y próximos pasos.</div>
+          <a class="item-link" href="https://www.notion.so/34bbbd09805c81e8a501e9b50c145392" target="_blank">Abrir página →</a>
+        </div>
+      </div>
+
+      <div class="item">
+        <div class="dot green"></div>
+        <div class="item-body">
+          <div class="item-title">Pruebas App – DEV-SOL-5065 [Mobile] Parte 1 – Motivos de rechazo en ítems</div>
+          <div class="item-meta">
+            <span class="badge badge-task">TESTING</span>
+          </div>
+          <div class="item-snippet">Ticket de QA mobile: motivos de rechazo en ítems (Parte 1). También existe Parte 2 pendiente.</div>
+          <a class="item-link" href="https://www.notion.so/2d8bbd09805c8047b52cc26a113eb0ac" target="_blank">Abrir task →</a>
+        </div>
+      </div>
+
+      <div class="item">
+        <div class="dot green"></div>
+        <div class="item-body">
+          <div class="item-title">DEV-1920 – Validación Código Seguridad + Fase 2 Historial checkout</div>
+          <div class="item-meta">
+            <span class="badge badge-task">TESTING</span>
+          </div>
+          <div class="item-snippet">Tres subtareas: #431, Visitas agrupadas, y Fase 2 – Historial de checkout en plataforma.</div>
+          <a class="item-link" href="https://www.notion.so/30bbbd09805c806e8057f93dfd362268" target="_blank">Abrir task →</a>
+        </div>
+      </div>
+
+      <div class="item">
+        <div class="dot green"></div>
+        <div class="item-body">
+          <div class="item-title">DEV-2534 – Image preview en validation extrafield card</div>
+          <div class="item-meta">
+            <span class="badge badge-task">TESTING</span>
+          </div>
+          <div class="item-snippet">Uno de 12+ tickets Pruebas App pendientes (DEV-2106, 2220, 2324, 2366, 2368, 2470, 2559, 2628, 2629, 2630…).</div>
+          <a class="item-link" href="https://www.notion.so/333bbd09805c80a2811ee5b09acec9da" target="_blank">Abrir task →</a>
+        </div>
+      </div>
+
+      <div class="item">
+        <div class="dot green"></div>
+        <div class="item-body">
+          <div class="item-title">Ver todas las tareas en Notion</div>
+          <div class="item-meta">
+            <span class="badge badge-task">VIEW ALL</span>
+          </div>
+          <div class="item-snippet">Página "Tasks" con todos los tickets Pruebas App / DEV-XXXX abiertos.</div>
+          <a class="item-link" href="https://www.notion.so/1eebbd09805c809f96a1ef022ec2c18e" target="_blank">Abrir lista completa →</a>
+        </div>
+      </div>
+    </div>
+
   </div>
-</main>
 
-<footer>
-  <div>juan.vasconez@simplit-solutions.com · Simplit Solutions · Generated <span id="gen-ts">2026-04-21</span></div>
-</footer>
+  <footer>
+    <div>📧 juan.vasconez@simplit-solutions.com</div>
+    <div>Generado <span id="gen-ts"></span> · America/Guayaquil (UTC-5)</div>
+  </footer>
+</div>
 
 <script>
-  // Display today's date in the user's locale
-  const today = new Date();
-  const dateOpts = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
-  document.getElementById('today-date').textContent =
-    today.toLocaleDateString('en-US', dateOpts) + ' · America/Guayaquil';
+  (function() {
+    const dateEl = document.getElementById('today-date');
+    try {
+      const d = new Date();
+      const opts = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+      let s = d.toLocaleDateString('es-ES', opts);
+      s = s.charAt(0).toUpperCase() + s.slice(1);
+      dateEl.textContent = s;
+    } catch (e) { /* fallback in HTML */ }
+  })();
 
-  // Record generation time and show a live relative updater
-  const generatedAt = new Date();
-  const pad = (n) => String(n).padStart(2, '0');
-  document.getElementById('gen-ts').textContent =
-    generatedAt.getFullYear() + '-' + pad(generatedAt.getMonth() + 1) + '-' + pad(generatedAt.getDate()) +
-    ' ' + pad(generatedAt.getHours()) + ':' + pad(generatedAt.getMinutes());
+  const GEN_TS = new Date();
+  document.getElementById('gen-ts').textContent = GEN_TS.toLocaleString('es-ES', {
+    hour: '2-digit', minute: '2-digit', day: '2-digit', month: 'short'
+  });
 
-  function updateRelative() {
-    const diff = Math.floor((Date.now() - generatedAt.getTime()) / 1000);
-    let label;
-    if (diff < 10) label = 'just refreshed';
-    else if (diff < 60) label = 'updated ' + diff + 's ago';
-    else if (diff < 3600) label = 'updated ' + Math.floor(diff / 60) + ' min ago';
-    else label = 'updated ' + Math.floor(diff / 3600) + 'h ago';
-    document.getElementById('last-updated').textContent = label;
+  function updateAgo() {
+    const el = document.getElementById('updated-label');
+    const seconds = Math.floor((Date.now() - GEN_TS.getTime()) / 1000);
+    let txt;
+    if (seconds < 60) txt = 'actualizado hace unos segundos';
+    else if (seconds < 120) txt = 'actualizado hace 1 min';
+    else if (seconds < 3600) txt = `actualizado hace ${Math.floor(seconds/60)} min`;
+    else if (seconds < 7200) txt = 'actualizado hace 1 hora';
+    else txt = `actualizado hace ${Math.floor(seconds/3600)} horas`;
+    el.textContent = txt;
   }
-  updateRelative();
-  setInterval(updateRelative, 30000);
+  updateAgo();
+  setInterval(updateAgo, 30000);
 </script>
 </body>
 </html>
