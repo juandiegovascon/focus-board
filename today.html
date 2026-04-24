@@ -1,575 +1,428 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Juan's Focus Board · 2026-04-23</title>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Juan's Focus Board — 2026-04-24</title>
 <style>
   :root {
     --bg: #0f1117;
     --surface: #1a1d27;
-    --surface-alt: #222636;
+    --surface-2: #20242f;
     --border: #2e3348;
     --text: #e8eaf0;
-    --text-dim: #9aa0b4;
-    --text-faint: #6b7088;
+    --muted: #8b90a5;
     --blue: #4f8ef7;
     --purple: #a78bfa;
     --yellow: #f5c542;
     --green: #34c785;
     --red: #f06e6e;
-    --indigo: #818cf8;
-    --cyan: #38bdf8;
-    --amber: #fbbf24;
+    --indigo: #7c83f0;
+    --cyan: #4fd1e6;
+    --amber: #f5a742;
   }
+
   * { box-sizing: border-box; margin: 0; padding: 0; }
-  html, body {
-    background: var(--bg);
-    color: var(--text);
-    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
-    font-size: 14px;
-    line-height: 1.5;
-    min-height: 100vh;
-  }
-  a { color: inherit; text-decoration: none; }
-  .wrap {
-    max-width: 1280px;
-    margin: 0 auto;
-    padding: 0 24px 48px;
-  }
-  header.sticky {
-    position: sticky;
-    top: 0;
-    z-index: 20;
-    background: rgba(15, 17, 23, 0.92);
+  html, body { background: var(--bg); color: var(--text); font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; line-height: 1.5; min-height: 100vh; }
+  a { color: var(--blue); text-decoration: none; }
+  a:hover { text-decoration: underline; }
+
+  header {
+    position: sticky; top: 0; z-index: 10;
+    background: rgba(15, 17, 23, 0.95);
     backdrop-filter: blur(10px);
-    -webkit-backdrop-filter: blur(10px);
     border-bottom: 1px solid var(--border);
-    padding: 18px 24px;
+    padding: 18px 32px;
+    display: flex; align-items: center; justify-content: space-between;
+  }
+  header .title h1 { font-size: 20px; font-weight: 700; letter-spacing: -0.3px; }
+  header .title .date { color: var(--muted); font-size: 13px; margin-top: 2px; }
+  header .refresh {
+    background: var(--surface); color: var(--text);
+    border: 1px solid var(--border); border-radius: 8px;
+    padding: 8px 14px; font-size: 13px; cursor: pointer;
+    display: flex; align-items: center; gap: 6px;
+    transition: all 0.15s;
+  }
+  header .refresh:hover { background: var(--surface-2); border-color: var(--blue); }
+
+  main { padding: 24px 32px 48px; max-width: 1400px; margin: 0 auto; }
+
+  .stat-bar {
+    display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px;
     margin-bottom: 24px;
   }
-  .header-inner {
-    max-width: 1280px;
-    margin: 0 auto;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 16px;
-    flex-wrap: wrap;
-  }
-  .header-left h1 {
-    font-size: 22px;
-    font-weight: 700;
-    letter-spacing: -0.01em;
-  }
-  .header-left .date {
-    color: var(--text-dim);
-    font-size: 13px;
-    margin-top: 2px;
-  }
-  .refresh-btn {
-    background: var(--surface);
-    border: 1px solid var(--border);
-    color: var(--text);
-    padding: 8px 14px;
-    border-radius: 8px;
-    font-size: 13px;
-    font-weight: 500;
-    cursor: pointer;
-    display: inline-flex;
-    align-items: center;
-    gap: 6px;
-    transition: background 0.15s, border-color 0.15s;
-  }
-  .refresh-btn:hover { background: var(--surface-alt); border-color: var(--text-faint); }
-  .updated {
-    color: var(--text-faint);
-    font-size: 12px;
-    margin-right: 8px;
-  }
-  .stats {
-    display: grid;
-    grid-template-columns: repeat(4, 1fr);
-    gap: 12px;
-    margin-bottom: 20px;
-  }
   .stat {
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: 10px;
-    padding: 14px 16px;
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: 12px; padding: 16px 20px;
   }
-  .stat .label {
-    color: var(--text-dim);
-    font-size: 11px;
-    text-transform: uppercase;
-    letter-spacing: 0.08em;
-    font-weight: 600;
-  }
-  .stat .value {
-    font-size: 26px;
-    font-weight: 700;
-    margin-top: 4px;
-    letter-spacing: -0.02em;
-  }
+  .stat .label { font-size: 12px; color: var(--muted); text-transform: uppercase; letter-spacing: 0.5px; }
+  .stat .value { font-size: 28px; font-weight: 700; margin-top: 4px; }
+  .stat.meetings .value { color: var(--blue); }
+  .stat.slack .value { color: var(--purple); }
+  .stat.email .value { color: var(--yellow); }
+  .stat.tasks .value { color: var(--green); }
+
   .mustdo {
-    background: linear-gradient(180deg, rgba(240, 110, 110, 0.08), rgba(240, 110, 110, 0.02));
-    border: 1px solid rgba(240, 110, 110, 0.4);
-    border-radius: 12px;
-    padding: 18px 20px;
-    margin-bottom: 20px;
+    background: var(--surface);
+    border: 1px solid var(--red);
+    border-left: 5px solid var(--red);
+    border-radius: 12px; padding: 20px 24px;
+    margin-bottom: 24px;
   }
-  .mustdo h2 {
-    color: var(--red);
-    font-size: 15px;
-    font-weight: 700;
-    margin-bottom: 12px;
-    display: flex;
-    align-items: center;
-    gap: 8px;
-  }
-  .cards {
+  .mustdo h2 { font-size: 15px; color: var(--red); margin-bottom: 14px; letter-spacing: 0.3px; }
+
+  .grid {
     display: grid;
     grid-template-columns: repeat(2, 1fr);
-    gap: 16px;
+    gap: 20px;
   }
-  @media (max-width: 900px) {
-    .cards { grid-template-columns: 1fr; }
-    .stats { grid-template-columns: repeat(2, 1fr); }
-  }
+  @media (max-width: 960px) { .grid { grid-template-columns: 1fr; } .stat-bar { grid-template-columns: repeat(2, 1fr); } }
+
   .card {
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: 12px;
-    padding: 16px 18px;
-    border-top: 3px solid var(--border);
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: 12px; padding: 20px 24px;
   }
-  .card.calendar { border-top-color: var(--blue); }
-  .card.slack { border-top-color: var(--purple); }
-  .card.email { border-top-color: var(--yellow); }
-  .card.notion { border-top-color: var(--green); }
-  .card h3 {
-    font-size: 13px;
-    font-weight: 700;
-    text-transform: uppercase;
-    letter-spacing: 0.06em;
-    margin-bottom: 12px;
-    display: flex;
-    align-items: center;
-    gap: 8px;
+  .card h2 {
+    font-size: 14px; font-weight: 600; margin-bottom: 14px;
+    text-transform: uppercase; letter-spacing: 0.6px;
+    display: flex; align-items: center; gap: 8px;
   }
-  .card.calendar h3 { color: var(--blue); }
-  .card.slack h3 { color: var(--purple); }
-  .card.email h3 { color: var(--yellow); }
-  .card.notion h3 { color: var(--green); }
-  .card-count {
-    background: var(--surface-alt);
-    color: var(--text-dim);
-    padding: 2px 8px;
-    border-radius: 10px;
-    font-size: 11px;
-    font-weight: 600;
-    letter-spacing: 0;
-  }
+  .card.calendar h2 { color: var(--blue); }
+  .card.slack h2 { color: var(--purple); }
+  .card.email h2 { color: var(--yellow); }
+  .card.notion h2 { color: var(--green); }
+  .card .count { color: var(--muted); font-size: 12px; font-weight: 400; margin-left: auto; }
+
   .item {
-    display: flex;
-    gap: 10px;
-    padding: 10px 0;
-    border-bottom: 1px solid var(--border);
-  }
-  .item:last-child { border-bottom: none; }
-  .item:hover .item-title { color: var(--text); }
-  .dot {
-    flex-shrink: 0;
-    width: 8px;
-    height: 8px;
-    border-radius: 50%;
-    margin-top: 7px;
-  }
-  .dot.blue { background: var(--blue); }
-  .dot.purple { background: var(--purple); }
-  .dot.yellow { background: var(--yellow); }
-  .dot.green { background: var(--green); }
-  .dot.red { background: var(--red); }
-  .item-body { flex: 1; min-width: 0; }
-  .item-title {
-    font-weight: 600;
-    font-size: 13.5px;
-    color: var(--text);
-    line-height: 1.4;
-    margin-bottom: 3px;
-  }
-  .item-meta {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 6px;
-    margin-bottom: 4px;
-    align-items: center;
-  }
-  .item-snippet {
-    color: var(--text-dim);
-    font-size: 12.5px;
-    line-height: 1.45;
-    display: -webkit-box;
-    -webkit-line-clamp: 2;
-    -webkit-box-orient: vertical;
-    overflow: hidden;
-  }
-  .item-link {
-    display: inline-block;
-    margin-top: 4px;
-    color: var(--text-faint);
-    font-size: 11px;
-    font-weight: 500;
-  }
-  .item-link:hover { color: var(--blue); }
-  .badge {
-    display: inline-block;
-    padding: 2px 8px;
-    border-radius: 10px;
-    font-size: 10.5px;
-    font-weight: 600;
-    text-transform: uppercase;
-    letter-spacing: 0.04em;
-    white-space: nowrap;
-  }
-  .badge-action { background: rgba(52, 199, 133, 0.15); color: var(--green); }
-  .badge-dm { background: rgba(129, 140, 248, 0.15); color: var(--indigo); }
-  .badge-group { background: rgba(56, 189, 248, 0.15); color: var(--cyan); }
-  .badge-task { background: rgba(167, 139, 250, 0.15); color: var(--purple); }
-  .badge-now { background: rgba(240, 110, 110, 0.18); color: var(--red); }
-  .badge-soon { background: rgba(251, 191, 36, 0.15); color: var(--amber); }
-  .badge-time { background: var(--surface-alt); color: var(--text-dim); }
-  .empty {
-    color: var(--text-faint);
-    font-style: italic;
-    font-size: 13px;
-    padding: 10px 0;
-  }
-  footer {
-    margin-top: 32px;
-    padding-top: 16px;
+    padding: 12px 0;
     border-top: 1px solid var(--border);
-    color: var(--text-faint);
-    font-size: 11.5px;
-    display: flex;
-    justify-content: space-between;
-    flex-wrap: wrap;
-    gap: 8px;
+    display: flex; gap: 12px; align-items: flex-start;
+  }
+  .item:first-of-type { border-top: none; padding-top: 4px; }
+  .item .dot {
+    width: 8px; height: 8px; border-radius: 50%;
+    margin-top: 8px; flex-shrink: 0;
+  }
+  .item .dot.blue { background: var(--blue); }
+  .item .dot.purple { background: var(--purple); }
+  .item .dot.yellow { background: var(--yellow); }
+  .item .dot.green { background: var(--green); }
+  .item .dot.red { background: var(--red); }
+
+  .item .body { flex: 1; min-width: 0; }
+  .item .body .title {
+    font-size: 14px; font-weight: 600; color: var(--text);
+    margin-bottom: 4px;
+  }
+  .item .body .meta {
+    display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 6px;
+  }
+  .item .body .snippet {
+    font-size: 13px; color: var(--muted);
+    display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical;
+    overflow: hidden; line-clamp: 2;
+  }
+  .item .body a.link {
+    font-size: 12px; color: var(--blue); margin-top: 6px; display: inline-block;
+  }
+
+  .badge {
+    display: inline-block; font-size: 11px; font-weight: 600;
+    padding: 2px 8px; border-radius: 10px;
+    border: 1px solid transparent;
+  }
+  .badge-action { background: rgba(52, 199, 133, 0.15); color: var(--green); border-color: rgba(52, 199, 133, 0.4); }
+  .badge-dm { background: rgba(124, 131, 240, 0.15); color: var(--indigo); border-color: rgba(124, 131, 240, 0.4); }
+  .badge-group { background: rgba(79, 209, 230, 0.15); color: var(--cyan); border-color: rgba(79, 209, 230, 0.4); }
+  .badge-task { background: rgba(167, 139, 250, 0.15); color: var(--purple); border-color: rgba(167, 139, 250, 0.4); }
+  .badge-now { background: rgba(240, 110, 110, 0.2); color: var(--red); border-color: rgba(240, 110, 110, 0.5); }
+  .badge-soon { background: rgba(245, 167, 66, 0.15); color: var(--amber); border-color: rgba(245, 167, 66, 0.4); }
+  .badge-time { background: rgba(79, 142, 247, 0.15); color: var(--blue); border-color: rgba(79, 142, 247, 0.4); }
+
+  .empty {
+    color: var(--muted); font-size: 13px; padding: 20px 0;
+    text-align: center; font-style: italic;
+  }
+
+  footer {
+    margin-top: 32px; padding: 20px 32px;
+    border-top: 1px solid var(--border);
+    font-size: 12px; color: var(--muted);
+    display: flex; justify-content: space-between; flex-wrap: wrap; gap: 8px;
   }
 </style>
 </head>
 <body>
-<header class="sticky">
-  <div class="header-inner">
-    <div class="header-left">
+  <header>
+    <div class="title">
       <h1>⚡ Juan's Focus Board</h1>
-      <div class="date" id="today-date">Jueves, 23 de abril de 2026</div>
+      <div class="date" id="date-display">Viernes, 24 de abril de 2026</div>
     </div>
-    <div style="display:flex; align-items:center;">
-      <span class="updated" id="updated-label">actualizado hace unos segundos</span>
-      <button class="refresh-btn" onclick="window.location.reload()">↻ Refresh</button>
-    </div>
-  </div>
-</header>
+    <button class="refresh" onclick="window.location.reload()">↻ Refresh</button>
+  </header>
 
-<div class="wrap">
-
-  <div class="stats">
-    <div class="stat">
-      <div class="label">Reuniones</div>
-      <div class="value">0</div>
-    </div>
-    <div class="stat">
-      <div class="label">Slack threads</div>
-      <div class="value">2</div>
-    </div>
-    <div class="stat">
-      <div class="label">Action emails</div>
-      <div class="value">2</div>
-    </div>
-    <div class="stat">
-      <div class="label">Open tasks</div>
-      <div class="value">16</div>
-    </div>
-  </div>
-
-  <div class="mustdo">
-    <h2>⚡ Must-do today</h2>
-
-    <div class="item">
-      <div class="dot red"></div>
-      <div class="item-body">
-        <div class="item-title">Procesar data cruda para prueba (Salvador / David Anaya)</div>
-        <div class="item-meta">
-          <span class="badge badge-now">NOW</span>
-          <span class="badge badge-group">GROUP DM</span>
-          <span class="badge badge-action">ACCIÓN</span>
-        </div>
-        <div class="item-snippet">David: "Deja todo como está en data cruda. Procésalo y de ahí vemos si tenemos que agregar o quitar algo. Pero la prueba en una primera instancia debe salir sin que le metamos mano a la data."</div>
-        <a class="item-link" href="https://simplit-solutions.slack.com/archives/C0AAA2DDQMT/p1776971904017039" target="_blank">Abrir en Slack →</a>
+  <main>
+    <!-- STAT BAR -->
+    <div class="stat-bar">
+      <div class="stat meetings">
+        <div class="label">Meetings</div>
+        <div class="value">3</div>
+      </div>
+      <div class="stat slack">
+        <div class="label">Slack threads</div>
+        <div class="value">0</div>
+      </div>
+      <div class="stat email">
+        <div class="label">Action emails</div>
+        <div class="value">1</div>
+      </div>
+      <div class="stat tasks">
+        <div class="label">Open tasks</div>
+        <div class="value">17</div>
       </div>
     </div>
 
-    <div class="item">
-      <div class="dot red"></div>
-      <div class="item-body">
-        <div class="item-title">Responder a Pablo Galaz – pide ayuda con avance de cliente</div>
-        <div class="item-meta">
-          <span class="badge badge-now">NOW</span>
-          <span class="badge badge-dm">DM</span>
-          <span class="badge badge-action">RESPONDER</span>
-        </div>
-        <div class="item-snippet">Pablo: "JD que tal… en un ratito más tengo sesión con Rica para ponerme al tanto del estatus del cliente… reforzaré lo que me comentas, y sí, necesitaré de tu ayuda al menos para buscar avanzar esto."</div>
-        <a class="item-link" href="https://simplit-solutions.slack.com/archives/D09QBECE1U3/p1776971729203919" target="_blank">Abrir DM →</a>
-      </div>
-    </div>
-
-    <div class="item">
-      <div class="dot red"></div>
-      <div class="item-body">
-        <div class="item-title">Coordinar sesión técnica con Arturo Contreras (Tdr)</div>
-        <div class="item-meta">
-          <span class="badge badge-soon">HOY</span>
-          <span class="badge badge-action">COMPROMISO</span>
-        </div>
-        <div class="item-snippet">Compromiso diio vence hoy: coordinar una sesión técnica con Arturo Contreras (Tdr). Fuente: correo "[diio] Tus Compromisos de hoy".</div>
-        <a class="item-link" href="https://mail.google.com/mail/u/0/#inbox/19db512249335de5" target="_blank">Ver correo diio →</a>
-      </div>
-    </div>
-
-    <div class="item">
-      <div class="dot red"></div>
-      <div class="item-body">
-        <div class="item-title">Revisar caso 00005701 – nuevo comentario de optimización</div>
-        <div class="item-meta">
-          <span class="badge badge-soon">SOON</span>
-          <span class="badge badge-action">REVISAR</span>
-        </div>
-        <div class="item-snippet">Caso 00005701: "Volví a correr el escenario con las mismas variables y no se volvió a presentar el caso" – resultado de optimización excede capacidad. Validar y responder.</div>
-        <a class="item-link" href="https://mail.google.com/mail/u/0/#inbox/19dbadc5b98a5973" target="_blank">Abrir correo →</a>
-      </div>
-    </div>
-  </div>
-
-  <div class="cards">
-
-    <div class="card calendar">
-      <h3>📅 Calendario <span class="card-count">0 reuniones</span></h3>
-      <div class="empty">Sin reuniones reales hoy. Solo bloqueos OOO y almuerzo (13:00–14:00).</div>
-      <div class="item">
-        <div class="dot blue"></div>
-        <div class="item-body">
-          <div class="item-title">Almuerzo</div>
-          <div class="item-meta">
-            <span class="badge badge-time">13:00 – 14:00</span>
-          </div>
-          <div class="item-snippet">Bloque personal – no cuenta como reunión.</div>
-        </div>
-      </div>
-      <div class="item">
-        <div class="dot blue"></div>
-        <div class="item-body">
-          <div class="item-title">Out of office</div>
-          <div class="item-meta">
-            <span class="badge badge-time">18:00 → 09:00 (día sgte.)</span>
-          </div>
-          <div class="item-snippet">Bloque recurrente fuera de oficina.</div>
-        </div>
-      </div>
-    </div>
-
-    <div class="card slack">
-      <h3>💬 Slack <span class="card-count">2 hilos con pendiente</span></h3>
+    <!-- MUST-DO -->
+    <div class="mustdo">
+      <h2>⚡ Must-do today</h2>
 
       <div class="item">
-        <div class="dot purple"></div>
-        <div class="item-body">
-          <div class="item-title">Pablo Galaz – DM directo</div>
-          <div class="item-meta">
-            <span class="badge badge-dm">DM</span>
-            <span class="badge badge-action">RESPONDER</span>
-            <span class="badge badge-time">14:15</span>
+        <div class="dot red"></div>
+        <div class="body">
+          <div class="title">Velocidad a hta ForceField — Magnum / Unilever</div>
+          <div class="meta">
+            <span class="badge badge-now">13:00 GYE</span>
+            <span class="badge badge-time">Teams</span>
+            <span class="badge badge-action">Llevar requerimientos urgentes</span>
           </div>
-          <div class="item-snippet">"…necesitaré de tu ayuda al menos para buscar avanzar esto". Tiene sesión con Rica sobre estatus del cliente.</div>
-          <a class="item-link" href="https://simplit-solutions.slack.com/archives/D09QBECE1U3/p1776971729203919" target="_blank">Abrir DM →</a>
+          <div class="snippet">Continuación de la reunión de ayer en Tulti. Enlistar requerimientos urgentes para que la herramienta pueda avanzar (con Andres Gamboa, Claudio Rodriguez, Julio Castanon, Marina Leon).</div>
+          <a class="link" target="_blank" href="https://teams.microsoft.com/meet/385966562221365?p=rzpFYqECJPazcGKOH6">Abrir Teams →</a>
         </div>
       </div>
 
       <div class="item">
-        <div class="dot purple"></div>
-        <div class="item-body">
-          <div class="item-title">David Anaya + Salvador Minutti – Group DM</div>
-          <div class="item-meta">
-            <span class="badge badge-group">GROUP DM</span>
-            <span class="badge badge-action">ACCIÓN</span>
-            <span class="badge badge-time">13:45 – 14:18</span>
+        <div class="dot red"></div>
+        <div class="body">
+          <div class="title">Simulación SimpliRoute — Estafeta (MXE / CUN)</div>
+          <div class="meta">
+            <span class="badge badge-now">17:00 GYE</span>
+            <span class="badge badge-time">Teams</span>
+            <span class="badge badge-action">Presentar resultados preliminares</span>
           </div>
-          <div class="item-snippet">Dirección Av. José López Portillo MZ 8, Supermanzana 62, Benito Juárez – pendiente: procesar data cruda tal cual para la prueba inicial.</div>
-          <a class="item-link" href="https://simplit-solutions.slack.com/archives/C0AAA2DDQMT/p1776971904017039" target="_blank">Abrir hilo →</a>
+          <div class="snippet">Sesión con Juan José Tapia, Víctor Alfonso Martínez y Jorge Rovira (Estafeta). Revisar resultados del ejercicio compartido (NDA firmado). Pendiente: confirmar capacidad en kg de unidades.</div>
+          <a class="link" target="_blank" href="https://teams.microsoft.com/meet/267518972099163?p=OUfhZG2WkYCAiIxhzV">Abrir Teams →</a>
         </div>
       </div>
 
       <div class="item">
-        <div class="dot purple"></div>
-        <div class="item-body">
-          <div class="item-title">Tomas Martinez – Group DM (LF Bermúdez, G. Farías)</div>
-          <div class="item-meta">
-            <span class="badge badge-group">GROUP DM</span>
-            <span class="badge badge-time">14:16 – 14:19</span>
+        <div class="dot red"></div>
+        <div class="body">
+          <div class="title">Revisar compromisos del día (diio)</div>
+          <div class="meta">
+            <span class="badge badge-soon">Hoy</span>
+            <span class="badge badge-action">Seguimiento</span>
           </div>
-          <div class="item-snippet">"no, ninguna diferencia… lo de los 15 min, sí ajjaja" – hilo informal, sin acción requerida inmediata.</div>
-          <a class="item-link" href="https://simplit-solutions.slack.com/archives/C0AUS4NJS21/p1776971951804879" target="_blank">Abrir hilo →</a>
+          <div class="snippet">Diio envió el listado de compromisos pactados para cumplir hoy. Incluye acción con David Anaya (proceso). Revisar antes de la reunión con David a las 16:00.</div>
+          <a class="link" target="_blank" href="https://mail.google.com/mail/u/0/#inbox/19dbf5ef257638c5">Abrir email →</a>
+        </div>
+      </div>
+
+      <div class="item">
+        <div class="dot red"></div>
+        <div class="body">
+          <div class="title">1:1 Juan Diego / David Anaya</div>
+          <div class="meta">
+            <span class="badge badge-soon">16:00 GYE</span>
+            <span class="badge badge-time">Google Meet</span>
+          </div>
+          <div class="snippet">Sesión recurrente con David. Llevar status de Estafeta, ForceField/Magnum y pruebas app pendientes.</div>
+          <a class="link" target="_blank" href="https://meet.google.com/vtt-zaeb-gyy">Abrir Meet →</a>
         </div>
       </div>
     </div>
 
-    <div class="card email">
-      <h3>📧 Email <span class="card-count">2 con acción</span></h3>
+    <!-- GRID -->
+    <div class="grid">
 
-      <div class="item">
-        <div class="dot yellow"></div>
-        <div class="item-body">
-          <div class="item-title">[diio] Tus Compromisos de hoy</div>
-          <div class="item-meta">
-            <span class="badge badge-action">COMPROMISOS</span>
-            <span class="badge badge-time">Mié 22 abr</span>
+      <!-- CALENDAR -->
+      <div class="card calendar">
+        <h2>📅 Calendar <span class="count">3 meetings</span></h2>
+
+        <div class="item">
+          <div class="dot blue"></div>
+          <div class="body">
+            <div class="title">Velocidad a hta ForceField</div>
+            <div class="meta">
+              <span class="badge badge-time">13:00 – 14:00</span>
+              <span class="badge badge-group">Magnum / Unilever</span>
+            </div>
+            <div class="snippet">Continuar con requerimientos urgentes para la herramienta ForceField. Andres Gamboa (org) + equipo Tulti.</div>
+            <a class="link" target="_blank" href="https://teams.microsoft.com/meet/385966562221365?p=rzpFYqECJPazcGKOH6">Unirse a Teams →</a>
           </div>
-          <div class="item-snippet">"…puedes revisar este listado de los Compromisos que se acordaron para cumplir a más tardar hoy: 1. Arturo Contreras (Tdr) Coordinar una sesión técnica…"</div>
-          <a class="item-link" href="https://mail.google.com/mail/u/0/#inbox/19db512249335de5" target="_blank">Abrir correo →</a>
+        </div>
+
+        <div class="item">
+          <div class="dot blue"></div>
+          <div class="body">
+            <div class="title">Juan Diego / David (1:1)</div>
+            <div class="meta">
+              <span class="badge badge-time">16:00 – 16:30</span>
+              <span class="badge badge-dm">Interno</span>
+            </div>
+            <div class="snippet">Sesión recurrente con David Anaya (simplit-solutions). Google Meet.</div>
+            <a class="link" target="_blank" href="https://meet.google.com/vtt-zaeb-gyy">Unirse a Meet →</a>
+          </div>
+        </div>
+
+        <div class="item">
+          <div class="dot blue"></div>
+          <div class="body">
+            <div class="title">Simulación SimpliRoute — Estafeta</div>
+            <div class="meta">
+              <span class="badge badge-time">17:00 – 18:00</span>
+              <span class="badge badge-group">Estafeta</span>
+              <span class="badge badge-action">Presentar</span>
+            </div>
+            <div class="snippet">Resultados preliminares del ejercicio de Ecatepec y Cancún. NDA firmado. Bloque tentativo y bloque organizado por Estafeta coinciden.</div>
+            <a class="link" target="_blank" href="https://teams.microsoft.com/meet/267518972099163?p=OUfhZG2WkYCAiIxhzV">Unirse a Teams →</a>
+          </div>
         </div>
       </div>
 
-      <div class="item">
-        <div class="dot yellow"></div>
-        <div class="item-body">
-          <div class="item-title">Nuevo comentario en caso 00005701</div>
-          <div class="item-meta">
-            <span class="badge badge-action">REVISAR</span>
-            <span class="badge badge-time">Hoy 10:01</span>
+      <!-- SLACK -->
+      <div class="card slack">
+        <h2>💬 Slack <span class="count">0 threads needing reply</span></h2>
+        <div class="empty">No hay DMs ni menciones directas pendientes de respuesta.<br/>Solo se encontraron notificaciones de Google Calendar (bot).</div>
+      </div>
+
+      <!-- EMAIL -->
+      <div class="card email">
+        <h2>📧 Email <span class="count">1 acción · 5 ignorables</span></h2>
+
+        <div class="item">
+          <div class="dot yellow"></div>
+          <div class="body">
+            <div class="title">[diio] Tus Compromisos de hoy</div>
+            <div class="meta">
+              <span class="badge badge-action">Acción</span>
+              <span class="badge badge-time">Hoy 07:02</span>
+            </div>
+            <div class="snippet">"Mientras disfrutas de tu café matutino, puedes revisar este listado de los Compromisos que se acordaron para cumplir a más tardar hoy: 1. david anaya Realizar el proceso de..."</div>
+            <a class="link" target="_blank" href="https://mail.google.com/mail/u/0/#inbox/19dbf5ef257638c5">Abrir email →</a>
           </div>
-          <div class="item-snippet">"Resultado de Optimización excede capacidad – Volví a correr el escenario con las mismas variables y no se volvió a presentar el caso." Validar y responder al case.</div>
-          <a class="item-link" href="https://mail.google.com/mail/u/0/#inbox/19dbadc5b98a5973" target="_blank">Abrir correo →</a>
+        </div>
+
+        <div class="item">
+          <div class="dot yellow"></div>
+          <div class="body">
+            <div class="title">Ignorados (automatizados)</div>
+            <div class="meta">
+              <span class="badge badge-soon">Info</span>
+            </div>
+            <div class="snippet">5 correos automatizados: creación de rutas SimpliRoute (×5), confirmaciones de Prototipo Arca Continental MX (×2), análisis de reunión diio (×2).</div>
+            <a class="link" target="_blank" href="https://mail.google.com/mail/u/0/#inbox">Abrir bandeja →</a>
+          </div>
         </div>
       </div>
 
-      <div class="item">
-        <div class="dot yellow"></div>
-        <div class="item-body">
-          <div class="item-title">[diio] Reuniones analizadas (Overhaul y Sigma Alimentos)</div>
-          <div class="item-meta">
-            <span class="badge badge-soon">REVISAR</span>
-            <span class="badge badge-time">Mar 21 abr</span>
+      <!-- NOTION -->
+      <div class="card notion">
+        <h2>📝 Notion · Pruebas App <span class="count">17 abiertas</span></h2>
+
+        <div class="item">
+          <div class="dot green"></div>
+          <div class="body">
+            <div class="title">DEV-SOL-5065 [Mobile] Parte 1 — Motivos de rechazo en items</div>
+            <div class="meta"><span class="badge badge-task">Pruebas App</span></div>
+            <div class="snippet">Primera parte de pruebas de motivos de rechazo en items.</div>
+            <a class="link" target="_blank" href="https://www.notion.so/2d8bbd09805c8047b52cc26a113eb0ac">Abrir tarea →</a>
           </div>
-          <div class="item-snippet">Dos análisis de reuniones listos para revisar: SimpliRoute + Sigma Alimentos (muy alto) e IA Meeting con Overhaul (alto).</div>
-          <a class="item-link" href="https://mail.google.com/mail/u/0/#inbox/19db0cb6d8830777" target="_blank">Abrir correo →</a>
+        </div>
+
+        <div class="item">
+          <div class="dot green"></div>
+          <div class="body">
+            <div class="title">DEV-SOL-5065 [Mobile] Parte 2 — Motivos de rechazo en items</div>
+            <div class="meta"><span class="badge badge-task">Pruebas App</span></div>
+            <div class="snippet">Segunda parte del flujo de pruebas.</div>
+            <a class="link" target="_blank" href="https://www.notion.so/2f4bbd09805c800a8145c1346e9a5091">Abrir tarea →</a>
+          </div>
+        </div>
+
+        <div class="item">
+          <div class="dot green"></div>
+          <div class="body">
+            <div class="title">DEV-1920 Validación con Código de Seguridad (Pedidos Alto Valor) #431</div>
+            <div class="meta"><span class="badge badge-task">Pruebas App</span></div>
+            <div class="snippet">Validación de pedidos de alto valor con código de seguridad.</div>
+            <a class="link" target="_blank" href="https://www.notion.so/30bbbd09805c806e8057f93dfd362268">Abrir tarea →</a>
+          </div>
+        </div>
+
+        <div class="item">
+          <div class="dot green"></div>
+          <div class="body">
+            <div class="title">DEV-2470 SOL-5119 Diferenciación visual de checkouts en APP</div>
+            <div class="meta"><span class="badge badge-task">Pruebas App</span></div>
+            <div class="snippet">Mejora de UI para diferenciar checkouts.</div>
+            <a class="link" target="_blank" href="https://www.notion.so/32dbbd09805c81c49db4efb0cdda6658">Abrir tarea →</a>
+          </div>
+        </div>
+
+        <div class="item">
+          <div class="dot green"></div>
+          <div class="body">
+            <div class="title">+ 13 tareas más de Pruebas App</div>
+            <div class="meta"><span class="badge badge-task">Pendientes</span></div>
+            <div class="snippet">DEV-2106, DEV-2220, DEV-2324, DEV-2366, DEV-2368, DEV-2534, DEV-2559, DEV-2628, DEV-2629, DEV-2630 y más.</div>
+            <a class="link" target="_blank" href="https://www.notion.so/1eebbd09805c809f96a1ef022ec2c18e">Ver todas →</a>
+          </div>
         </div>
       </div>
+
     </div>
-
-    <div class="card notion">
-      <h3>📝 Notion · Tasks <span class="card-count">16 abiertas</span></h3>
-
-      <div class="item">
-        <div class="dot green"></div>
-        <div class="item-body">
-          <div class="item-title">Dashboard Reporte Operativo General — Mejoras V2</div>
-          <div class="item-meta">
-            <span class="badge badge-task">PAGE</span>
-            <span class="badge badge-soon">ACTUALIZADO HOY</span>
-          </div>
-          <div class="item-snippet">Métricas y gobernanza – documento actualizado esta mañana. Revisar cambios y próximos pasos.</div>
-          <a class="item-link" href="https://www.notion.so/34bbbd09805c81e8a501e9b50c145392" target="_blank">Abrir página →</a>
-        </div>
-      </div>
-
-      <div class="item">
-        <div class="dot green"></div>
-        <div class="item-body">
-          <div class="item-title">Pruebas App – DEV-SOL-5065 [Mobile] Parte 1 – Motivos de rechazo en ítems</div>
-          <div class="item-meta">
-            <span class="badge badge-task">TESTING</span>
-          </div>
-          <div class="item-snippet">Ticket de QA mobile: motivos de rechazo en ítems (Parte 1). También existe Parte 2 pendiente.</div>
-          <a class="item-link" href="https://www.notion.so/2d8bbd09805c8047b52cc26a113eb0ac" target="_blank">Abrir task →</a>
-        </div>
-      </div>
-
-      <div class="item">
-        <div class="dot green"></div>
-        <div class="item-body">
-          <div class="item-title">DEV-1920 – Validación Código Seguridad + Fase 2 Historial checkout</div>
-          <div class="item-meta">
-            <span class="badge badge-task">TESTING</span>
-          </div>
-          <div class="item-snippet">Tres subtareas: #431, Visitas agrupadas, y Fase 2 – Historial de checkout en plataforma.</div>
-          <a class="item-link" href="https://www.notion.so/30bbbd09805c806e8057f93dfd362268" target="_blank">Abrir task →</a>
-        </div>
-      </div>
-
-      <div class="item">
-        <div class="dot green"></div>
-        <div class="item-body">
-          <div class="item-title">DEV-2534 – Image preview en validation extrafield card</div>
-          <div class="item-meta">
-            <span class="badge badge-task">TESTING</span>
-          </div>
-          <div class="item-snippet">Uno de 12+ tickets Pruebas App pendientes (DEV-2106, 2220, 2324, 2366, 2368, 2470, 2559, 2628, 2629, 2630…).</div>
-          <a class="item-link" href="https://www.notion.so/333bbd09805c80a2811ee5b09acec9da" target="_blank">Abrir task →</a>
-        </div>
-      </div>
-
-      <div class="item">
-        <div class="dot green"></div>
-        <div class="item-body">
-          <div class="item-title">Ver todas las tareas en Notion</div>
-          <div class="item-meta">
-            <span class="badge badge-task">VIEW ALL</span>
-          </div>
-          <div class="item-snippet">Página "Tasks" con todos los tickets Pruebas App / DEV-XXXX abiertos.</div>
-          <a class="item-link" href="https://www.notion.so/1eebbd09805c809f96a1ef022ec2c18e" target="_blank">Abrir lista completa →</a>
-        </div>
-      </div>
-    </div>
-
-  </div>
+  </main>
 
   <footer>
-    <div>📧 juan.vasconez@simplit-solutions.com</div>
-    <div>Generado <span id="gen-ts"></span> · America/Guayaquil (UTC-5)</div>
+    <div>juan.vasconez@simplit-solutions.com</div>
+    <div>Generated: <span id="generated-ts"></span> · <span id="last-updated">updated just now</span></div>
   </footer>
-</div>
 
 <script>
-  (function() {
-    const dateEl = document.getElementById('today-date');
-    try {
-      const d = new Date();
-      const opts = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
-      let s = d.toLocaleDateString('es-ES', opts);
-      s = s.charAt(0).toUpperCase() + s.slice(1);
-      dateEl.textContent = s;
-    } catch (e) { /* fallback in HTML */ }
-  })();
+  // Record load time
+  const loadedAt = new Date();
 
-  const GEN_TS = new Date();
-  document.getElementById('gen-ts').textContent = GEN_TS.toLocaleString('es-ES', {
-    hour: '2-digit', minute: '2-digit', day: '2-digit', month: 'short'
-  });
+  // Format & show generated timestamp
+  function pad(n) { return n.toString().padStart(2, '0'); }
+  const genStr = loadedAt.getFullYear() + '-' + pad(loadedAt.getMonth()+1) + '-' + pad(loadedAt.getDate()) +
+                 ' ' + pad(loadedAt.getHours()) + ':' + pad(loadedAt.getMinutes());
+  document.getElementById('generated-ts').textContent = genStr;
 
-  function updateAgo() {
-    const el = document.getElementById('updated-label');
-    const seconds = Math.floor((Date.now() - GEN_TS.getTime()) / 1000);
-    let txt;
-    if (seconds < 60) txt = 'actualizado hace unos segundos';
-    else if (seconds < 120) txt = 'actualizado hace 1 min';
-    else if (seconds < 3600) txt = `actualizado hace ${Math.floor(seconds/60)} min`;
-    else if (seconds < 7200) txt = 'actualizado hace 1 hora';
-    else txt = `actualizado hace ${Math.floor(seconds/3600)} horas`;
-    el.textContent = txt;
+  // Dynamic "last updated X min ago"
+  function updateCounter() {
+    const now = new Date();
+    const diffMs = now - loadedAt;
+    const diffMin = Math.floor(diffMs / 60000);
+    const el = document.getElementById('last-updated');
+    if (diffMin < 1) el.textContent = 'updated just now';
+    else if (diffMin === 1) el.textContent = 'updated 1 min ago';
+    else if (diffMin < 60) el.textContent = 'updated ' + diffMin + ' min ago';
+    else {
+      const h = Math.floor(diffMin / 60);
+      el.textContent = 'updated ' + h + 'h ' + (diffMin % 60) + 'm ago';
+    }
   }
-  updateAgo();
-  setInterval(updateAgo, 30000);
+  updateCounter();
+  setInterval(updateCounter, 30000);
+
+  // Today's date display (ES)
+  const days = ['Domingo','Lunes','Martes','Miércoles','Jueves','Viernes','Sábado'];
+  const months = ['enero','febrero','marzo','abril','mayo','junio','julio','agosto','septiembre','octubre','noviembre','diciembre'];
+  const d = loadedAt;
+  const dateStr = days[d.getDay()] + ', ' + d.getDate() + ' de ' + months[d.getMonth()] + ' de ' + d.getFullYear();
+  document.getElementById('date-display').textContent = dateStr;
 </script>
 </body>
 </html>
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        
