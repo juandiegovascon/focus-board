@@ -2,540 +2,443 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
+<title>Juan's Focus Board — April 28, 2026</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Juan's Focus Board · Apr 27, 2026</title>
 <style>
-  :root {
-    --bg: #0f1117;
-    --surface: #1a1d27;
-    --surface-2: #232735;
-    --border: #2e3348;
-    --text: #e8eaf0;
-    --text-dim: #9aa0b4;
-    --text-faint: #6b7088;
-    --calendar: #4f8ef7;
-    --slack: #a78bfa;
-    --email: #f5c542;
-    --notion: #34c785;
-    --urgent: #f06e6e;
-    --action: #34c785;
-    --dm: #6366f1;
-    --group: #06b6d4;
-    --task: #a78bfa;
-    --now: #f06e6e;
-    --soon: #f5b342;
-  }
-  * { box-sizing: border-box; margin: 0; padding: 0; }
-  html, body {
-    background: var(--bg);
-    color: var(--text);
-    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Inter", system-ui, sans-serif;
-    font-size: 14px;
-    line-height: 1.5;
-    -webkit-font-smoothing: antialiased;
-  }
-  a { color: inherit; text-decoration: none; }
-  a:hover { opacity: 0.85; }
-
-  header.sticky {
-    position: sticky;
-    top: 0;
-    z-index: 50;
-    background: rgba(15, 17, 23, 0.92);
-    backdrop-filter: blur(12px);
-    -webkit-backdrop-filter: blur(12px);
-    border-bottom: 1px solid var(--border);
-    padding: 18px 28px;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 16px;
-    flex-wrap: wrap;
-  }
-  .title-block h1 {
-    font-size: 20px;
-    font-weight: 700;
-    letter-spacing: -0.01em;
-  }
-  .title-block .sub {
-    font-size: 12px;
-    color: var(--text-dim);
-    margin-top: 2px;
-  }
-  .updated {
-    font-size: 12px;
-    color: var(--text-faint);
-    margin-right: 12px;
-  }
-  button.refresh {
-    background: var(--surface);
-    color: var(--text);
-    border: 1px solid var(--border);
-    padding: 8px 14px;
-    border-radius: 8px;
-    font-size: 13px;
-    cursor: pointer;
-    transition: all 0.15s ease;
-    display: inline-flex;
-    align-items: center;
-    gap: 6px;
-  }
-  button.refresh:hover {
-    background: var(--surface-2);
-    border-color: #3a4060;
-  }
-
-  main { padding: 24px 28px 80px; max-width: 1320px; margin: 0 auto; }
-
-  .stats {
-    display: grid;
-    grid-template-columns: repeat(4, 1fr);
-    gap: 12px;
-    margin-bottom: 22px;
-  }
-  .stat {
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: 12px;
-    padding: 14px 18px;
-    display: flex;
-    flex-direction: column;
-    gap: 2px;
-  }
-  .stat .num {
-    font-size: 26px;
-    font-weight: 700;
-    letter-spacing: -0.02em;
-  }
-  .stat .label {
-    font-size: 11px;
-    color: var(--text-dim);
-    text-transform: uppercase;
-    letter-spacing: 0.06em;
-  }
-  .stat.cal .num { color: var(--calendar); }
-  .stat.slack .num { color: var(--slack); }
-  .stat.email .num { color: var(--email); }
-  .stat.notion .num { color: var(--notion); }
-
-  .urgent-card {
-    background: linear-gradient(135deg, rgba(240, 110, 110, 0.10), rgba(240, 110, 110, 0.02));
-    border: 1px solid rgba(240, 110, 110, 0.45);
-    border-radius: 14px;
-    padding: 18px 22px;
-    margin-bottom: 22px;
-  }
-  .urgent-card h2 {
-    font-size: 14px;
-    font-weight: 700;
-    color: var(--urgent);
-    text-transform: uppercase;
-    letter-spacing: 0.08em;
-    margin-bottom: 12px;
-  }
-
-  .grid {
-    display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    gap: 16px;
-  }
-  @media (max-width: 900px) {
-    .grid { grid-template-columns: 1fr; }
-    .stats { grid-template-columns: repeat(2, 1fr); }
-  }
-
-  .card {
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: 14px;
-    padding: 18px 22px;
-    display: flex;
-    flex-direction: column;
-    min-height: 220px;
-  }
-  .card h2 {
-    font-size: 13px;
-    font-weight: 700;
-    text-transform: uppercase;
-    letter-spacing: 0.08em;
-    margin-bottom: 12px;
-    display: flex;
-    align-items: center;
-    gap: 8px;
-  }
-  .card.calendar h2 { color: var(--calendar); }
-  .card.slack h2 { color: var(--slack); }
-  .card.email h2 { color: var(--email); }
-  .card.notion h2 { color: var(--notion); }
-
-  .item {
-    display: flex;
-    gap: 10px;
-    padding: 10px 0;
-    border-top: 1px solid var(--border);
-  }
-  .item:first-of-type { border-top: none; }
-  .dot {
-    width: 9px;
-    height: 9px;
-    border-radius: 50%;
-    margin-top: 6px;
-    flex-shrink: 0;
-  }
-  .dot.calendar { background: var(--calendar); }
-  .dot.slack { background: var(--slack); }
-  .dot.email { background: var(--email); }
-  .dot.notion { background: var(--notion); }
-  .dot.urgent { background: var(--urgent); }
-
-  .item-body { flex: 1; min-width: 0; }
-  .item-title {
-    font-size: 13.5px;
-    font-weight: 600;
-    color: var(--text);
-    margin-bottom: 4px;
-    line-height: 1.35;
-    display: flex;
-    align-items: baseline;
-    gap: 8px;
-    flex-wrap: wrap;
-  }
-  .item-title a:hover { text-decoration: underline; }
-  .item-snippet {
-    font-size: 12.5px;
-    color: var(--text-dim);
-    display: -webkit-box;
-    -webkit-line-clamp: 2;
-    -webkit-box-orient: vertical;
-    overflow: hidden;
-    line-height: 1.4;
-  }
-  .meta {
-    display: flex;
-    gap: 6px;
-    flex-wrap: wrap;
-    margin-top: 6px;
-  }
-  .badge {
-    font-size: 10.5px;
-    padding: 2px 8px;
-    border-radius: 999px;
-    font-weight: 600;
-    letter-spacing: 0.02em;
-    border: 1px solid transparent;
-  }
-  .badge-time {
-    background: rgba(79, 142, 247, 0.14);
-    color: #8ab4f8;
-    border-color: rgba(79, 142, 247, 0.25);
-  }
-  .badge-action {
-    background: rgba(52, 199, 133, 0.14);
-    color: #4ade80;
-    border-color: rgba(52, 199, 133, 0.30);
-  }
-  .badge-dm {
-    background: rgba(99, 102, 241, 0.14);
-    color: #a5b4fc;
-    border-color: rgba(99, 102, 241, 0.30);
-  }
-  .badge-group {
-    background: rgba(6, 182, 212, 0.14);
-    color: #67e8f9;
-    border-color: rgba(6, 182, 212, 0.30);
-  }
-  .badge-task {
-    background: rgba(167, 139, 250, 0.14);
-    color: #c4b5fd;
-    border-color: rgba(167, 139, 250, 0.30);
-  }
-  .badge-now {
-    background: rgba(240, 110, 110, 0.14);
-    color: #fca5a5;
-    border-color: rgba(240, 110, 110, 0.40);
-  }
-  .badge-soon {
-    background: rgba(245, 179, 66, 0.14);
-    color: #fcd34d;
-    border-color: rgba(245, 179, 66, 0.30);
-  }
-  .badge-meet {
-    background: rgba(167, 139, 250, 0.14);
-    color: #c4b5fd;
-    border-color: rgba(167, 139, 250, 0.30);
-  }
-  .empty {
-    color: var(--text-faint);
-    font-size: 13px;
-    text-align: center;
-    padding: 30px 10px;
-    font-style: italic;
-  }
-  footer {
-    margin-top: 36px;
-    padding-top: 16px;
-    border-top: 1px solid var(--border);
-    color: var(--text-faint);
-    font-size: 11.5px;
-    display: flex;
-    justify-content: space-between;
-    flex-wrap: wrap;
-    gap: 8px;
-  }
+:root{
+  --bg:#0f1117;
+  --surface:#1a1d27;
+  --surface-2:#222637;
+  --border:#2e3348;
+  --text:#e8eaf0;
+  --muted:#9aa0b4;
+  --calendar:#4f8ef7;
+  --slack:#a78bfa;
+  --email:#f5c542;
+  --notion:#34c785;
+  --urgent:#f06e6e;
+  --action:#34c785;
+  --dm:#7c83fd;
+  --group:#4dd0e1;
+  --task:#a78bfa;
+  --now:#f06e6e;
+  --soon:#f5b041;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{
+  background:var(--bg);
+  color:var(--text);
+  font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+  line-height:1.5;
+  padding-bottom:32px;
+}
+.header{
+  position:sticky;top:0;z-index:50;
+  background:rgba(15,17,23,0.95);
+  backdrop-filter:blur(8px);
+  border-bottom:1px solid var(--border);
+  padding:18px 32px;
+  display:flex;justify-content:space-between;align-items:center;
+}
+.header-left h1{font-size:22px;font-weight:700;letter-spacing:-0.3px}
+.header-left .date{font-size:13px;color:var(--muted);margin-top:2px}
+.btn-refresh{
+  background:var(--surface);
+  border:1px solid var(--border);
+  color:var(--text);
+  padding:8px 14px;border-radius:8px;
+  cursor:pointer;font-size:13px;font-weight:500;
+  transition:all .15s ease;
+}
+.btn-refresh:hover{background:var(--surface-2);border-color:var(--calendar)}
+.statbar{
+  display:grid;grid-template-columns:repeat(4,1fr);gap:1px;
+  background:var(--border);
+  border-bottom:1px solid var(--border);
+  margin-bottom:24px;
+}
+.stat{
+  background:var(--bg);
+  padding:18px 28px;
+  display:flex;flex-direction:column;
+}
+.stat .num{font-size:28px;font-weight:700;letter-spacing:-0.5px}
+.stat .lbl{font-size:12px;color:var(--muted);margin-top:2px;text-transform:uppercase;letter-spacing:0.5px}
+.stat.cal .num{color:var(--calendar)}
+.stat.slk .num{color:var(--slack)}
+.stat.eml .num{color:var(--email)}
+.stat.nt .num{color:var(--notion)}
+.container{padding:0 32px;max-width:1400px;margin:0 auto}
+.card{
+  background:var(--surface);
+  border:1px solid var(--border);
+  border-radius:12px;
+  padding:20px;
+  margin-bottom:18px;
+  border-top:3px solid var(--border);
+}
+.card.urgent{border-top-color:var(--urgent)}
+.card.calendar{border-top-color:var(--calendar)}
+.card.slack{border-top-color:var(--slack)}
+.card.email{border-top-color:var(--email)}
+.card.notion{border-top-color:var(--notion)}
+.card-title{
+  font-size:15px;font-weight:600;
+  margin-bottom:14px;
+  display:flex;align-items:center;gap:8px;
+}
+.card.urgent .card-title{color:var(--urgent)}
+.card.calendar .card-title{color:var(--calendar)}
+.card.slack .card-title{color:var(--slack)}
+.card.email .card-title{color:var(--email)}
+.card.notion .card-title{color:var(--notion)}
+.grid{
+  display:grid;
+  grid-template-columns:repeat(2,1fr);
+  gap:18px;
+}
+@media(max-width:900px){.grid{grid-template-columns:1fr}.statbar{grid-template-columns:repeat(2,1fr)}}
+.item{
+  padding:12px 0;
+  border-bottom:1px solid var(--border);
+  display:flex;gap:10px;align-items:flex-start;
+}
+.item:last-child{border-bottom:none}
+.dot{
+  width:8px;height:8px;border-radius:50%;
+  margin-top:7px;flex-shrink:0;
+}
+.dot.cal{background:var(--calendar)}
+.dot.slk{background:var(--slack)}
+.dot.eml{background:var(--email)}
+.dot.nt{background:var(--notion)}
+.dot.urg{background:var(--urgent)}
+.item-body{flex:1;min-width:0}
+.item-title{
+  font-size:14px;font-weight:600;
+  display:flex;align-items:center;gap:8px;flex-wrap:wrap;
+  margin-bottom:4px;
+}
+.item-title a{color:var(--text);text-decoration:none}
+.item-title a:hover{color:var(--calendar)}
+.item-snippet{
+  font-size:13px;color:var(--muted);
+  display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;
+  overflow:hidden;
+  margin-bottom:4px;
+}
+.item-meta{font-size:12px;color:var(--muted)}
+.badge{
+  display:inline-block;
+  padding:2px 8px;border-radius:10px;
+  font-size:11px;font-weight:600;
+  text-transform:uppercase;letter-spacing:0.3px;
+}
+.badge-action{background:rgba(52,199,133,0.15);color:#34c785}
+.badge-dm{background:rgba(124,131,253,0.18);color:#9aa0fd}
+.badge-group{background:rgba(77,208,225,0.15);color:#4dd0e1}
+.badge-task{background:rgba(167,139,250,0.18);color:#c5b3fc}
+.badge-now{background:rgba(240,110,110,0.2);color:#ff8585}
+.badge-soon{background:rgba(245,180,65,0.18);color:#f5b041}
+.badge-time{background:rgba(79,142,247,0.15);color:#7caaf9}
+.badge-conflict{background:rgba(240,110,110,0.18);color:#ff8585}
+.deep{
+  font-size:12px;color:var(--calendar);
+  text-decoration:none;
+}
+.deep:hover{text-decoration:underline}
+.empty{
+  font-size:13px;color:var(--muted);
+  font-style:italic;padding:8px 0;
+}
+.footer{
+  margin:32px 32px 0;padding:18px 0;
+  border-top:1px solid var(--border);
+  display:flex;justify-content:space-between;
+  font-size:12px;color:var(--muted);
+}
 </style>
 </head>
 <body>
-<header class="sticky">
-  <div class="title-block">
+
+<header class="header">
+  <div class="header-left">
     <h1>Juan's Focus Board</h1>
-    <div class="sub" id="todayDate">Monday, April 27, 2026</div>
+    <div class="date" id="todayDate">Tuesday, April 28, 2026</div>
   </div>
-  <div style="display:flex;align-items:center;">
-    <span class="updated" id="updatedAgo">updated just now</span>
-    <button class="refresh" onclick="window.location.reload()">↻ Refresh</button>
-  </div>
+  <button class="btn-refresh" onclick="window.location.reload()">&#x21bb; Refresh</button>
 </header>
 
-<main>
+<div class="statbar">
+  <div class="stat cal"><div class="num">4</div><div class="lbl">Meetings</div></div>
+  <div class="stat slk"><div class="num">1</div><div class="lbl">Slack threads</div></div>
+  <div class="stat eml"><div class="num">2</div><div class="lbl">Action emails</div></div>
+  <div class="stat nt"><div class="num">15</div><div class="lbl">Open tasks</div></div>
+</div>
 
-  <div class="stats">
-    <div class="stat cal"><span class="num">4</span><span class="label">Meetings</span></div>
-    <div class="stat slack"><span class="num">0</span><span class="label">Slack threads</span></div>
-    <div class="stat email"><span class="num">2</span><span class="label">Action emails</span></div>
-    <div class="stat notion"><span class="num">16</span><span class="label">Open tasks</span></div>
+<main class="container">
+
+  <!-- Must-do today -->
+  <div class="card urgent">
+    <div class="card-title">&#x26a1; Must-do today</div>
+
+    <div class="item">
+      <div class="dot urg"></div>
+      <div class="item-body">
+        <div class="item-title">
+          <a href="https://meet.google.com/mfr-pctw-miv" target="_blank">Avance PEX with David Anaya</a>
+          <span class="badge badge-now">12:00</span>
+          <span class="badge badge-time">60 min</span>
+        </div>
+        <div class="item-snippet">Follow-up to yesterday's "Revisar resultados PEX". Make sure you have the latest results / blockers list ready before the call.</div>
+        <a class="deep" href="https://meet.google.com/mfr-pctw-miv" target="_blank">&rarr; Join Meet</a>
+      </div>
+    </div>
+
+    <div class="item">
+      <div class="dot urg"></div>
+      <div class="item-body">
+        <div class="item-title">
+          Replicate bug for Nicola
+          <span class="badge badge-action">Slack action</span>
+          <span class="badge badge-soon">today</span>
+        </div>
+        <div class="item-snippet">Nicola pidio: "JD si gusta prueba con una cuenta a ver si logras replicar el bug, sino damos por descartado...". Probar con cuenta y confirmar resultado.</div>
+        <a class="deep" href="https://simplit-solutions.slack.com/archives/C0AA73P10KD/p1777376462371149" target="_blank">&rarr; Open Slack thread</a>
+      </div>
+    </div>
+
+    <div class="item">
+      <div class="dot urg"></div>
+      <div class="item-body">
+        <div class="item-title">
+          Resolve 14:00&ndash;15:30 conflict
+          <span class="badge badge-conflict">3-way conflict</span>
+          <span class="badge badge-now">14:00</span>
+        </div>
+        <div class="item-snippet">Three things overlap: Azalea/BD (tentativo, needsAction), Paquete Express "REVISION AJUSTES SIMPLI ROUTE" (needsAction), and Cita medica 14:30. Decide which to attend and decline/reschedule the rest.</div>
+        <a class="deep" href="https://www.google.com/calendar/event?eid=MDR1YnRwbmRzNjloZHJvMTJ0cGw0dDZwb3MganVhbi52YXNjb25lekBzaW1wbGl0LXNvbHV0aW9ucy5jb20" target="_blank">&rarr; Open calendar</a>
+      </div>
+    </div>
+
+    <div class="item">
+      <div class="dot urg"></div>
+      <div class="item-body">
+        <div class="item-title">
+          Preparar simulacion manual (diio)
+          <span class="badge badge-action">Compromiso</span>
+        </div>
+        <div class="item-snippet">Compromiso del dia registrado en diio: "Preparar la simulacion manual". Cumplir antes del cierre del dia.</div>
+        <a class="deep" href="https://mail.google.com/mail/u/0/#inbox/19dd3f8095b4f135" target="_blank">&rarr; Open diio email</a>
+      </div>
+    </div>
+
   </div>
-
-  <section class="urgent-card">
-    <h2>⚡ Must-do today</h2>
-
-    <div class="item">
-      <div class="dot urgent"></div>
-      <div class="item-body">
-        <div class="item-title">
-          <a href="https://www.google.com/calendar/event?eid=MnZyYjlvcTVtZjRzOXJmcGkyb2RicTJpaXJfMjAyNjA0MjdUMTUwMDAwWiBqdWFuLnZhc2NvbmV6QHNpbXBsaXQtc29sdXRpb25zLmNvbQ&ctz=America/Guayaquil">Weekly del norte — team sync (David, Carlos, Salva, Johan, Nati, Azalea)</a>
-          <span class="badge badge-now">10:00 AM</span>
-          <span class="badge badge-meet">Google Meet</span>
-        </div>
-        <div class="item-snippet">First commitment of the day — recurring weekly. Join via meet.google.com/kos-mejc-qzv. Make sure to log in on time after returning from OOO at 9:00.</div>
-      </div>
-    </div>
-
-    <div class="item">
-      <div class="dot urgent"></div>
-      <div class="item-body">
-        <div class="item-title">
-          <a href="https://www.google.com/calendar/event?eid=MDFyNzBlYWt0aHFhYXRmdjJzN2ZmZjJ1OWYganVhbi52YXNjb25lekBzaW1wbGl0LXNvbHV0aW9ucy5jb20&ctz=America/Guayaquil">Unilever FF — client meeting with Nicola Simioni</a>
-          <span class="badge badge-soon">12:00 PM</span>
-          <span class="badge badge-meet">Google Meet</span>
-        </div>
-        <div class="item-snippet">Cross-region call (Madrid). Created this morning — make sure prep notes are ready. Join via meet.google.com/siw-hsho-cre.</div>
-      </div>
-    </div>
-
-    <div class="item">
-      <div class="dot urgent"></div>
-      <div class="item-body">
-        <div class="item-title">
-          <a href="https://mail.google.com/mail/u/0/#inbox/19dc07c5aa2b9a08">Reply to Azalea Osorio — tentative meeting invite for Apr 28 (BD)</a>
-          <span class="badge badge-action">Action</span>
-          <span class="badge badge-soon">RSVP</span>
-        </div>
-        <div class="item-snippet">"Juan Diego / Azalea (BD) tentativo" Tue Apr 28, 2026 · 2pm – 3pm. Confirm or propose alternative — currently sitting unanswered in inbox.</div>
-      </div>
-    </div>
-
-    <div class="item">
-      <div class="dot urgent"></div>
-      <div class="item-body">
-        <div class="item-title">
-          <a href="https://mail.google.com/mail/u/0/#inbox/19dc00a659d915c8">Follow up on case 00005728 — Georreferenciación masiva vía API</a>
-          <span class="badge badge-action">Action</span>
-        </div>
-        <div class="item-snippet">HTTP 500 returned from chunk_10 sending addresses without lat/lon. Requires technical follow-up with Carlos Zambrano / soporte team.</div>
-      </div>
-    </div>
-  </section>
 
   <div class="grid">
 
-    <section class="card calendar">
-      <h2>📅 Calendar — today</h2>
+    <!-- Calendar -->
+    <div class="card calendar">
+      <div class="card-title">&#x1f4c5; Calendar</div>
 
       <div class="item">
-        <div class="dot calendar"></div>
+        <div class="dot cal"></div>
         <div class="item-body">
           <div class="item-title">
-            <a href="https://www.google.com/calendar/event?eid=MnZyYjlvcTVtZjRzOXJmcGkyb2RicTJpaXJfMjAyNjA0MjdUMTUwMDAwWiBqdWFuLnZhc2NvbmV6QHNpbXBsaXQtc29sdXRpb25zLmNvbQ&ctz=America/Guayaquil">Weekly del norte</a>
-            <span class="badge badge-time">10:00 – 11:00</span>
+            <a href="https://meet.google.com/mfr-pctw-miv" target="_blank">Avance PEX</a>
+            <span class="badge badge-time">12:00&ndash;13:00</span>
           </div>
-          <div class="item-snippet">Recurring team weekly with David Anaya, Carlos Rojas, Salvador Cabrera, Johan Pinzón, Natalia Sánchez, Azalea Osorio.</div>
+          <div class="item-snippet">With David Anaya &middot; Google Meet</div>
+          <a class="deep" href="https://meet.google.com/mfr-pctw-miv" target="_blank">&rarr; Join</a>
         </div>
       </div>
 
       <div class="item">
-        <div class="dot calendar"></div>
+        <div class="dot cal"></div>
         <div class="item-body">
           <div class="item-title">
-            <a href="https://www.google.com/calendar/event?eid=M2cyYzhzbnZvYW92bTN2bmo5M2NxMTZtOWlfMjAyNjA0MjdUMTYwMDAwWiBqdWFuLnZhc2NvbmV6QHNpbXBsaXQtc29sdXRpb25zLmNvbQ&ctz=America/Guayaquil">Juan Diego / David</a>
-            <span class="badge badge-time">11:00 – 11:30</span>
+            <a href="https://meet.google.com/cvn-xcbg-gxh" target="_blank">Juan Diego / Azalea (BD) tentativo</a>
+            <span class="badge badge-time">14:00&ndash;15:00</span>
+            <span class="badge badge-conflict">conflict</span>
           </div>
-          <div class="item-snippet">1:1 with David Anaya — recurring weekly check-in. meet.google.com/fva-sxeg-khs</div>
+          <div class="item-snippet">Tentativo with Azalea Osorio &middot; status: needsAction. Overlaps with Paquete Express call and cita medica.</div>
+          <a class="deep" href="https://meet.google.com/cvn-xcbg-gxh" target="_blank">&rarr; Join</a>
         </div>
       </div>
 
       <div class="item">
-        <div class="dot calendar"></div>
+        <div class="dot cal"></div>
         <div class="item-body">
           <div class="item-title">
-            <a href="https://www.google.com/calendar/event?eid=NHI4bHFhamE1a2N2dWo3dmplM3FodTYyaWwganVhbi52YXNjb25lekBzaW1wbGl0LXNvbHV0aW9ucy5jb20&ctz=America/Guayaquil">David / Juan Diego PEX</a>
-            <span class="badge badge-time">11:30 – 12:00</span>
+            REVISION DE AJUSTES SIMPLI ROUTE (Paquete Express)
+            <span class="badge badge-time">14:00&ndash;15:00</span>
+            <span class="badge badge-conflict">conflict</span>
           </div>
-          <div class="item-snippet">PEX-focused session you organized. David hasn't accepted yet — confirm before joining. meet.google.com/wpf-rjkn-bbj</div>
+          <div class="item-snippet">MS Teams &middot; organized by Aracely Morales (PEX) &middot; status: needsAction. David Anaya already accepted.</div>
+          <a class="deep" href="https://teams.microsoft.com/meet/291985471812505?p=daWRiiiYLoKh2qFbAv" target="_blank">&rarr; Join Teams</a>
         </div>
       </div>
 
       <div class="item">
-        <div class="dot calendar"></div>
+        <div class="dot cal"></div>
         <div class="item-body">
           <div class="item-title">
-            <a href="https://www.google.com/calendar/event?eid=MDFyNzBlYWt0aHFhYXRmdjJzN2ZmZjJ1OWYganVhbi52YXNjb25lekBzaW1wbGl0LXNvbHV0aW9ucy5jb20&ctz=America/Guayaquil">Unilever FF</a>
-            <span class="badge badge-time">12:00 – 12:45</span>
+            Cita medica
+            <span class="badge badge-time">14:30&ndash;15:30</span>
+            <span class="badge badge-conflict">overlap</span>
           </div>
-          <div class="item-snippet">Client meeting organized by Nicola Simioni. David Anaya invited (still pending). meet.google.com/siw-hsho-cre</div>
-        </div>
-      </div>
-    </section>
-
-    <section class="card slack">
-      <h2>💬 Slack — needing reply</h2>
-      <div class="empty">No DMs or @mentions waiting for a reply.<br>Inbox zero on Slack 🎉</div>
-    </section>
-
-    <section class="card email">
-      <h2>✉️ Email — action needed</h2>
-
-      <div class="item">
-        <div class="dot email"></div>
-        <div class="item-body">
-          <div class="item-title">
-            <a href="https://mail.google.com/mail/u/0/#inbox/19dc07c5aa2b9a08">Invitation: Juan Diego / Azalea (BD) tentativo — Apr 28</a>
-            <span class="badge badge-action">RSVP</span>
-          </div>
-          <div class="item-snippet">From azalea.osorio@simplit-solutions.com — tentative meeting Tue Apr 28, 2pm – 3pm. Needs your confirmation.</div>
+          <div class="item-snippet">Personal medical appointment &mdash; overlaps with the two work meetings above.</div>
         </div>
       </div>
 
       <div class="item">
-        <div class="dot email"></div>
+        <div class="dot cal"></div>
         <div class="item-body">
           <div class="item-title">
-            <a href="https://mail.google.com/mail/u/0/#inbox/19dc00a659d915c8">Nuevo comentario en el caso 00005728</a>
-            <span class="badge badge-action">Reply</span>
+            Banco dominicano
+            <span class="badge badge-time">16:00&ndash;17:00</span>
           </div>
-          <div class="item-snippet">Georreferenciación masiva vía API: HTTP 500 on chunk_10 when addresses lack lat/lon. Carlos Zambrano on cc — needs technical follow-up.</div>
+          <div class="item-snippet">Self-organized block &mdash; banking task.</div>
         </div>
       </div>
 
       <div class="item">
-        <div class="dot email"></div>
+        <div class="dot cal" style="background:var(--muted)"></div>
         <div class="item-body">
-          <div class="item-title">
-            <a href="https://mail.google.com/mail/u/0/#inbox/19dc039e235923a5">Invitation: Juan Diego / Johan</a>
-            <span class="badge badge-soon">FYI</span>
+          <div class="item-title" style="opacity:.65">
+            <em>Almuerzo &middot; 13:30&ndash;14:30 (skipped)</em>
           </div>
-          <div class="item-snippet">Calendar invite from Johan Pinzón for Fri Apr 24 (already past). Newer "Estrella Roja" version supersedes this — safe to archive.</div>
+          <div class="item-snippet" style="opacity:.65"><em>Out of office blocks until 08:00 and from 18:00 (skipped).</em></div>
         </div>
       </div>
-    </section>
+    </div>
 
-    <section class="card notion">
-      <h2>📝 Notion — open tasks</h2>
-
-      <div class="item">
-        <div class="dot notion"></div>
-        <div class="item-body">
-          <div class="item-title">
-            <a href="https://www.notion.so/334bbd09805c8105bc76df42595e8ffa">App — Gestión de Andenes de Carga (SOL-5957 + SOL-6250)</a>
-            <span class="badge badge-task">Active</span>
-          </div>
-          <div class="item-snippet">Recently updated today. Functional spec for loading dock management — navigate, log start/end of carga, complete required form.</div>
-        </div>
-      </div>
+    <!-- Slack -->
+    <div class="card slack">
+      <div class="card-title">&#x1f4ac; Slack</div>
 
       <div class="item">
-        <div class="dot notion"></div>
+        <div class="dot slk"></div>
         <div class="item-body">
           <div class="item-title">
-            <a href="https://www.notion.so/2d8bbd09805c8047b52cc26a113eb0ac">Pruebas App — DEV-SOL-5065 [Mobile] Parte 1: Motivos de rechazo</a>
-            <span class="badge badge-task">QA</span>
+            <a href="https://simplit-solutions.slack.com/archives/C0AA73P10KD/p1777376462371149" target="_blank">Nicola Simioni &mdash; bug repro</a>
+            <span class="badge badge-group">Group DM</span>
+            <span class="badge badge-action">needs reply</span>
           </div>
-          <div class="item-snippet">Mobile testing ticket — rejection reasons for items, part 1.</div>
+          <div class="item-snippet">"JD si gusta prueba con una cuenta a ver si logras replicar el bug, sino damos por descartado que haya un bug y seguimos con el plan que conversamos ayer."</div>
+          <div class="item-meta">06:41 &middot; Group DM with Nicola, David, Salvador</div>
+          <a class="deep" href="https://simplit-solutions.slack.com/archives/C0AA73P10KD/p1777376462371149" target="_blank">&rarr; Open thread</a>
         </div>
       </div>
 
       <div class="item">
-        <div class="dot notion"></div>
+        <div class="dot slk" style="background:var(--muted)"></div>
+        <div class="item-body">
+          <div class="item-title" style="opacity:.7">
+            <em>Nicola &mdash; bug update (FYI)</em>
+            <span class="badge badge-group">Group DM</span>
+          </div>
+          <div class="item-snippet" style="opacity:.7"><em>"Estuve probando y re-probando pero no pude volver a replicar el bug de ayer.. parece que fue una latencia en un servicio, no un bug." (informational)</em></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Email -->
+    <div class="card email">
+      <div class="card-title">&#x2709; Email</div>
+
+      <div class="item">
+        <div class="dot eml"></div>
         <div class="item-body">
           <div class="item-title">
-            <a href="https://www.notion.so/34bbbd09805c810db818d53ac0eee65f">Pruebas App — DEV-2628 / SOL-5986 Extrafield imagen</a>
-            <span class="badge badge-task">QA</span>
+            <a href="https://mail.google.com/mail/u/0/#inbox/19dd3f8095b4f135" target="_blank">[diio] Tus Compromisos de hoy</a>
+            <span class="badge badge-action">action</span>
           </div>
-          <div class="item-snippet">Most recent QA ticket on the queue: extrafield image must not save photos to gallery.</div>
+          <div class="item-snippet">Compromiso del dia: "Preparar la simulacion manual". Cumplir antes de cierre del dia.</div>
+          <div class="item-meta">soporte@diio.com &middot; 07:02</div>
+          <a class="deep" href="https://mail.google.com/mail/u/0/#inbox/19dd3f8095b4f135" target="_blank">&rarr; Open</a>
         </div>
       </div>
 
       <div class="item">
-        <div class="dot notion"></div>
+        <div class="dot eml"></div>
         <div class="item-body">
           <div class="item-title">
-            <a href="https://www.notion.so/1eebbd09805c809f96a1ef022ec2c18e">+ 13 more Pruebas App tickets in queue</a>
-            <span class="badge badge-task">Backlog</span>
+            <a href="https://mail.google.com/mail/u/0/#inbox/19d2134bd4f90f92" target="_blank">Sigma alimentos &mdash; Pasos a seguir</a>
+            <span class="badge badge-action">follow-up</span>
           </div>
-          <div class="item-snippet">DEV-1920 (3 parts), DEV-2106, DEV-2220, DEV-2324, DEV-2366, DEV-2368, DEV-2470, DEV-2534, DEV-2559, DEV-2630, DEV-2629… — full Tasks page.</div>
+          <div class="item-snippet">Thread con David Anaya, Sigma (lgallardom, rsalceda) y Numaris. Sesion coordinada para martes 21 (11&ndash;12). Validar si se requiere accion de tu parte.</div>
+          <div class="item-meta">david.anaya@simplit-solutions.com &middot; most recent Apr 15</div>
+          <a class="deep" href="https://mail.google.com/mail/u/0/#inbox/19d2134bd4f90f92" target="_blank">&rarr; Open thread</a>
         </div>
       </div>
-    </section>
 
-  </div>
+      <div class="item">
+        <div class="dot eml" style="background:var(--muted)"></div>
+        <div class="item-body">
+          <div class="item-title" style="opacity:.7">
+            <em>Reserva confirmada #39843992 (Perk)</em>
+          </div>
+          <div class="item-snippet" style="opacity:.7"><em>Travel confirmation &mdash; informational, no action.</em></div>
+        </div>
+      </div>
 
-  <footer>
-    <div>juan.vasconez@simplit-solutions.com</div>
-    <div id="genStamp">Generated 2026-04-27</div>
-  </footer>
-</main>
+      <div class="item">
+        <div class="dot eml" style="background:var(--muted)"></div>
+        <div class="item-body">
+          <div class="item-title" style="opacity:.7">
+            <em>Accepted: Revisar resultados PEX</em>
+          </div>
+          <div class="item-snippet" style="opacity:.7"><em>Calendar acceptance from David Anaya &mdash; no action.</em></div>
+        </div>
+      </div>
+    </div>
 
-<script>
-  (function () {
-    const generated = new Date();
-    const opts = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
-    const td = document.getElementById('todayDate');
-    if (td) td.textContent = generated.toLocaleDateString('en-US', opts);
+    <!-- Notion -->
+    <div class="card notion">
+      <div class="card-title">&#x1f4dd; Notion &mdash; Open tasks</div>
 
-    const stamp = document.getElementById('genStamp');
-    if (stamp) {
-      const iso = generated.toISOString().slice(0, 16).replace('T', ' ');
-      stamp.textContent = 'Generated ' + iso + ' UTC';
-    }
+      <div class="item">
+        <div class="dot nt"></div>
+        <div class="item-body">
+          <div class="item-title">
+            <a href="https://www.notion.so/2d8bbd09805c8047b52cc26a113eb0ac" target="_blank">DEV-SOL-5065 [Mobile] Parte 1 &mdash; Motivos de rechazo en items</a>
+            <span class="badge badge-task">Pruebas App</span>
+          </div>
+          <div class="item-snippet">Mobile testing ticket &mdash; most recently surfaced item from your Tasks page.</div>
+          <a class="deep" href="https://www.notion.so/2d8bbd09805c8047b52cc26a113eb0ac" target="_blank">&rarr; Open task</a>
+        </div>
+      </div>
 
-    const updatedEl = document.getElementById('updatedAgo');
-    function updateAgo() {
-      const now = new Date();
-      const diffMs = now - generated;
-      const min = Math.floor(diffMs / 60000);
-      let txt;
-      if (min < 1) txt = 'updated just now';
-      else if (min === 1) txt = 'updated 1 min ago';
-      else if (min < 60) txt = 'updated ' + min + ' min ago';
-      else {
-        const h = Math.floor(min / 60);
-        txt = 'updated ' + h + (h === 1 ? ' hr' : ' hrs') + ' ago';
-      }
-      if (updatedEl) updatedEl.textContent = txt;
-    }
-    updateAgo();
-    setInterval(updateAgo, 30000);
-  })();
-</script>
-</body>
-</html>
-                                                                                                                                                                                          
+      <div class="item">
+        <div class="dot nt"></div>
+        <div class="item-body">
+          <div class="item-title">
+            <a href="https://www.notion.so/2f4bbd09805c800a8145c1346e9a5091" target="_blank">DEV-SOL-5065 [Mobile] Parte 2 &mdash; Motivos de rechazo en items</a>
+            <span class="badge badge-task">Pruebas App</span>
+          </div>
+          <div class="item-snippet">Continuation of the rechazo de items testing flow.</div>
+          <a class="deep" href="https://www.notion.so/2f4bbd09805c800a8145c1346e9a5091" target="_blank">&rarr; Open task</a>
+        </div>
+      </div>
+
+      <div class="item">
+        <div class="dot nt"></div>
+        <div class="item-body">
+          <div class="item-title">
+            <a href="https://www.notion.so/34bbbd09805c810db818d53ac0eee65f" target="_blank">DEV-2628 / SOL-5986 &mdash; Extrafield imagen no debe guardar fotos en galeria</a>
+            <span class="badge badge-task">Pruebas App</span>
+          </div>
+          <div class="item-snippet">Most recent SOL-numbered ticket on the page &mdash; likely active.</div>
+          <a class="deep" href="https://www.notion.so/34bbbd09805c810db818d53ac0eee65f" target="_blank">&rarr; Open task</a>
+        </div>
+      </div>
+
+      <div class="item">
+        <div class="dot nt" style="background:var(--muted)"></div>
+        <div class="item-body">
+          <div class="item-meta">
+            +12 more open Pruebas App tickets &mdash; DEV-1920, DEV-2106, DEV-2220, DEV-2324, DEV-2366, DEV-2368, DEV-2470, DEV-2534, DEV-2559, DEV-2629, DEV-2630.
+            <a class="deep" href="https://www.notion.so/1eebbd09805c809f96a1ef022ec2c18e" target="_blank">&rarr; Open Tasks page</a>
+          </div>
+ 
