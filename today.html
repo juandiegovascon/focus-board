@@ -1,18 +1,17 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Juan's Focus Board</title>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Juan's Focus Board · 2026-05-11</title>
 <style>
   :root {
     --bg: #0f1117;
     --surface: #1a1d27;
-    --surface-2: #232736;
+    --surface-2: #21242f;
     --border: #2e3348;
     --text: #e8eaf0;
-    --text-dim: #a0a4b8;
-    --text-mute: #6b7088;
+    --muted: #8b91a8;
     --blue: #4f8ef7;
     --purple: #a78bfa;
     --yellow: #f5c542;
@@ -20,396 +19,413 @@
     --red: #f06e6e;
     --indigo: #6366f1;
     --cyan: #22d3ee;
-    --amber: #fbbf24;
+    --amber: #f59e0b;
   }
   * { box-sizing: border-box; margin: 0; padding: 0; }
-  html, body { background: var(--bg); color: var(--text); font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif; line-height: 1.5; }
-  body { min-height: 100vh; padding-bottom: 60px; }
-  header.sticky {
-    position: sticky; top: 0; z-index: 50;
-    background: rgba(15, 17, 23, 0.95);
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Inter, sans-serif;
+    font-size: 14px;
+    line-height: 1.5;
+    min-height: 100vh;
+  }
+  .header {
+    position: sticky;
+    top: 0;
+    background: rgba(15, 17, 23, 0.92);
     backdrop-filter: blur(10px);
     border-bottom: 1px solid var(--border);
-    padding: 16px 32px;
+    padding: 16px 28px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    z-index: 50;
   }
-  .header-row {
-    display: flex; justify-content: space-between; align-items: center;
-    max-width: 1400px; margin: 0 auto;
+  .header h1 {
+    font-size: 20px;
+    font-weight: 700;
+    letter-spacing: -0.01em;
   }
-  .header-title h1 { font-size: 24px; font-weight: 700; letter-spacing: -0.5px; }
-  .header-title .date { color: var(--text-dim); font-size: 14px; margin-top: 2px; }
+  .header .date {
+    color: var(--muted);
+    font-size: 13px;
+    margin-top: 2px;
+  }
   .refresh-btn {
-    background: var(--surface); color: var(--text);
-    border: 1px solid var(--border); border-radius: 8px;
-    padding: 8px 14px; font-size: 13px; cursor: pointer;
-    display: flex; align-items: center; gap: 6px;
-    transition: background 0.15s ease;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    color: var(--text);
+    padding: 8px 14px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 13px;
+    transition: all 0.15s;
   }
-  .refresh-btn:hover { background: var(--surface-2); }
-  .last-updated { font-size: 12px; color: var(--text-mute); margin-right: 12px; }
+  .refresh-btn:hover { background: var(--surface-2); border-color: var(--blue); }
+  .container { max-width: 1400px; margin: 0 auto; padding: 24px 28px 48px; }
   .stat-bar {
-    display: grid; grid-template-columns: repeat(4, 1fr);
-    gap: 12px; max-width: 1400px; margin: 24px auto 0; padding: 0 32px;
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 12px;
+    margin-bottom: 24px;
   }
   .stat {
-    background: var(--surface); border: 1px solid var(--border);
-    border-radius: 10px; padding: 14px 18px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 14px 16px;
   }
-  .stat .label { font-size: 12px; color: var(--text-mute); text-transform: uppercase; letter-spacing: 0.5px; }
-  .stat .value { font-size: 28px; font-weight: 700; margin-top: 4px; }
-  .stat .sub { font-size: 12px; color: var(--text-dim); margin-top: 2px; }
-  main { max-width: 1400px; margin: 24px auto 0; padding: 0 32px; }
-  .urgent-card {
-    background: linear-gradient(135deg, rgba(240,110,110,0.08), rgba(240,110,110,0.03));
-    border: 1px solid rgba(240,110,110,0.4); border-left: 4px solid var(--red);
-    border-radius: 12px; padding: 20px 24px; margin-bottom: 20px;
+  .stat-label { color: var(--muted); font-size: 11px; text-transform: uppercase; letter-spacing: 0.05em; }
+  .stat-value { font-size: 22px; font-weight: 700; margin-top: 4px; }
+  .must-do {
+    background: linear-gradient(135deg, rgba(240, 110, 110, 0.08), rgba(240, 110, 110, 0.02));
+    border: 1px solid rgba(240, 110, 110, 0.35);
+    border-left: 4px solid var(--red);
+    border-radius: 12px;
+    padding: 20px 22px;
+    margin-bottom: 24px;
   }
-  .urgent-card h2 { font-size: 16px; font-weight: 700; color: var(--red); display: flex; align-items: center; gap: 8px; margin-bottom: 8px; }
-  .grid {
-    display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px;
-  }
-  .card {
-    background: var(--surface); border: 1px solid var(--border);
-    border-radius: 12px; padding: 18px 20px;
-  }
-  .card.calendar { border-left: 4px solid var(--blue); }
-  .card.slack { border-left: 4px solid var(--purple); }
-  .card.email { border-left: 4px solid var(--yellow); }
-  .card.notion { border-left: 4px solid var(--green); }
-  .card-header {
-    display: flex; align-items: center; justify-content: space-between;
+  .must-do h2 {
+    font-size: 15px;
+    color: var(--red);
     margin-bottom: 14px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
   }
-  .card-title { font-size: 14px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; color: var(--text-dim); }
-  .card-count { font-size: 12px; color: var(--text-mute); }
+  .grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 16px;
+  }
+  @media (max-width: 900px) { .grid { grid-template-columns: 1fr; } .stat-bar { grid-template-columns: repeat(2, 1fr); } }
+  .card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 18px 20px;
+  }
+  .card-header {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 14px;
+    padding-bottom: 12px;
+    border-bottom: 1px solid var(--border);
+  }
+  .card-dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+  }
+  .card-title { font-size: 14px; font-weight: 600; }
+  .card-count { color: var(--muted); font-size: 12px; margin-left: auto; }
   .item {
-    display: flex; gap: 10px; padding: 10px 0;
-    border-bottom: 1px solid rgba(46, 51, 72, 0.4);
+    padding: 10px 0;
+    border-bottom: 1px solid rgba(46, 51, 72, 0.5);
   }
   .item:last-child { border-bottom: none; }
-  .dot {
-    width: 8px; height: 8px; border-radius: 50%;
-    margin-top: 7px; flex-shrink: 0;
+  .item-head {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-wrap: wrap;
+    margin-bottom: 4px;
   }
-  .dot.blue { background: var(--blue); }
-  .dot.purple { background: var(--purple); }
-  .dot.yellow { background: var(--yellow); }
-  .dot.green { background: var(--green); }
-  .dot.red { background: var(--red); }
-  .item-content { flex: 1; min-width: 0; }
+  .dot-sm {
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    flex-shrink: 0;
+  }
   .item-title {
-    font-size: 14px; font-weight: 500; color: var(--text);
-    text-decoration: none; display: block;
-    overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+    font-weight: 600;
+    font-size: 13.5px;
+    color: var(--text);
+    text-decoration: none;
   }
-  .item-title:hover { color: var(--blue); }
-  .item-meta { display: flex; gap: 6px; flex-wrap: wrap; margin-top: 4px; }
+  .item-title:hover { color: var(--blue); text-decoration: underline; }
   .item-snippet {
-    font-size: 12px; color: var(--text-dim); margin-top: 4px;
-    display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical;
+    color: var(--muted);
+    font-size: 12.5px;
+    margin-top: 4px;
+    margin-left: 15px;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
     overflow: hidden;
   }
   .badge {
-    font-size: 10px; font-weight: 600; padding: 2px 8px;
-    border-radius: 999px; text-transform: uppercase; letter-spacing: 0.4px;
+    display: inline-block;
+    padding: 2px 8px;
+    border-radius: 4px;
+    font-size: 10.5px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
   }
-  .badge-action { background: rgba(52,199,133,0.15); color: var(--green); }
-  .badge-dm { background: rgba(99,102,241,0.15); color: #818cf8; }
-  .badge-group { background: rgba(34,211,238,0.15); color: var(--cyan); }
-  .badge-task { background: rgba(167,139,250,0.15); color: var(--purple); }
-  .badge-now { background: rgba(240,110,110,0.18); color: var(--red); }
-  .badge-soon { background: rgba(251,191,36,0.15); color: var(--amber); }
-  .badge-time { background: var(--surface-2); color: var(--text-dim); }
-  footer {
-    max-width: 1400px; margin: 40px auto 0; padding: 16px 32px;
-    color: var(--text-mute); font-size: 12px;
-    border-top: 1px solid var(--border); display: flex;
-    justify-content: space-between; flex-wrap: wrap; gap: 8px;
+  .badge-action { background: rgba(52, 199, 133, 0.15); color: var(--green); }
+  .badge-dm { background: rgba(99, 102, 241, 0.18); color: var(--indigo); }
+  .badge-group { background: rgba(34, 211, 238, 0.15); color: var(--cyan); }
+  .badge-task { background: rgba(167, 139, 250, 0.18); color: var(--purple); }
+  .badge-now { background: rgba(240, 110, 110, 0.18); color: var(--red); }
+  .badge-soon { background: rgba(245, 158, 11, 0.18); color: var(--amber); }
+  .badge-time { background: var(--surface-2); color: var(--muted); }
+  .footer {
+    margin-top: 32px;
+    padding-top: 18px;
+    border-top: 1px solid var(--border);
+    color: var(--muted);
+    font-size: 12px;
+    display: flex;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 8px;
   }
-  @media (max-width: 800px) {
-    .grid { grid-template-columns: 1fr; }
-    .stat-bar { grid-template-columns: repeat(2, 1fr); }
-    header.sticky, main, .stat-bar, footer { padding-left: 16px; padding-right: 16px; }
-  }
+  a { color: inherit; }
+  .meta { color: var(--muted); font-size: 12px; }
+  .empty { color: var(--muted); font-size: 13px; padding: 8px 0; font-style: italic; }
 </style>
 </head>
 <body>
-
-<header class="sticky">
-  <div class="header-row">
-    <div class="header-title">
-      <h1>🎯 Juan's Focus Board</h1>
-      <div class="date" id="today-date"></div>
-    </div>
-    <div style="display:flex; align-items:center;">
-      <span class="last-updated" id="last-updated">just now</span>
-      <button class="refresh-btn" onclick="window.location.reload()">↻ Refresh</button>
-    </div>
+<div class="header">
+  <div>
+    <h1>Juan's Focus Board</h1>
+    <div class="date" id="hdr-date">Monday, May 11, 2026</div>
   </div>
-</header>
-
-<div class="stat-bar">
-  <div class="stat">
-    <div class="label">📅 Meetings</div>
-    <div class="value">2</div>
-    <div class="sub">CX-Producto · Paquetexpress</div>
-  </div>
-  <div class="stat">
-    <div class="label">💬 Slack threads</div>
-    <div class="value">2</div>
-    <div class="sub">need a reply</div>
-  </div>
-  <div class="stat">
-    <div class="label">✉️ Action emails</div>
-    <div class="value">2</div>
-    <div class="sub">unread, actionable</div>
-  </div>
-  <div class="stat">
-    <div class="label">📝 Open tasks</div>
-    <div class="value">17</div>
-    <div class="sub">QA backlog (Pruebas App)</div>
-  </div>
+  <button class="refresh-btn" onclick="window.location.reload()">&#8635; Refresh</button>
 </div>
 
-<main>
+<div class="container">
 
-  <div class="urgent-card">
-    <h2>⚡ Must-do today</h2>
+  <div class="stat-bar">
+    <div class="stat"><div class="stat-label">Meetings today</div><div class="stat-value">3</div></div>
+    <div class="stat"><div class="stat-label">Slack threads</div><div class="stat-value">2</div></div>
+    <div class="stat"><div class="stat-label">Action emails</div><div class="stat-value">0</div></div>
+    <div class="stat"><div class="stat-label">Open tasks</div><div class="stat-value">18</div></div>
+  </div>
+
+  <div class="must-do">
+    <h2>&#9889; Must-do today</h2>
+
     <div class="item">
-      <div class="dot red"></div>
-      <div class="item-content">
-        <a class="item-title" href="https://meet.google.com/izz-bdax-nuc" target="_blank">Presentación Flujo CX-Producto (Laura Galván)</a>
-        <div class="item-meta">
-          <span class="badge badge-now">12:30 GYE</span>
-          <span class="badge badge-time">Google Meet</span>
-        </div>
-        <div class="item-snippet">Alineamiento del flujo Producto → CX: prioridades, puntos de contacto, tiempos y mejoras. Confirm RSVP — currently needsAction.</div>
+      <div class="item-head">
+        <span class="dot-sm" style="background: var(--red)"></span>
+        <a class="item-title" href="https://meet.google.com/hvf-fnad-xqm" target="_blank">Debrief &mdash; Paquetexpress</a>
+        <span class="badge badge-now">2:00 PM</span>
+        <span class="badge badge-time">Google Meet</span>
       </div>
+      <div class="item-snippet">Post-meeting debrief with David Anaya, Guillermo Far&iacute;as, Tom&aacute;s Mart&iacute;nez. Bring takeaways from this morning's PLANEACION RUTEO INTELIGENTE session with the Paquetexpress team.</div>
     </div>
+
     <div class="item">
-      <div class="dot red"></div>
-      <div class="item-content">
-        <a class="item-title" href="https://teams.microsoft.com/meet/210716543860943?p=9ymIKfTb6s5GwzHV2A" target="_blank">SIMPLI ROUTE — Retroalimentación pruebas en campo (Paquetexpress)</a>
-        <div class="item-meta">
-          <span class="badge badge-soon">19:00 GYE</span>
-          <span class="badge badge-time">MS Teams · SALA VALDEZ</span>
-        </div>
-        <div class="item-snippet">Aracely Morales / Paquetexpress feedback session on field testing of intelligent routing. Confirm RSVP and prep talking points with David Anaya.</div>
+      <div class="item-head">
+        <span class="dot-sm" style="background: var(--green)"></span>
+        <a class="item-title" href="https://simplit-solutions.slack.com/archives/D09QK6CCSN8/p1778516186393509" target="_blank">ARES &rarr; replicar reporte PEX para producto / todos los clientes</a>
+        <span class="badge badge-action">Action</span>
+        <span class="badge badge-soon">Jue/Vie</span>
       </div>
+      <div class="item-snippet">David: "Crea una tarea en tu dashboard para verlo el jueves o viernes por fa." Analizar replicar el reporte que manejamos para PEX como buena pr&aacute;ctica con producto.</div>
     </div>
+
     <div class="item">
-      <div class="dot red"></div>
-      <div class="item-content">
-        <a class="item-title" href="https://simplit-solutions.slack.com/archives/D09SULRS33M" target="_blank">Reply to Tomás Martínez — algoritmo / inserción nodos P3</a>
-        <div class="item-meta">
-          <span class="badge badge-dm">DM</span>
-          <span class="badge badge-action">Action</span>
-        </div>
-        <div class="item-snippet">Long thread today re: algorithm vs Hermes-level improvements, P3 node insertion, max horario. He's asking where the visits were and following up.</div>
+      <div class="item-head">
+        <span class="dot-sm" style="background: var(--cyan)"></span>
+        <a class="item-title" href="https://simplit-solutions.slack.com/archives/C0AAA2DDQMT/p1778511602477399" target="_blank">SIGMA Alimentos demo &mdash; apoyar a Salvador</a>
+        <span class="badge badge-group">Group DM</span>
+        <span class="badge badge-soon">Demo mi&eacute;rcoles</span>
       </div>
+      <div class="item-snippet">35 veh&iacute;culos, 149 pedidos. David iter&oacute; m&uacute;ltiples escenarios; 6 pedidos quedan fuera por capacidad. Salvador es responsable; JD puede guiar para mejor resultado. Revisar ma&ntilde;ana.</div>
     </div>
+
     <div class="item">
-      <div class="dot red"></div>
-      <div class="item-content">
-        <a class="item-title" href="https://simplit-solutions.slack.com/archives/D09QK6CCSN8" target="_blank">Reply to David Anaya — "¿De qué?"</a>
-        <div class="item-meta">
-          <span class="badge badge-dm">DM</span>
-          <span class="badge badge-action">Action</span>
-        </div>
-        <div class="item-snippet">Pending question from David. Likely related to today's Paquetexpress session.</div>
+      <div class="item-head">
+        <span class="dot-sm" style="background: var(--indigo)"></span>
+        <a class="item-title" href="https://simplit-solutions.slack.com/archives/D09QK6CCSN8/p1778511081674469" target="_blank">Compartir respuesta del equipo en grupo interno con Willy</a>
+        <span class="badge badge-dm">DM</span>
+        <span class="badge badge-soon">Hoy</span>
       </div>
+      <div class="item-snippet">David: "Por fa comparte en el grupo interno que tenemos con Willy el equipo ese responde que te dio." Alineaci&oacute;n pendiente antes de dar respuesta completa.</div>
     </div>
   </div>
 
   <div class="grid">
 
-    <div class="card calendar">
+    <!-- Calendar -->
+    <div class="card">
       <div class="card-header">
-        <span class="card-title">📅 Calendar — Today</span>
-        <span class="card-count">2 meetings</span>
+        <span class="card-dot" style="background: var(--blue)"></span>
+        <span class="card-title">&#128197; Calendar &mdash; Today</span>
+        <span class="card-count">5 events</span>
       </div>
+
       <div class="item">
-        <div class="dot blue"></div>
-        <div class="item-content">
-          <a class="item-title" href="https://www.google.com/calendar/event?eid=NHA1OGZ1ZXB1YzI0aDEyOGc4aTYwMWc1NXIganVhbi52YXNjb25lekBzaW1wbGl0LXNvbHV0aW9ucy5jb20" target="_blank">Presentación Flujo CX-Producto</a>
-          <div class="item-meta">
-            <span class="badge badge-time">12:30 – 13:30 GYE</span>
-            <span class="badge badge-now">Next</span>
-          </div>
-          <div class="item-snippet">Laura Galván · 35 attendees · Google Meet (izz-bdax-nuc). RSVP pending.</div>
+        <div class="item-head">
+          <span class="dot-sm" style="background: var(--muted)"></span>
+          <a class="item-title" href="https://teams.microsoft.com/meet/21921164141029?p=UUjGZEnPfpo1h1SojG" target="_blank">Planeaci&oacute;n Ruteo Inteligente</a>
+          <span class="badge badge-time">8:00&ndash;10:30</span>
+          <span class="badge badge-group">Paquetexpress</span>
         </div>
+        <div class="item-snippet">Sesi&oacute;n con Aracely Morales y equipo Paquetexpress (Teams). &#10003; Pasado.</div>
       </div>
+
       <div class="item">
-        <div class="dot blue"></div>
-        <div class="item-content">
-          <a class="item-title" href="https://teams.microsoft.com/meet/210716543860943?p=9ymIKfTb6s5GwzHV2A" target="_blank">SIMPLI ROUTE (Paquetexpress)</a>
-          <div class="item-meta">
-            <span class="badge badge-time">19:00 – 22:00 GYE</span>
-            <span class="badge badge-soon">Tonight</span>
-          </div>
-          <div class="item-snippet">Aracely Morales · MS Teams · Field testing feedback for intelligent routing. RSVP pending.</div>
+        <div class="item-head">
+          <span class="dot-sm" style="background: var(--muted)"></span>
+          <a class="item-title" href="https://meet.google.com/kos-mejc-qzv" target="_blank">Weekly del Norte</a>
+          <span class="badge badge-time">10:00&ndash;11:00</span>
         </div>
+        <div class="item-snippet">Sync con David, Carlos, Salvador, Azalea, Johan, Natalia, Daniela. &#10003; Pasado.</div>
       </div>
+
       <div class="item">
-        <div class="dot" style="background: var(--text-mute);"></div>
-        <div class="item-content">
-          <span class="item-title" style="color: var(--text-mute); font-style: italic;">Almuerzo · 13:00 – 14:00 (skipped)</span>
-          <div class="item-snippet">Recurring lunch block. Out of office before 09:00 and after 18:00.</div>
+        <div class="item-head">
+          <span class="dot-sm" style="background: var(--muted)"></span>
+          <a class="item-title" href="https://meet.google.com/fva-sxeg-khs" target="_blank">Juan Diego / David</a>
+          <span class="badge badge-time">11:00&ndash;11:30</span>
+          <span class="badge badge-dm">1:1</span>
         </div>
+        <div class="item-snippet">1:1 semanal con David Anaya.</div>
+      </div>
+
+      <div class="item">
+        <div class="item-head">
+          <span class="dot-sm" style="background: var(--red)"></span>
+          <a class="item-title" href="https://meet.google.com/hvf-fnad-xqm" target="_blank">Debrief &mdash; Paquetexpress</a>
+          <span class="badge badge-now">2:00&ndash;3:00 PM</span>
+          <span class="badge badge-group">Equipo</span>
+        </div>
+        <div class="item-snippet">David, Guillermo Far&iacute;as, Tom&aacute;s Mart&iacute;nez (Victor Gonz&aacute;lez y Alvaro Echeverr&iacute;a opcionales). Google Meet.</div>
+      </div>
+
+      <div class="item">
+        <div class="item-head">
+          <span class="dot-sm" style="background: var(--muted)"></span>
+          <span class="item-title">Almuerzo</span>
+          <span class="badge badge-time">12:00&ndash;1:00</span>
+        </div>
+        <div class="item-snippet"><em>Bloque personal (lunch).</em></div>
       </div>
     </div>
 
-    <div class="card slack">
+    <!-- Slack -->
+    <div class="card">
       <div class="card-header">
-        <span class="card-title">💬 Slack — Recent DMs</span>
-        <span class="card-count">2 threads · ~15 msgs</span>
+        <span class="card-dot" style="background: var(--purple)"></span>
+        <span class="card-title">&#128172; Slack &mdash; Threads needing reply</span>
+        <span class="card-count">2 active</span>
       </div>
+
       <div class="item">
-        <div class="dot purple"></div>
-        <div class="item-content">
-          <a class="item-title" href="https://simplit-solutions.slack.com/archives/D09SULRS33M" target="_blank">Tomás Martínez (DM)</a>
-          <div class="item-meta">
-            <span class="badge badge-dm">DM</span>
-            <span class="badge badge-action">Reply</span>
-            <span class="badge badge-time">today, 09:22</span>
-          </div>
-          <div class="item-snippet">Discusión sobre mejoras de algoritmo vs Hermes, inserción de nodos P3 y horarios máximos. Última pregunta: "¿y dónde estaban las visitas?".</div>
+        <div class="item-head">
+          <span class="dot-sm" style="background: var(--indigo)"></span>
+          <a class="item-title" href="https://simplit-solutions.slack.com/archives/D09QK6CCSN8/p1778516186393509?thread_ts=1778516186.393509&cid=D09QK6CCSN8" target="_blank">David Anaya &mdash; DM thread (2 temas)</a>
+          <span class="badge badge-dm">DM</span>
+          <span class="badge badge-action">Action</span>
         </div>
+        <div class="item-snippet">"JD se me pasaron 2 temas." (1) Facturas pedidas, esperando respuesta. (2) ARES quiere replicar reporte PEX como buena pr&aacute;ctica con producto. Crear tarea para jue/vie.</div>
       </div>
+
       <div class="item">
-        <div class="dot purple"></div>
-        <div class="item-content">
-          <a class="item-title" href="https://simplit-solutions.slack.com/archives/D09QK6CCSN8" target="_blank">David Anaya Vaca (DM)</a>
-          <div class="item-meta">
-            <span class="badge badge-dm">DM</span>
-            <span class="badge badge-action">Reply</span>
-            <span class="badge badge-time">today, 08:24</span>
-          </div>
-          <div class="item-snippet">"¿De qué?" — pregunta abierta esperando respuesta.</div>
+        <div class="item-head">
+          <span class="dot-sm" style="background: var(--cyan)"></span>
+          <a class="item-title" href="https://simplit-solutions.slack.com/archives/C0AAA2DDQMT/p1778511602477399" target="_blank">SIGMA Alimentos demo &mdash; Group DM con Salvador</a>
+          <span class="badge badge-group">Group DM</span>
+          <span class="badge badge-soon">Demo mi&eacute;rcoles</span>
         </div>
+        <div class="item-snippet">David comparti&oacute; cuenta de demo (david.anaya+sigdist@simpliroute.com). 35 veh&iacute;culos, 149 pedidos, 6 fuera de ruta. Apoyar a Salvador con gu&iacute;a.</div>
       </div>
     </div>
 
-    <div class="card email">
+    <!-- Email -->
+    <div class="card">
       <div class="card-header">
-        <span class="card-title">✉️ Email — Action needed</span>
-        <span class="card-count">2 of 4 unread</span>
+        <span class="card-dot" style="background: var(--yellow)"></span>
+        <span class="card-title">&#9993;&#65039; Email &mdash; Action needed</span>
+        <span class="card-count">Inbox zero</span>
       </div>
-      <div class="item">
-        <div class="dot yellow"></div>
-        <div class="item-content">
-          <a class="item-title" href="https://mail.google.com/mail/u/0/#inbox/19dfab0432452337" target="_blank">RETROALIMENTACIÓN PRUEBAS EN CAMPO RUTEO INTELIGENTE</a>
-          <div class="item-meta">
-            <span class="badge badge-action">Meeting Prep</span>
-            <span class="badge badge-time">Aracely Morales · 05/06</span>
-          </div>
-          <div class="item-snippet">MS Teams invite for tonight's 19:00 Paquetexpress session. Two duplicate threads — confirm attendance and prep agenda.</div>
-        </div>
-      </div>
-      <div class="item">
-        <div class="dot yellow"></div>
-        <div class="item-content">
-          <a class="item-title" href="https://mail.google.com/mail/u/0/#inbox/19df804882a71a63" target="_blank">[diio] Tus Compromisos de hoy</a>
-          <div class="item-meta">
-            <span class="badge badge-action">Commitments</span>
-            <span class="badge badge-time">diio · 05/05</span>
-          </div>
-          <div class="item-snippet">Recordatorio de compromisos — Michel Sánchez (Over-haul): coordinar una sesión. Revisa el listado completo.</div>
-        </div>
-      </div>
-      <div class="item">
-        <div class="dot" style="background: var(--text-mute);"></div>
-        <div class="item-content">
-          <span class="item-title" style="color: var(--text-mute); font-style: italic;">Filtered: SimpliRoute auto-notif · GCP legacy SQL reminder</span>
-          <div class="item-snippet">Auto notifications, no action required.</div>
-        </div>
-      </div>
+      <div class="empty">&#9989; No unread action emails in the last 3 days. Nice work.</div>
     </div>
 
-    <div class="card notion">
+    <!-- Notion -->
+    <div class="card">
       <div class="card-header">
-        <span class="card-title">📝 Notion — Open QA tasks</span>
-        <span class="card-count">17 in Tasks page</span>
+        <span class="card-dot" style="background: var(--green)"></span>
+        <span class="card-title">&#128221; Notion &mdash; Open tasks</span>
+        <span class="card-count">18+ in board</span>
       </div>
+
       <div class="item">
-        <div class="dot green"></div>
-        <div class="item-content">
-          <a class="item-title" href="https://www.notion.so/34abbd09805c81d59ea1fdf7c0e686fe" target="_blank">Pruebas App — DEV-2629 SOL-5716 Overlay de Logging out</a>
-          <div class="item-meta">
-            <span class="badge badge-task">Mobile QA</span>
-          </div>
-          <div class="item-snippet">Validar que el overlay bloquee interacción y garantice cierre de sesión.</div>
+        <div class="item-head">
+          <span class="dot-sm" style="background: var(--green)"></span>
+          <a class="item-title" href="https://www.notion.so/35dbbd09805c805eac40d207a2886648" target="_blank">BIT-SOL-6435 &mdash; Nginx Timeout 1200seg icarus-api</a>
+          <span class="badge badge-task">Active</span>
+          <span class="badge badge-soon">Updated today</span>
         </div>
+        <div class="item-snippet">Risk assessment: may impact data consistency, resource costs, customer ops. Reviewed today at 11:05 AM.</div>
       </div>
+
       <div class="item">
-        <div class="dot green"></div>
-        <div class="item-content">
-          <a class="item-title" href="https://www.notion.so/34bbbd09805c810db818d53ac0eee65f" target="_blank">Pruebas App — DEV-2628 SOL-5986 Extrafield imagen no debe guardar fotos</a>
-          <div class="item-meta">
-            <span class="badge badge-task">Mobile QA</span>
-          </div>
-          <div class="item-snippet">Verificar que las fotos del extrafield imagen no persistan en la galería del dispositivo.</div>
+        <div class="item-head">
+          <span class="dot-sm" style="background: var(--purple)"></span>
+          <a class="item-title" href="https://www.notion.so/358bbd09805c8144b9b5fa04c1955d4a" target="_blank">Plan-QA &mdash; Upgrade react-native-mmkv v4 (16KB page size Android)</a>
+          <span class="badge badge-task">QA Plan</span>
         </div>
+        <div class="item-snippet">Most recent QA test plan ticket on the Tasks board.</div>
       </div>
+
       <div class="item">
-        <div class="dot green"></div>
-        <div class="item-content">
-          <a class="item-title" href="https://www.notion.so/343bbd09805c8105bcdad97bf1270a22" target="_blank">Pruebas App — DEV-2630 SOL-5781 Borrar fotos en re-checkout</a>
-          <div class="item-meta">
-            <span class="badge badge-task">Mobile QA</span>
-          </div>
-          <div class="item-snippet">Inconsistencia al borrar fotos de evidencia en carrusel durante recheckout.</div>
+        <div class="item-head">
+          <span class="dot-sm" style="background: var(--purple)"></span>
+          <a class="item-title" href="https://www.notion.so/34bbbd09805c810db818d53ac0eee65f" target="_blank">DEV-2628 / SOL-5986 &mdash; Extrafield imagen no guardar fotos en galer&iacute;a</a>
+          <span class="badge badge-task">Pruebas App</span>
         </div>
+        <div class="item-snippet">Mobile testing ticket: extrafield image should not persist to gallery.</div>
       </div>
+
       <div class="item">
-        <div class="dot green"></div>
-        <div class="item-content">
-          <a class="item-title" href="https://www.notion.so/358bbd09805c8144b9b5fa04c1955d4a" target="_blank">Plan-QA Upgrade react-native-mmkv v4 (Android 16KB)</a>
-          <div class="item-meta">
-            <span class="badge badge-task">QA Plan</span>
-          </div>
-          <div class="item-snippet">Plan de QA para el upgrade de mmkv y compatibilidad con Android 16KB page size.</div>
+        <div class="item-head">
+          <span class="dot-sm" style="background: var(--muted)"></span>
+          <a class="item-title" href="https://www.notion.so/1eebbd09805c809f96a1ef022ec2c18e" target="_blank">+ 15 more "Pruebas App" tickets in queue</a>
+          <span class="badge badge-task">Backlog</span>
         </div>
-      </div>
-      <div class="item">
-        <div class="dot" style="background: var(--text-mute);"></div>
-        <div class="item-content">
-          <a class="item-title" href="https://www.notion.so/1eebbd09805c809f96a1ef022ec2c18e" target="_blank" style="color: var(--text-mute);">+ 13 more tickets in Tasks page →</a>
-          <div class="item-snippet">DEV-2559, DEV-2534, DEV-2470, DEV-2368, DEV-2366, DEV-2324, DEV-2220, DEV-2106, DEV-1920 (3 partes), DEV-5065 (2 partes).</div>
-        </div>
+        <div class="item-snippet">DEV-1920, DEV-2106, DEV-2220, DEV-2324, DEV-2366, DEV-2368, DEV-2470, DEV-2534, DEV-2559, DEV-2629, DEV-2630, etc.</div>
       </div>
     </div>
 
   </div>
 
-</main>
+  <div class="footer">
+    <div>&#128231; juan.vasconez@simplit-solutions.com</div>
+    <div>Generated <span id="ts"></span> &middot; <span id="rel">just now</span></div>
+  </div>
 
-<footer>
-  <div>juan.vasconez@simplit-solutions.com</div>
-  <div>Generated: <span id="generated-timestamp"></span></div>
-</footer>
+</div>
 
 <script>
-  const now = new Date();
-  const dateOpts = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
-  document.getElementById('today-date').textContent = now.toLocaleDateString('en-US', dateOpts);
-  document.getElementById('generated-timestamp').textContent = now.toLocaleString('en-US', {
-    timeZone: 'America/Guayaquil', hour: '2-digit', minute: '2-digit', hour12: false,
-    year: 'numeric', month: 'short', day: '2-digit'
-  }) + ' GYE';
-
-  const startTime = Date.now();
-  function updateAge() {
-    const elapsedSec = Math.floor((Date.now() - startTime) / 1000);
-    const el = document.getElementById('last-updated');
-    if (elapsedSec < 60) el.textContent = 'just now';
-    else if (elapsedSec < 3600) el.textContent = Math.floor(elapsedSec/60) + ' min ago';
-    else el.textContent = Math.floor(elapsedSec/3600) + ' hr ago';
-  }
-  updateAge();
-  setInterval(updateAge, 30000);
+  (function() {
+    var now = new Date();
+    var fmtDate = now.toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
+    var hdr = document.getElementById('hdr-date');
+    if (hdr) hdr.textContent = fmtDate;
+    var generated = now;
+    var ts = document.getElementById('ts');
+    if (ts) ts.textContent = generated.toLocaleString('en-US', { hour: '2-digit', minute: '2-digit', timeZoneName: 'short' });
+    function updateRel() {
+      var mins = Math.floor((Date.now() - generated.getTime()) / 60000);
+      var rel = document.getElementById('rel');
+      if (!rel) return;
+      if (mins < 1) rel.textContent = 'just now';
+      else if (mins === 1) rel.textContent = '1 min ago';
+      else if (mins < 60) rel.textContent = mins + ' min ago';
+      else rel.textContent = Math.floor(mins/60) + 'h ' + (mins%60) + 'm ago';
+    }
+    updateRel();
+    setInterval(updateRel, 30000);
+  })();
 </script>
 
 </body>
 </html>
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    
