@@ -1,431 +1,368 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>Juan's Focus Board · 2026-05-11</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Juan's Focus Board — May 14, 2026</title>
 <style>
-  :root {
-    --bg: #0f1117;
-    --surface: #1a1d27;
-    --surface-2: #21242f;
-    --border: #2e3348;
-    --text: #e8eaf0;
-    --muted: #8b91a8;
-    --blue: #4f8ef7;
-    --purple: #a78bfa;
-    --yellow: #f5c542;
-    --green: #34c785;
-    --red: #f06e6e;
-    --indigo: #6366f1;
-    --cyan: #22d3ee;
-    --amber: #f59e0b;
+  :root{
+    --bg:#0f1117;
+    --surface:#1a1d27;
+    --surface-2:#222636;
+    --border:#2e3348;
+    --text:#e8eaf0;
+    --muted:#8b91a8;
+    --blue:#4f8ef7;
+    --purple:#a78bfa;
+    --yellow:#f5c542;
+    --green:#34c785;
+    --red:#f06e6e;
+    --indigo:#6366f1;
+    --cyan:#22d3ee;
+    --amber:#f59e0b;
   }
-  * { box-sizing: border-box; margin: 0; padding: 0; }
-  body {
-    background: var(--bg);
-    color: var(--text);
-    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Inter, sans-serif;
-    font-size: 14px;
-    line-height: 1.5;
-    min-height: 100vh;
+  *{box-sizing:border-box;margin:0;padding:0}
+  html,body{background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;font-size:14px;line-height:1.5}
+  body{min-height:100vh;padding-bottom:40px}
+  header.sticky{
+    position:sticky;top:0;z-index:50;
+    background:rgba(15,17,23,.92);
+    backdrop-filter:blur(10px);
+    border-bottom:1px solid var(--border);
+    padding:18px 28px;
+    display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap;
   }
-  .header {
-    position: sticky;
-    top: 0;
-    background: rgba(15, 17, 23, 0.92);
-    backdrop-filter: blur(10px);
-    border-bottom: 1px solid var(--border);
-    padding: 16px 28px;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    z-index: 50;
+  .header-left h1{font-size:20px;font-weight:700;letter-spacing:-.3px}
+  .header-left .date{color:var(--muted);font-size:13px;margin-top:2px}
+  .header-right{display:flex;align-items:center;gap:14px}
+  .updated{color:var(--muted);font-size:12px}
+  .refresh-btn{
+    background:var(--surface-2);color:var(--text);
+    border:1px solid var(--border);
+    padding:8px 14px;border-radius:8px;cursor:pointer;
+    font-size:13px;display:inline-flex;align-items:center;gap:6px;
+    transition:all .15s ease;
   }
-  .header h1 {
-    font-size: 20px;
-    font-weight: 700;
-    letter-spacing: -0.01em;
+  .refresh-btn:hover{background:#2a2f42;border-color:#3d4360}
+  .stat-bar{
+    display:flex;gap:20px;padding:14px 28px;
+    background:var(--surface);border-bottom:1px solid var(--border);
+    flex-wrap:wrap;
   }
-  .header .date {
-    color: var(--muted);
-    font-size: 13px;
-    margin-top: 2px;
+  .stat{display:flex;flex-direction:column;gap:2px}
+  .stat .num{font-size:22px;font-weight:700}
+  .stat .lbl{font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.6px}
+  main{padding:24px 28px;display:flex;flex-direction:column;gap:20px}
+  .urgent{
+    background:linear-gradient(135deg,rgba(240,110,110,.12),rgba(240,110,110,.04));
+    border:1px solid rgba(240,110,110,.4);
+    border-radius:14px;padding:20px;
   }
-  .refresh-btn {
-    background: var(--surface);
-    border: 1px solid var(--border);
-    color: var(--text);
-    padding: 8px 14px;
-    border-radius: 8px;
-    cursor: pointer;
-    font-size: 13px;
-    transition: all 0.15s;
+  .urgent .card-title{color:var(--red)}
+  .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(340px,1fr));gap:20px}
+  .card{
+    background:var(--surface);border:1px solid var(--border);
+    border-radius:14px;padding:18px;display:flex;flex-direction:column;gap:12px;
   }
-  .refresh-btn:hover { background: var(--surface-2); border-color: var(--blue); }
-  .container { max-width: 1400px; margin: 0 auto; padding: 24px 28px 48px; }
-  .stat-bar {
-    display: grid;
-    grid-template-columns: repeat(4, 1fr);
-    gap: 12px;
-    margin-bottom: 24px;
+  .card-title{
+    display:flex;align-items:center;gap:10px;
+    font-size:15px;font-weight:600;letter-spacing:-.2px;
+    padding-bottom:10px;border-bottom:1px solid var(--border);margin-bottom:4px;
   }
-  .stat {
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: 10px;
-    padding: 14px 16px;
+  .card-title .accent{width:8px;height:8px;border-radius:50%}
+  .card-cal .accent{background:var(--blue)}
+  .card-slack .accent{background:var(--purple)}
+  .card-mail .accent{background:var(--yellow)}
+  .card-notion .accent{background:var(--green)}
+  .item{
+    display:flex;gap:12px;padding:10px 0;
+    border-bottom:1px solid rgba(46,51,72,.5);
   }
-  .stat-label { color: var(--muted); font-size: 11px; text-transform: uppercase; letter-spacing: 0.05em; }
-  .stat-value { font-size: 22px; font-weight: 700; margin-top: 4px; }
-  .must-do {
-    background: linear-gradient(135deg, rgba(240, 110, 110, 0.08), rgba(240, 110, 110, 0.02));
-    border: 1px solid rgba(240, 110, 110, 0.35);
-    border-left: 4px solid var(--red);
-    border-radius: 12px;
-    padding: 20px 22px;
-    margin-bottom: 24px;
+  .item:last-child{border-bottom:none;padding-bottom:0}
+  .item .dot{width:9px;height:9px;border-radius:50%;margin-top:6px;flex-shrink:0}
+  .item .body{flex:1;min-width:0}
+  .item .title{font-size:14px;font-weight:500;color:var(--text);margin-bottom:4px;display:flex;flex-wrap:wrap;gap:6px;align-items:center}
+  .item .meta{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:4px}
+  .item .snippet{font-size:12.5px;color:var(--muted);display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+  .item a.link{color:var(--blue);font-size:12px;text-decoration:none;margin-top:4px;display:inline-block}
+  .item a.link:hover{text-decoration:underline}
+  .badge{
+    font-size:10.5px;font-weight:600;padding:3px 8px;border-radius:999px;
+    text-transform:uppercase;letter-spacing:.4px;
   }
-  .must-do h2 {
-    font-size: 15px;
-    color: var(--red);
-    margin-bottom: 14px;
-    display: flex;
-    align-items: center;
-    gap: 8px;
+  .badge-action{background:rgba(52,199,133,.15);color:#7ee2b3;border:1px solid rgba(52,199,133,.3)}
+  .badge-dm{background:rgba(99,102,241,.18);color:#a5a8f5;border:1px solid rgba(99,102,241,.35)}
+  .badge-group{background:rgba(34,211,238,.15);color:#86dff0;border:1px solid rgba(34,211,238,.3)}
+  .badge-task{background:rgba(167,139,250,.15);color:#cbb8fb;border:1px solid rgba(167,139,250,.3)}
+  .badge-now{background:rgba(240,110,110,.18);color:#f29393;border:1px solid rgba(240,110,110,.4)}
+  .badge-soon{background:rgba(245,158,11,.18);color:#f5c061;border:1px solid rgba(245,158,11,.35)}
+  .badge-time{background:rgba(79,142,247,.15);color:#86b0f7;border:1px solid rgba(79,142,247,.3)}
+  .badge-skip{background:rgba(139,145,168,.12);color:var(--muted);border:1px solid rgba(139,145,168,.2)}
+  .empty{color:var(--muted);font-size:13px;padding:14px 0;text-align:center;font-style:italic}
+  footer{
+    text-align:center;color:var(--muted);font-size:11.5px;
+    padding:24px 28px 8px;border-top:1px solid var(--border);margin-top:30px;
   }
-  .grid {
-    display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    gap: 16px;
+  footer a{color:var(--muted)}
+  @media (max-width:560px){
+    header.sticky{padding:14px 16px}
+    .stat-bar{padding:12px 16px;gap:14px}
+    main{padding:18px 16px}
+    .header-left h1{font-size:17px}
   }
-  @media (max-width: 900px) { .grid { grid-template-columns: 1fr; } .stat-bar { grid-template-columns: repeat(2, 1fr); } }
-  .card {
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: 12px;
-    padding: 18px 20px;
-  }
-  .card-header {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    margin-bottom: 14px;
-    padding-bottom: 12px;
-    border-bottom: 1px solid var(--border);
-  }
-  .card-dot {
-    width: 10px;
-    height: 10px;
-    border-radius: 50%;
-  }
-  .card-title { font-size: 14px; font-weight: 600; }
-  .card-count { color: var(--muted); font-size: 12px; margin-left: auto; }
-  .item {
-    padding: 10px 0;
-    border-bottom: 1px solid rgba(46, 51, 72, 0.5);
-  }
-  .item:last-child { border-bottom: none; }
-  .item-head {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    flex-wrap: wrap;
-    margin-bottom: 4px;
-  }
-  .dot-sm {
-    width: 7px;
-    height: 7px;
-    border-radius: 50%;
-    flex-shrink: 0;
-  }
-  .item-title {
-    font-weight: 600;
-    font-size: 13.5px;
-    color: var(--text);
-    text-decoration: none;
-  }
-  .item-title:hover { color: var(--blue); text-decoration: underline; }
-  .item-snippet {
-    color: var(--muted);
-    font-size: 12.5px;
-    margin-top: 4px;
-    margin-left: 15px;
-    display: -webkit-box;
-    -webkit-line-clamp: 2;
-    -webkit-box-orient: vertical;
-    overflow: hidden;
-  }
-  .badge {
-    display: inline-block;
-    padding: 2px 8px;
-    border-radius: 4px;
-    font-size: 10.5px;
-    font-weight: 600;
-    text-transform: uppercase;
-    letter-spacing: 0.04em;
-  }
-  .badge-action { background: rgba(52, 199, 133, 0.15); color: var(--green); }
-  .badge-dm { background: rgba(99, 102, 241, 0.18); color: var(--indigo); }
-  .badge-group { background: rgba(34, 211, 238, 0.15); color: var(--cyan); }
-  .badge-task { background: rgba(167, 139, 250, 0.18); color: var(--purple); }
-  .badge-now { background: rgba(240, 110, 110, 0.18); color: var(--red); }
-  .badge-soon { background: rgba(245, 158, 11, 0.18); color: var(--amber); }
-  .badge-time { background: var(--surface-2); color: var(--muted); }
-  .footer {
-    margin-top: 32px;
-    padding-top: 18px;
-    border-top: 1px solid var(--border);
-    color: var(--muted);
-    font-size: 12px;
-    display: flex;
-    justify-content: space-between;
-    flex-wrap: wrap;
-    gap: 8px;
-  }
-  a { color: inherit; }
-  .meta { color: var(--muted); font-size: 12px; }
-  .empty { color: var(--muted); font-size: 13px; padding: 8px 0; font-style: italic; }
 </style>
 </head>
 <body>
-<div class="header">
-  <div>
+
+<header class="sticky">
+  <div class="header-left">
     <h1>Juan's Focus Board</h1>
-    <div class="date" id="hdr-date">Monday, May 11, 2026</div>
+    <div class="date" id="todayDate">Thursday, May 14, 2026</div>
   </div>
-  <button class="refresh-btn" onclick="window.location.reload()">&#8635; Refresh</button>
+  <div class="header-right">
+    <span class="updated" id="updated">Updated just now</span>
+    <button class="refresh-btn" onclick="window.location.reload()">↻ Refresh</button>
+  </div>
+</header>
+
+<div class="stat-bar">
+  <div class="stat"><span class="num">3</span><span class="lbl">Meetings</span></div>
+  <div class="stat"><span class="num">2</span><span class="lbl">Slack threads</span></div>
+  <div class="stat"><span class="num">0</span><span class="lbl">Action emails</span></div>
+  <div class="stat"><span class="num">17</span><span class="lbl">Open tasks</span></div>
 </div>
 
-<div class="container">
+<main>
 
-  <div class="stat-bar">
-    <div class="stat"><div class="stat-label">Meetings today</div><div class="stat-value">3</div></div>
-    <div class="stat"><div class="stat-label">Slack threads</div><div class="stat-value">2</div></div>
-    <div class="stat"><div class="stat-label">Action emails</div><div class="stat-value">0</div></div>
-    <div class="stat"><div class="stat-label">Open tasks</div><div class="stat-value">18</div></div>
-  </div>
-
-  <div class="must-do">
-    <h2>&#9889; Must-do today</h2>
+  <!-- MUST DO TODAY -->
+  <section class="urgent">
+    <div class="card-title"><span class="accent" style="background:var(--red)"></span>⚡ Must-do today</div>
 
     <div class="item">
-      <div class="item-head">
-        <span class="dot-sm" style="background: var(--red)"></span>
-        <a class="item-title" href="https://meet.google.com/hvf-fnad-xqm" target="_blank">Debrief &mdash; Paquetexpress</a>
-        <span class="badge badge-now">2:00 PM</span>
-        <span class="badge badge-time">Google Meet</span>
+      <div class="dot" style="background:var(--red)"></div>
+      <div class="body">
+        <div class="title">SOLES PEX / GEO ESTF — Luis Bermúdez
+          <span class="badge badge-now">15:30 today</span>
+          <span class="badge badge-action">Geocoding tests</span>
+        </div>
+        <div class="snippet">Luis confirmed afternoon testing on geocoding via Google API (extra field "colonia"). Joining via Google Meet.</div>
+        <a class="link" href="https://meet.google.com/yyc-wwky-kfg" target="_blank">Join Google Meet →</a>
       </div>
-      <div class="item-snippet">Post-meeting debrief with David Anaya, Guillermo Far&iacute;as, Tom&aacute;s Mart&iacute;nez. Bring takeaways from this morning's PLANEACION RUTEO INTELIGENTE session with the Paquetexpress team.</div>
     </div>
 
     <div class="item">
-      <div class="item-head">
-        <span class="dot-sm" style="background: var(--green)"></span>
-        <a class="item-title" href="https://simplit-solutions.slack.com/archives/D09QK6CCSN8/p1778516186393509" target="_blank">ARES &rarr; replicar reporte PEX para producto / todos los clientes</a>
-        <span class="badge badge-action">Action</span>
-        <span class="badge badge-soon">Jue/Vie</span>
+      <div class="dot" style="background:var(--red)"></div>
+      <div class="body">
+        <div class="title">PEX cierre — Mercasid closed (response pending)
+          <span class="badge badge-group">Group DM</span>
+          <span class="badge badge-action">Reply</span>
+        </div>
+        <div class="snippet">Alvaro asked for a summary; David confirmed he has it and Salvador shared the MERCASID PPT. Confirm/align next steps with the team.</div>
+        <a class="link" href="https://simplit-solutions.slack.com/archives/C0AS7FF66QG/p1778787965125769" target="_blank">Open Slack thread →</a>
       </div>
-      <div class="item-snippet">David: "Crea una tarea en tu dashboard para verlo el jueves o viernes por fa." Analizar replicar el reporte que manejamos para PEX como buena pr&aacute;ctica con producto.</div>
     </div>
 
     <div class="item">
-      <div class="item-head">
-        <span class="dot-sm" style="background: var(--cyan)"></span>
-        <a class="item-title" href="https://simplit-solutions.slack.com/archives/C0AAA2DDQMT/p1778511602477399" target="_blank">SIGMA Alimentos demo &mdash; apoyar a Salvador</a>
-        <span class="badge badge-group">Group DM</span>
-        <span class="badge badge-soon">Demo mi&eacute;rcoles</span>
+      <div class="dot" style="background:var(--amber)"></div>
+      <div class="body">
+        <div class="title">QA: Pruebas App backlog (mobile)
+          <span class="badge badge-task">17 open</span>
+          <span class="badge badge-soon">Triage</span>
+        </div>
+        <div class="snippet">Active mobile QA tickets including DEV-2628 (galería extrafield), DEV-2629 (logout overlay), DEV-2630 (recheckout fotos) — pick top 3 to clear today.</div>
+        <a class="link" href="https://www.notion.so/1eebbd09805c809f96a1ef022ec2c18e" target="_blank">Open Notion Tasks →</a>
       </div>
-      <div class="item-snippet">35 veh&iacute;culos, 149 pedidos. David iter&oacute; m&uacute;ltiples escenarios; 6 pedidos quedan fuera por capacidad. Salvador es responsable; JD puede guiar para mejor resultado. Revisar ma&ntilde;ana.</div>
     </div>
 
     <div class="item">
-      <div class="item-head">
-        <span class="dot-sm" style="background: var(--indigo)"></span>
-        <a class="item-title" href="https://simplit-solutions.slack.com/archives/D09QK6CCSN8/p1778511081674469" target="_blank">Compartir respuesta del equipo en grupo interno con Willy</a>
-        <span class="badge badge-dm">DM</span>
-        <span class="badge badge-soon">Hoy</span>
+      <div class="dot" style="background:var(--amber)"></div>
+      <div class="body">
+        <div class="title">PLANEACION RUTEO INTELIGENTE — Paquetexpress
+          <span class="badge badge-time">08:00–10:30</span>
+          <span class="badge badge-soon">Recurring</span>
+        </div>
+        <div class="snippet">Weekly routing planning sync with Aracely Morales and the Paquetexpress estación team via Microsoft Teams.</div>
+        <a class="link" href="https://teams.microsoft.com/meet/21921164141029?p=UUjGZEnPfpo1h1SojG" target="_blank">Join Teams →</a>
       </div>
-      <div class="item-snippet">David: "Por fa comparte en el grupo interno que tenemos con Willy el equipo ese responde que te dio." Alineaci&oacute;n pendiente antes de dar respuesta completa.</div>
     </div>
-  </div>
+  </section>
 
   <div class="grid">
 
-    <!-- Calendar -->
-    <div class="card">
-      <div class="card-header">
-        <span class="card-dot" style="background: var(--blue)"></span>
-        <span class="card-title">&#128197; Calendar &mdash; Today</span>
-        <span class="card-count">5 events</span>
+    <!-- CALENDAR -->
+    <section class="card card-cal">
+      <div class="card-title"><span class="accent"></span>📅 Calendar — Today</div>
+
+      <div class="item">
+        <div class="dot" style="background:var(--blue)"></div>
+        <div class="body">
+          <div class="title">PLANEACION RUTEO INTELIGENTE
+            <span class="badge badge-time">08:00–10:30</span>
+          </div>
+          <div class="snippet">Teams meeting · Paquetexpress (organizer: Aracely Morales). Weekly routing planning.</div>
+          <a class="link" href="https://teams.microsoft.com/meet/21921164141029?p=UUjGZEnPfpo1h1SojG" target="_blank">Join Teams →</a>
+        </div>
       </div>
 
       <div class="item">
-        <div class="item-head">
-          <span class="dot-sm" style="background: var(--muted)"></span>
-          <a class="item-title" href="https://teams.microsoft.com/meet/21921164141029?p=UUjGZEnPfpo1h1SojG" target="_blank">Planeaci&oacute;n Ruteo Inteligente</a>
-          <span class="badge badge-time">8:00&ndash;10:30</span>
-          <span class="badge badge-group">Paquetexpress</span>
+        <div class="dot" style="background:var(--blue)"></div>
+        <div class="body">
+          <div class="title">PEX
+            <span class="badge badge-time">08:30–10:00</span>
+          </div>
+          <div class="snippet">Internal PEX block — overlaps with the Paquetexpress sync.</div>
+          <a class="link" href="https://www.google.com/calendar/event?eid=NjhwNjJvaGo2MWkzYWJiM2NvcjM0YjlrYzRzMzZiOW82a3FtYWI5amM4cjZjb2hpNmNyNjZjaGc2byBqdWFuLnZhc2NvbmV6QHNpbXBsaXQtc29sdXRpb25zLmNvbQ" target="_blank">Open event →</a>
         </div>
-        <div class="item-snippet">Sesi&oacute;n con Aracely Morales y equipo Paquetexpress (Teams). &#10003; Pasado.</div>
       </div>
 
       <div class="item">
-        <div class="item-head">
-          <span class="dot-sm" style="background: var(--muted)"></span>
-          <a class="item-title" href="https://meet.google.com/kos-mejc-qzv" target="_blank">Weekly del Norte</a>
-          <span class="badge badge-time">10:00&ndash;11:00</span>
+        <div class="dot" style="background:var(--blue)"></div>
+        <div class="body">
+          <div class="title">SOLES PEX / GEO ESTF
+            <span class="badge badge-time">15:30–16:15</span>
+            <span class="badge badge-now">Meet</span>
+          </div>
+          <div class="snippet">With Luis Bermúdez. Geocoding tests on Google API extra fields.</div>
+          <a class="link" href="https://meet.google.com/yyc-wwky-kfg" target="_blank">Join Google Meet →</a>
         </div>
-        <div class="item-snippet">Sync con David, Carlos, Salvador, Azalea, Johan, Natalia, Daniela. &#10003; Pasado.</div>
       </div>
 
       <div class="item">
-        <div class="item-head">
-          <span class="dot-sm" style="background: var(--muted)"></span>
-          <a class="item-title" href="https://meet.google.com/fva-sxeg-khs" target="_blank">Juan Diego / David</a>
-          <span class="badge badge-time">11:00&ndash;11:30</span>
-          <span class="badge badge-dm">1:1</span>
+        <div class="dot" style="background:var(--muted)"></div>
+        <div class="body">
+          <div class="title"><em>Almuerzo</em>
+            <span class="badge badge-skip">13:00–14:00</span>
+          </div>
+          <div class="snippet">Lunch block.</div>
         </div>
-        <div class="item-snippet">1:1 semanal con David Anaya.</div>
       </div>
 
       <div class="item">
-        <div class="item-head">
-          <span class="dot-sm" style="background: var(--red)"></span>
-          <a class="item-title" href="https://meet.google.com/hvf-fnad-xqm" target="_blank">Debrief &mdash; Paquetexpress</a>
-          <span class="badge badge-now">2:00&ndash;3:00 PM</span>
-          <span class="badge badge-group">Equipo</span>
+        <div class="dot" style="background:var(--muted)"></div>
+        <div class="body">
+          <div class="title"><em>Out of office</em>
+            <span class="badge badge-skip">17:30 onwards</span>
+          </div>
+          <div class="snippet">Evening OOO recurring block.</div>
         </div>
-        <div class="item-snippet">David, Guillermo Far&iacute;as, Tom&aacute;s Mart&iacute;nez (Victor Gonz&aacute;lez y Alvaro Echeverr&iacute;a opcionales). Google Meet.</div>
+      </div>
+    </section>
+
+    <!-- SLACK -->
+    <section class="card card-slack">
+      <div class="card-title"><span class="accent"></span>💬 Slack — Needs reply</div>
+
+      <div class="item">
+        <div class="dot" style="background:var(--purple)"></div>
+        <div class="body">
+          <div class="title">Mercasid cierre — Álvaro / David / Salvador
+            <span class="badge badge-group">Group DM</span>
+            <span class="badge badge-action">Sync</span>
+          </div>
+          <div class="snippet">Álvaro: "JD me pasas resumen de lo que ya sepas?" → David replied he has the resumen. Salvador shared the MERCASID PPT for review.</div>
+          <a class="link" href="https://simplit-solutions.slack.com/archives/C0AS7FF66QG/p1778787509284859" target="_blank">Open thread →</a>
+        </div>
       </div>
 
       <div class="item">
-        <div class="item-head">
-          <span class="dot-sm" style="background: var(--muted)"></span>
-          <span class="item-title">Almuerzo</span>
-          <span class="badge badge-time">12:00&ndash;1:00</span>
+        <div class="dot" style="background:var(--purple)"></div>
+        <div class="body">
+          <div class="title">Luis Bermúdez — Pruebas geocoding
+            <span class="badge badge-dm">DM</span>
+            <span class="badge badge-action">Confirm</span>
+          </div>
+          <div class="snippet">"sii puede ser por la tarde profas?" — testing scheduled for 15:30 (SOLES PEX / GEO ESTF meeting).</div>
+          <a class="link" href="https://simplit-solutions.slack.com/archives/D09QZ0G7QN6/p1778771409206529" target="_blank">Open DM →</a>
         </div>
-        <div class="item-snippet"><em>Bloque personal (lunch).</em></div>
-      </div>
-    </div>
-
-    <!-- Slack -->
-    <div class="card">
-      <div class="card-header">
-        <span class="card-dot" style="background: var(--purple)"></span>
-        <span class="card-title">&#128172; Slack &mdash; Threads needing reply</span>
-        <span class="card-count">2 active</span>
       </div>
 
       <div class="item">
-        <div class="item-head">
-          <span class="dot-sm" style="background: var(--indigo)"></span>
-          <a class="item-title" href="https://simplit-solutions.slack.com/archives/D09QK6CCSN8/p1778516186393509?thread_ts=1778516186.393509&cid=D09QK6CCSN8" target="_blank">David Anaya &mdash; DM thread (2 temas)</a>
-          <span class="badge badge-dm">DM</span>
-          <span class="badge badge-action">Action</span>
+        <div class="dot" style="background:var(--muted)"></div>
+        <div class="body">
+          <div class="title">David Anaya — Approved
+            <span class="badge badge-dm">DM</span>
+            <span class="badge badge-skip">No action</span>
+          </div>
+          <div class="snippet">"Lo veo bien, dale." — approval received earlier today.</div>
+          <a class="link" href="https://simplit-solutions.slack.com/archives/D09QK6CCSN8/p1778749343033559" target="_blank">Open DM →</a>
         </div>
-        <div class="item-snippet">"JD se me pasaron 2 temas." (1) Facturas pedidas, esperando respuesta. (2) ARES quiere replicar reporte PEX como buena pr&aacute;ctica con producto. Crear tarea para jue/vie.</div>
+      </div>
+    </section>
+
+    <!-- EMAIL -->
+    <section class="card card-mail">
+      <div class="card-title"><span class="accent"></span>✉️ Email — Action needed</div>
+
+      <div class="empty">Inbox is mostly automated SimpliRoute prototype/report confirmations and a past calendar invite. No action emails today. ✅</div>
+
+      <div class="item">
+        <div class="dot" style="background:var(--muted)"></div>
+        <div class="body">
+          <div class="title">5× SimpliRoute "Solicitud ingresada" notifications
+            <span class="badge badge-skip">Automated</span>
+          </div>
+          <div class="snippet">Confirmations of 5 Paquetexpress prototype/report requests submitted today — informational only.</div>
+          <a class="link" href="https://mail.google.com/mail/u/0/#inbox" target="_blank">Open inbox →</a>
+        </div>
       </div>
 
       <div class="item">
-        <div class="item-head">
-          <span class="dot-sm" style="background: var(--cyan)"></span>
-          <a class="item-title" href="https://simplit-solutions.slack.com/archives/C0AAA2DDQMT/p1778511602477399" target="_blank">SIGMA Alimentos demo &mdash; Group DM con Salvador</a>
-          <span class="badge badge-group">Group DM</span>
-          <span class="badge badge-soon">Demo mi&eacute;rcoles</span>
+        <div class="dot" style="background:var(--muted)"></div>
+        <div class="body">
+          <div class="title">Reporte PEX — Calendar invite from David Anaya
+            <span class="badge badge-skip">Past event</span>
+          </div>
+          <div class="snippet">Invitation for Wed May 13, 3pm – 3:30pm (already past).</div>
+          <a class="link" href="https://mail.google.com/mail/u/0/#inbox/19e22de19aa3d0a8" target="_blank">Open email →</a>
         </div>
-        <div class="item-snippet">David comparti&oacute; cuenta de demo (david.anaya+sigdist@simpliroute.com). 35 veh&iacute;culos, 149 pedidos, 6 fuera de ruta. Apoyar a Salvador con gu&iacute;a.</div>
       </div>
-    </div>
+    </section>
 
-    <!-- Email -->
-    <div class="card">
-      <div class="card-header">
-        <span class="card-dot" style="background: var(--yellow)"></span>
-        <span class="card-title">&#9993;&#65039; Email &mdash; Action needed</span>
-        <span class="card-count">Inbox zero</span>
-      </div>
-      <div class="empty">&#9989; No unread action emails in the last 3 days. Nice work.</div>
-    </div>
+    <!-- NOTION -->
+    <section class="card card-notion">
+      <div class="card-title"><span class="accent"></span>📝 Notion — Open tasks</div>
 
-    <!-- Notion -->
-    <div class="card">
-      <div class="card-header">
-        <span class="card-dot" style="background: var(--green)"></span>
-        <span class="card-title">&#128221; Notion &mdash; Open tasks</span>
-        <span class="card-count">18+ in board</span>
+      <div class="item">
+        <div class="dot" style="background:var(--green)"></div>
+        <div class="body">
+          <div class="title">DEV-2628 SOL-5986 — Extrafield imagen no debe guardar fotos en galería
+            <span class="badge badge-task">QA Mobile</span>
+            <span class="badge badge-soon">Active</span>
+          </div>
+          <div class="snippet">Latest active mobile QA ticket — verify extrafield images don't save to device gallery.</div>
+          <a class="link" href="https://www.notion.so/34bbbd09805c810db818d53ac0eee65f" target="_blank">Open ticket →</a>
+        </div>
       </div>
 
       <div class="item">
-        <div class="item-head">
-          <span class="dot-sm" style="background: var(--green)"></span>
-          <a class="item-title" href="https://www.notion.so/35dbbd09805c805eac40d207a2886648" target="_blank">BIT-SOL-6435 &mdash; Nginx Timeout 1200seg icarus-api</a>
-          <span class="badge badge-task">Active</span>
-          <span class="badge badge-soon">Updated today</span>
+        <div class="dot" style="background:var(--green)"></div>
+        <div class="body">
+          <div class="title">DEV-2629 SOL-5716 — Logout overlay
+            <span class="badge badge-task">QA Mobile</span>
+          </div>
+          <div class="snippet">Overlay de logging out que bloquee interacción y garantice cierre de sesión.</div>
+          <a class="link" href="https://www.notion.so/34abbd09805c81d59ea1fdf7c0e686fe" target="_blank">Open ticket →</a>
         </div>
-        <div class="item-snippet">Risk assessment: may impact data consistency, resource costs, customer ops. Reviewed today at 11:05 AM.</div>
       </div>
 
       <div class="item">
-        <div class="item-head">
-          <span class="dot-sm" style="background: var(--purple)"></span>
-          <a class="item-title" href="https://www.notion.so/358bbd09805c8144b9b5fa04c1955d4a" target="_blank">Plan-QA &mdash; Upgrade react-native-mmkv v4 (16KB page size Android)</a>
-          <span class="badge badge-task">QA Plan</span>
+        <div class="dot" style="background:var(--green)"></div>
+        <div class="body">
+          <div class="title">DEV-2630 SOL-5781 — Recheckout fotos
+            <span class="badge badge-task">QA Mobile</span>
+          </div>
+          <div class="snippet">Inconsistencia al borrar fotos de evidencia en carrusel durante recheckout.</div>
+          <a class="link" href="https://www.notion.so/343bbd09805c8105bcdad97bf1270a22" target="_blank">Open ticket →</a>
         </div>
-        <div class="item-snippet">Most recent QA test plan ticket on the Tasks board.</div>
       </div>
 
       <div class="item">
-        <div class="item-head">
-          <span class="dot-sm" style="background: var(--purple)"></span>
-          <a class="item-title" href="https://www.notion.so/34bbbd09805c810db818d53ac0eee65f" target="_blank">DEV-2628 / SOL-5986 &mdash; Extrafield imagen no guardar fotos en galer&iacute;a</a>
-          <span class="badge badge-task">Pruebas App</span>
+        <div class="dot" style="background:var(--muted)"></div>
+        <div class="body">
+          <div class="title">+14 more Pruebas App tickets in backlog
+            <span class="badge badge-task">Backlog</span>
+          </div>
+          <div class="snippet">DEV-2559, DEV-2534, DEV-2470, DEV-2368, DEV-2366, DEV-2324, DEV-2220, DEV-2106, DEV-1920 (x3), DEV-SOL-5065 (x2), Plan-QA Upgrade react-native-mmkv v4…</div>
+          <a class="link" href="https://www.notion.so/1eebbd09805c809f96a1ef022ec2c18e" target="_blank">Open full board →</a>
         </div>
-        <div class="item-snippet">Mobile testing ticket: extrafield image should not persist to gallery.</div>
       </div>
-
-      <div class="item">
-        <div class="item-head">
-          <span class="dot-sm" style="background: var(--muted)"></span>
-          <a class="item-title" href="https://www.notion.so/1eebbd09805c809f96a1ef022ec2c18e" target="_blank">+ 15 more "Pruebas App" tickets in queue</a>
-          <span class="badge badge-task">Backlog</span>
-        </div>
-        <div class="item-snippet">DEV-1920, DEV-2106, DEV-2220, DEV-2324, DEV-2366, DEV-2368, DEV-2470, DEV-2534, DEV-2559, DEV-2629, DEV-2630, etc.</div>
-      </div>
-    </div>
-
-  </div>
-
-  <div class="footer">
-    <div>&#128231; juan.vasconez@simplit-solutions.com</div>
-    <div>Generated <span id="ts"></span> &middot; <span id="rel">just now</span></div>
-  </div>
-
-</div>
-
-<script>
-  (function() {
-    var now = new Date();
-    var fmtDate = now.toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
-    var hdr = document.getElementById('hdr-date');
-    if (hdr) hdr.textContent = fmtDate;
-    var generated = now;
-    var ts = document.getElementById('ts');
-    if (ts) ts.textContent = generated.toLocaleString('en-US', { hour: '2-digit', minute: '2-digit', timeZoneName: 'short' });
-    function updateRel() {
-      var mins = Math.floor((Date.now() - generated.getTime()) / 60000);
-      var rel = document.getElementById('rel');
-      if (!rel) return;
-      if (mins < 1) rel.textContent = 'just now';
-      else if (mins === 1) rel.textContent = '1 min ago';
-      else if (mins < 60) rel.textContent = mins + ' min ago';
-      else rel.textContent = Math.floor(mins/60) + 'h ' + (mins%60) + 'm ago';
-    }
-    updateRel();
-    setInterval(updateRel, 30000);
-  })();
-</script>
-
-</body>
-</html>
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    
