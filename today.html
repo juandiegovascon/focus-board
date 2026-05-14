@@ -129,7 +129,7 @@
   <div class="stat"><span class="num">3</span><span class="lbl">Meetings</span></div>
   <div class="stat"><span class="num">2</span><span class="lbl">Slack threads</span></div>
   <div class="stat"><span class="num">0</span><span class="lbl">Action emails</span></div>
-  <div class="stat"><span class="num">17</span><span class="lbl">Open tasks</span></div>
+  <div class="stat"><span class="num">0</span><span class="lbl">Open tasks</span></div>
 </div>
 
 <main>
@@ -159,18 +159,6 @@
         </div>
         <div class="snippet">Alvaro asked for a summary; David confirmed he has it and Salvador shared the MERCASID PPT. Confirm/align next steps with the team.</div>
         <a class="link" href="https://simplit-solutions.slack.com/archives/C0AS7FF66QG/p1778787965125769" target="_blank">Open Slack thread →</a>
-      </div>
-    </div>
-
-    <div class="item">
-      <div class="dot" style="background:var(--amber)"></div>
-      <div class="body">
-        <div class="title">QA: Pruebas App backlog (mobile)
-          <span class="badge badge-task">17 open</span>
-          <span class="badge badge-soon">Triage</span>
-        </div>
-        <div class="snippet">Active mobile QA tickets including DEV-2628 (galería extrafield), DEV-2629 (logout overlay), DEV-2630 (recheckout fotos) — pick top 3 to clear today.</div>
-        <a class="link" href="https://www.notion.so/1eebbd09805c809f96a1ef022ec2c18e" target="_blank">Open Notion Tasks →</a>
       </div>
     </div>
 
@@ -322,47 +310,54 @@
     <section class="card card-notion">
       <div class="card-title"><span class="accent"></span>📝 Notion — Open tasks</div>
 
-      <div class="item">
-        <div class="dot" style="background:var(--green)"></div>
-        <div class="body">
-          <div class="title">DEV-2628 SOL-5986 — Extrafield imagen no debe guardar fotos en galería
-            <span class="badge badge-task">QA Mobile</span>
-            <span class="badge badge-soon">Active</span>
-          </div>
-          <div class="snippet">Latest active mobile QA ticket — verify extrafield images don't save to device gallery.</div>
-          <a class="link" href="https://www.notion.so/34bbbd09805c810db818d53ac0eee65f" target="_blank">Open ticket →</a>
-        </div>
-      </div>
+      <div class="empty">No open Notion tasks assigned to you today. ✅<br><span style="font-size:11.5px">(The Pruebas App tickets belong to the QA Mobile team, not your queue.)</span></div>
+    </section>
 
-      <div class="item">
-        <div class="dot" style="background:var(--green)"></div>
-        <div class="body">
-          <div class="title">DEV-2629 SOL-5716 — Logout overlay
-            <span class="badge badge-task">QA Mobile</span>
-          </div>
-          <div class="snippet">Overlay de logging out que bloquee interacción y garantice cierre de sesión.</div>
-          <a class="link" href="https://www.notion.so/34abbd09805c81d59ea1fdf7c0e686fe" target="_blank">Open ticket →</a>
-        </div>
-      </div>
+  </div>
 
-      <div class="item">
-        <div class="dot" style="background:var(--green)"></div>
-        <div class="body">
-          <div class="title">DEV-2630 SOL-5781 — Recheckout fotos
-            <span class="badge badge-task">QA Mobile</span>
-          </div>
-          <div class="snippet">Inconsistencia al borrar fotos de evidencia en carrusel durante recheckout.</div>
-          <a class="link" href="https://www.notion.so/343bbd09805c8105bcdad97bf1270a22" target="_blank">Open ticket →</a>
-        </div>
-      </div>
+</main>
 
-      <div class="item">
-        <div class="dot" style="background:var(--muted)"></div>
-        <div class="body">
-          <div class="title">+14 more Pruebas App tickets in backlog
-            <span class="badge badge-task">Backlog</span>
-          </div>
-          <div class="snippet">DEV-2559, DEV-2534, DEV-2470, DEV-2368, DEV-2366, DEV-2324, DEV-2220, DEV-2106, DEV-1920 (x3), DEV-SOL-5065 (x2), Plan-QA Upgrade react-native-mmkv v4…</div>
-          <a class="link" href="https://www.notion.so/1eebbd09805c809f96a1ef022ec2c18e" target="_blank">Open full board →</a>
-        </div>
-      </div>
+<footer>
+  <div>juan.vasconez@simplit-solutions.com · Simplit Solutions</div>
+  <div style="margin-top:4px">Generated <span id="genStamp">2026-05-14 — automated daily refresh</span> · <a href="https://github.com/juandiegovascon/focus-board/blob/main/today.html" target="_blank">View on GitHub</a></div>
+</footer>
+
+<script>
+  // Today's date display
+  (function(){
+    const d = new Date();
+    const opts = {weekday:'long', year:'numeric', month:'long', day:'numeric'};
+    document.getElementById('todayDate').textContent = d.toLocaleDateString('en-US', opts);
+  })();
+
+  // Generated timestamp
+  (function(){
+    const d = new Date();
+    const opts = {hour:'numeric', minute:'2-digit', hour12:true};
+    document.getElementById('genStamp').textContent =
+      d.toLocaleDateString('en-US', {year:'numeric', month:'short', day:'numeric'})
+      + ' at ' + d.toLocaleTimeString('en-US', opts);
+  })();
+
+  // Live "updated X min ago" counter
+  const start = Date.now();
+  function tickUpdated(){
+    const secs = Math.floor((Date.now() - start) / 1000);
+    let txt;
+    if (secs < 30) txt = 'Updated just now';
+    else if (secs < 60) txt = 'Updated < 1 min ago';
+    else if (secs < 3600){
+      const m = Math.floor(secs / 60);
+      txt = 'Updated ' + m + ' min' + (m===1?'':'s') + ' ago';
+    } else {
+      const h = Math.floor(secs / 3600);
+      txt = 'Updated ' + h + ' hour' + (h===1?'':'s') + ' ago';
+    }
+    document.getElementById('updated').textContent = txt;
+  }
+  setInterval(tickUpdated, 15000);
+</script>
+
+</body>
+</html>
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       
