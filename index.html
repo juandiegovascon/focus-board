@@ -10,382 +10,369 @@
     --surface: #1a1d27;
     --border: #2e3348;
     --text: #e8eaf0;
-    --text-muted: #8a92a8;
+    --text-muted: #8892a4;
     --blue: #4f8ef7;
     --purple: #a78bfa;
     --yellow: #f5c542;
     --green: #34c785;
     --red: #f06e6e;
+    --amber: #f59e0b;
     --indigo: #6366f1;
-    --cyan: #06b6d4;
-    --amber: #fbbf24;
+    --cyan: #22d3ee;
   }
   * { box-sizing: border-box; margin: 0; padding: 0; }
-  body {
-    background: var(--bg);
-    color: var(--text);
-    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-    line-height: 1.5;
-    min-height: 100vh;
-  }
-  .container { max-width: 1400px; margin: 0 auto; padding: 0 24px 32px; }
+  body { background: var(--bg); color: var(--text); font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; min-height: 100vh; }
 
-  /* Header */
-  header {
-    position: sticky;
-    top: 0;
-    background: rgba(15, 17, 23, 0.95);
-    backdrop-filter: blur(12px);
+  .header {
+    position: sticky; top: 0; z-index: 100;
+    background: #0d0f1a;
     border-bottom: 1px solid var(--border);
-    z-index: 100;
-    padding: 16px 24px;
-    margin-bottom: 24px;
+    padding: 14px 24px;
+    display: flex; align-items: center; justify-content: space-between;
   }
-  .header-inner {
-    max-width: 1400px;
-    margin: 0 auto;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 16px;
-    flex-wrap: wrap;
-  }
-  .header-title { display: flex; flex-direction: column; gap: 2px; }
-  .header-title h1 { font-size: 22px; font-weight: 700; color: var(--text); }
-  .header-title .date { font-size: 13px; color: var(--text-muted); }
-  .header-right { display: flex; align-items: center; gap: 14px; flex-wrap: wrap; }
-  .last-updated { font-size: 12px; color: var(--text-muted); }
+  .header-left { display: flex; align-items: center; gap: 12px; }
+  .header-left h1 { font-size: 1.2rem; font-weight: 700; letter-spacing: -0.3px; }
+  .header-left .date { color: var(--text-muted); font-size: 0.85rem; }
   .refresh-btn {
-    background: var(--surface);
-    border: 1px solid var(--border);
-    color: var(--text);
-    padding: 7px 14px;
-    border-radius: 6px;
-    cursor: pointer;
-    font-size: 13px;
-    font-weight: 500;
-    transition: all 0.2s;
-    display: flex;
-    align-items: center;
-    gap: 6px;
+    background: var(--surface); border: 1px solid var(--border); color: var(--text);
+    padding: 7px 16px; border-radius: 8px; cursor: pointer; font-size: 0.85rem;
+    transition: background 0.2s;
   }
-  .refresh-btn:hover { background: #242838; border-color: #404668; }
+  .refresh-btn:hover { background: var(--border); }
 
-  .stat-bar { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin-bottom: 24px; }
+  .stat-bar {
+    display: flex; gap: 0; border-bottom: 1px solid var(--border);
+    background: var(--surface);
+  }
   .stat {
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: 10px;
-    padding: 14px 18px;
-    display: flex;
-    flex-direction: column;
-    gap: 4px;
+    flex: 1; padding: 14px 20px; text-align: center;
+    border-right: 1px solid var(--border);
   }
-  .stat .label {
-    font-size: 11px;
-    color: var(--text-muted);
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
-    font-weight: 500;
-  }
-  .stat .value { font-size: 28px; font-weight: 700; color: var(--text); }
+  .stat:last-child { border-right: none; }
+  .stat-value { font-size: 1.6rem; font-weight: 700; line-height: 1; }
+  .stat-label { font-size: 0.72rem; color: var(--text-muted); margin-top: 4px; text-transform: uppercase; letter-spacing: 0.5px; }
+  .stat-blue .stat-value { color: var(--blue); }
+  .stat-purple .stat-value { color: var(--purple); }
+  .stat-yellow .stat-value { color: var(--yellow); }
+  .stat-green .stat-value { color: var(--green); }
 
-  .grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px; margin-bottom: 16px; }
-  .card { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; overflow: hidden; }
+  .main { padding: 20px 24px; max-width: 1400px; margin: 0 auto; }
+  .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 16px; }
+
+  .card {
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: 12px; overflow: hidden;
+  }
   .card-header {
-    padding: 14px 18px;
-    display: flex;
-    align-items: center;
-    gap: 10px;
+    padding: 14px 18px 10px;
     border-bottom: 1px solid var(--border);
+    display: flex; align-items: center; gap: 10px;
   }
-  .card-header h2 { font-size: 15px; font-weight: 600; flex: 1; }
-  .card-header .count {
-    background: rgba(255,255,255,0.06);
-    border-radius: 12px;
-    padding: 2px 10px;
-    font-size: 12px;
-    font-weight: 600;
-    color: var(--text-muted);
-  }
-  .card-icon {
-    width: 28px;
-    height: 28px;
-    border-radius: 7px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 15px;
-    font-weight: 700;
-    color: white;
-  }
-  .card-body { padding: 8px 0; }
-  .card-empty { padding: 22px; text-align: center; color: var(--text-muted); font-size: 13px; }
+  .card-header h2 { font-size: 0.9rem; font-weight: 600; }
+  .card-dot { width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0; }
+  .dot-blue { background: var(--blue); }
+  .dot-purple { background: var(--purple); }
+  .dot-yellow { background: var(--yellow); }
+  .dot-green { background: var(--green); }
+  .dot-red { background: var(--red); }
+  .card-body { padding: 4px 0; }
+
+  .must-do { border-color: #4a2020; background: #1a1010; }
+  .must-do .card-header { border-bottom-color: #4a2020; }
+  .must-do-full { grid-column: 1 / -1; }
+
   .item {
-    padding: 12px 18px;
-    display: flex;
-    align-items: flex-start;
-    gap: 12px;
-    border-bottom: 1px solid rgba(46, 51, 72, 0.4);
-    text-decoration: none;
-    color: var(--text);
+    padding: 10px 18px;
+    border-bottom: 1px solid var(--border);
+    display: flex; flex-direction: column; gap: 4px;
+    text-decoration: none; color: var(--text);
     transition: background 0.15s;
+    cursor: pointer;
   }
-  .item:hover { background: rgba(255,255,255,0.03); }
   .item:last-child { border-bottom: none; }
-  .dot { width: 8px; height: 8px; border-radius: 50%; margin-top: 7px; flex-shrink: 0; }
-  .item-body { flex: 1; min-width: 0; }
-  .item-title {
-    font-size: 14px;
-    font-weight: 600;
-    color: var(--text);
-    margin-bottom: 4px;
-    display: flex;
-    flex-wrap: wrap;
-    gap: 6px;
-    align-items: center;
-  }
-  .item-snippet {
-    font-size: 12.5px;
-    color: var(--text-muted);
-    display: -webkit-box;
-    -webkit-line-clamp: 2;
-    -webkit-box-orient: vertical;
-    overflow: hidden;
-  }
+  .item:hover { background: rgba(255,255,255,0.04); }
+  .item-top { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+  .item-dot { width: 7px; height: 7px; border-radius: 50%; flex-shrink: 0; }
+  .item-title { font-size: 0.88rem; font-weight: 500; flex: 1; min-width: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .item-meta { color: var(--text-muted); font-size: 0.78rem; margin-left: 15px; }
+  .item-snippet { color: var(--text-muted); font-size: 0.78rem; margin-left: 15px; line-height: 1.5; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+
   .badge {
-    font-size: 10.5px;
-    padding: 2px 8px;
-    border-radius: 4px;
-    font-weight: 600;
-    text-transform: uppercase;
-    letter-spacing: 0.3px;
-    display: inline-flex;
-    align-items: center;
+    font-size: 0.68rem; font-weight: 600; padding: 2px 7px; border-radius: 4px;
+    text-transform: uppercase; letter-spacing: 0.4px; white-space: nowrap;
   }
-  .badge-action { background: rgba(52,199,133,0.18); color: var(--green); }
-  .badge-dm { background: rgba(99,102,241,0.18); color: var(--indigo); }
-  .badge-group { background: rgba(6,182,212,0.18); color: var(--cyan); }
-  .badge-task { background: rgba(167,139,250,0.18); color: var(--purple); }
-  .badge-now { background: rgba(240,110,110,0.18); color: var(--red); }
-  .badge-soon { background: rgba(251,191,36,0.18); color: var(--amber); }
-  .badge-time { background: rgba(255,255,255,0.06); color: var(--text-muted); }
+  .badge-now { background: rgba(240,110,110,0.2); color: var(--red); }
+  .badge-soon { background: rgba(245,158,11,0.2); color: var(--amber); }
+  .badge-action { background: rgba(52,199,133,0.2); color: var(--green); }
+  .badge-dm { background: rgba(99,102,241,0.2); color: var(--indigo); }
+  .badge-group { background: rgba(34,211,238,0.2); color: var(--cyan); }
+  .badge-task { background: rgba(167,139,250,0.2); color: var(--purple); }
+  .badge-meet { background: rgba(79,142,247,0.2); color: var(--blue); }
+  .badge-muted { background: rgba(80,80,80,0.2); color: #666; }
 
-  .urgent {
-    background: linear-gradient(135deg, rgba(240,110,110,0.08), rgba(240,110,110,0.02));
-    border: 1px solid rgba(240,110,110,0.35);
-    border-radius: 12px;
-    margin-bottom: 16px;
-  }
-  .urgent .card-header { border-bottom-color: rgba(240,110,110,0.25); }
-  .urgent .item { border-bottom-color: rgba(240,110,110,0.15); }
+  .empty { padding: 20px 18px; color: var(--text-muted); font-size: 0.85rem; text-align: center; }
 
-  footer {
-    margin-top: 32px;
-    padding: 16px 0;
+  .footer {
+    margin-top: 24px; padding: 16px 24px;
     border-top: 1px solid var(--border);
-    text-align: center;
-    font-size: 12px;
-    color: var(--text-muted);
-  }
-  footer span { margin: 0 8px; }
-
-  @media (max-width: 720px) {
-    .grid { grid-template-columns: 1fr; }
-    .stat-bar { grid-template-columns: repeat(2, 1fr); }
+    display: flex; justify-content: space-between; align-items: center;
+    color: var(--text-muted); font-size: 0.78rem;
   }
 </style>
 </head>
 <body>
 
-<header>
-  <div class="header-inner">
-    <div class="header-title">
-      <h1>🎯 Juan's Focus Board</h1>
-      <div class="date" id="today-date"></div>
-    </div>
-    <div class="header-right">
-      <div class="last-updated" id="last-updated">Updated just now</div>
-      <button class="refresh-btn" onclick="window.location.reload()">↻ Refresh</button>
-    </div>
+<div class="header">
+  <div class="header-left">
+    <h1>🎯 Juan's Focus Board</h1>
+    <span class="date" id="today-date"></span>
   </div>
-</header>
+  <button class="refresh-btn" onclick="window.location.reload()">↻ Refresh</button>
+</div>
 
-<div class="container">
-
-  <div class="stat-bar">
-    <div class="stat"><div class="label">Meetings</div><div class="value">3</div></div>
-    <div class="stat"><div class="label">Slack threads</div><div class="value">0</div></div>
-    <div class="stat"><div class="label">Action emails</div><div class="value">0</div></div>
-    <div class="stat"><div class="label">Open tasks</div><div class="value">1</div></div>
+<div class="stat-bar">
+  <div class="stat stat-blue">
+    <div class="stat-value">7</div>
+    <div class="stat-label">Meetings</div>
   </div>
+  <div class="stat stat-purple">
+    <div class="stat-value">0</div>
+    <div class="stat-label">Slack threads</div>
+  </div>
+  <div class="stat stat-yellow">
+    <div class="stat-value">0</div>
+    <div class="stat-label">Action emails</div>
+  </div>
+  <div class="stat stat-green">
+    <div class="stat-value">1</div>
+    <div class="stat-label">Open tasks</div>
+  </div>
+</div>
 
-  <div class="urgent">
+<div class="main">
+
+  <!-- MUST-DO TODAY -->
+  <div class="card must-do must-do-full" style="margin-bottom:16px">
     <div class="card-header">
-      <div class="card-icon" style="background: var(--red);">⚡</div>
-      <h2>Must-do today</h2>
-      <span class="count">3</span>
+      <div class="card-dot dot-red"></div>
+      <h2>⚡ Must-do today</h2>
     </div>
     <div class="card-body">
-      <a class="item" href="https://teams.microsoft.com/meet/21921164141029?p=UUjGZEnPfpo1h1SojG" target="_blank" rel="noopener">
-        <span class="dot" style="background: var(--red);"></span>
-        <div class="item-body">
-          <div class="item-title">
-            Planeación Ruteo Inteligente — Paquetexpress
-            <span class="badge badge-now">Now</span>
-            <span class="badge badge-time">8:00–10:30</span>
-          </div>
-          <div class="item-snippet">Sesión con ARACELY MORALES y equipo Paquetexpress (10 asistentes, vía MS Teams). Tema clave: Visitas Agrupadas — ajuste de tiempos.</div>
+      <a class="item" href="https://teams.microsoft.com/meet/21921164141029?p=UUjGZEnPfpo1h1SojG" target="_blank">
+        <div class="item-top">
+          <div class="item-dot dot-red"></div>
+          <span class="item-title">PLANEACION RUTEO INTELIGENTE — Paquetexpress</span>
+          <span class="badge badge-now">10:00–12:30</span>
+          <span class="badge badge-meet">Teams</span>
         </div>
+        <div class="item-meta">Organiza: Aracely Morales · con David Anaya + equipo PEX</div>
+        <div class="item-snippet">Reunión de planeación de ruteo inteligente con Paquetexpress. Teams ID 219 211 641 410 29 · Código: Nx3nc9wk</div>
       </a>
-      <a class="item" href="https://www.google.com/calendar/event?eid=M2IzNjVwOGU5Zjl1ZHBvYTRidnJoYjY2bnRfMjAyNjA1MjFUMTMzMDAwWiBqdWFuLnZhc2NvbmV6QHNpbXBsaXQtc29sdXRpb25zLmNvbQ" target="_blank" rel="noopener">
-        <span class="dot" style="background: var(--amber);"></span>
-        <div class="item-body">
-          <div class="item-title">
-            Sales Enablement Certification
-            <span class="badge badge-soon">Soon</span>
-            <span class="badge badge-time">8:30–9:30</span>
-          </div>
-          <div class="item-snippet">Bloque recurrente de certificación. Solapa con la sesión Paquetexpress — coordinar prioridad.</div>
+      <a class="item" href="https://meet.google.com/eat-uccf-uim" target="_blank">
+        <div class="item-top">
+          <div class="item-dot dot-red"></div>
+          <span class="item-title">Revisión Estafeta / cap. Analyzer</span>
+          <span class="badge badge-soon">13:00–14:00</span>
+          <span class="badge badge-meet">Meet</span>
         </div>
+        <div class="item-meta">Con Salvador Cabrera · meet.google.com/eat-uccf-uim</div>
+        <div class="item-snippet">Revisión interna del estado de cuenta Estafeta y del Capacity Analyzer</div>
       </a>
-      <a class="item" href="https://meet.google.com/ihb-pyvh-skf" target="_blank" rel="noopener">
-        <span class="dot" style="background: var(--blue);"></span>
-        <div class="item-body">
-          <div class="item-title">
-            Juan Diego / Johan — FF Hey Marco
-            <span class="badge badge-action">Action</span>
-            <span class="badge badge-time">14:30–15:00</span>
-          </div>
-          <div class="item-snippet">1:1 con Johan Pinzón sobre cuenta Hey Marco. Llegar con últimos avances y próximos pasos.</div>
+      <a class="item" href="https://autopartessalav.zoom.us/j/89008588479?pwd=n9o2Bs7pZjxqAlzPyg2Cavc6rklbID.1" target="_blank">
+        <div class="item-top">
+          <div class="item-dot dot-red"></div>
+          <span class="item-title">RV: Force Field — Autopartes Salav</span>
+          <span class="badge badge-soon">17:00–18:00</span>
+          <span class="badge badge-meet">Zoom</span>
         </div>
+        <div class="item-meta">Organiza: Angel Ramirez · ID 890 0858 8479 · Código: 830332</div>
+        <div class="item-snippet">Reunión Force Field con Salav. Juan compartió info de clientes activos; 300+ clientes con venta pendiente de punteo</div>
+      </a>
+      <a class="item" href="https://www.notion.so/361bbd09805c80cc8df0e30cf177d938?pvs=1" target="_blank">
+        <div class="item-top">
+          <div class="item-dot dot-red"></div>
+          <span class="item-title">Notion: Ajuste tiempos de servicio — Visitas Agrupadas PEX</span>
+          <span class="badge badge-task">Notion</span>
+          <span class="badge badge-action">Pendiente</span>
+        </div>
+        <div class="item-meta">Creado 18-May-2026 · PaqueteExpress</div>
+        <div class="item-snippet">Parametrizar lógica de tiempos de servicio según cantidad de paquetes para PEX sin impactar otras cuentas</div>
       </a>
     </div>
   </div>
 
+  <!-- ROW 2: CALENDAR + SLACK -->
   <div class="grid">
+    <div class="card">
+      <div class="card-header">
+        <div class="card-dot dot-blue"></div>
+        <h2>📅 Calendar — Vie 22 May</h2>
+      </div>
+      <div class="card-body">
+        <a class="item" href="https://www.google.com/calendar/event?eid=M2IzNjVwOGU5Zjl1ZHBvYTRidnJoYjY2bnRfMjAyNjA1MjJUMTMzMDAwWiBqdWFuLnZhc2NvbmV6QHNpbXBsaXQtc29sdXRpb25zLmNvbQ&ctz=America/Guayaquil" target="_blank">
+          <div class="item-top">
+            <div class="item-dot dot-blue"></div>
+            <span class="item-title">Sales Enablement Certification</span>
+            <span class="badge badge-meet">08:00–09:00</span>
+          </div>
+          <div class="item-meta">Solo · Certificación habilitación de ventas</div>
+        </a>
+        <a class="item" href="https://www.google.com/calendar/event?eid=NzdsY3ExcWxjOWZqOW03OWswMGpqYW9wMzkganVhbi52YXNjb25lekBzaW1wbGl0LXNvbHV0aW9ucy5jb20&ctz=America/Guayaquil" target="_blank">
+          <div class="item-top">
+            <div class="item-dot dot-blue"></div>
+            <span class="item-title">Salav (prep)</span>
+            <span class="badge badge-meet">09:00–10:30</span>
+          </div>
+          <div class="item-meta">Preparación cuenta Salav</div>
+        </a>
+        <a class="item" href="https://teams.microsoft.com/meet/21921164141029?p=UUjGZEnPfpo1h1SojG" target="_blank">
+          <div class="item-top">
+            <div class="item-dot dot-blue"></div>
+            <span class="item-title">PLANEACION RUTEO INTELIGENTE</span>
+            <span class="badge badge-now">10:00–12:30</span>
+          </div>
+          <div class="item-meta">Paquetexpress · David Anaya + equipo · Teams</div>
+        </a>
+        <a class="item" href="https://www.google.com/calendar/event?eid=MmEzaGZya21zMHAxdnZkM2Q2cmI0djQxM2oganVhbi52YXNjb25lekBzaW1wbGl0LXNvbHV0aW9ucy5jb20&ctz=America/Guayaquil" target="_blank">
+          <div class="item-top">
+            <div class="item-dot dot-blue"></div>
+            <span class="item-title">Estafeta</span>
+            <span class="badge badge-meet">11:00–13:00</span>
+          </div>
+          <div class="item-meta">Reunión cuenta Estafeta</div>
+        </a>
+        <a class="item" href="https://meet.google.com/eat-uccf-uim" target="_blank">
+          <div class="item-top">
+            <div class="item-dot dot-blue"></div>
+            <span class="item-title">Revisión Estafeta / cap. Analyzer</span>
+            <span class="badge badge-meet">13:00–14:00</span>
+          </div>
+          <div class="item-meta">Con Salvador Cabrera · Google Meet</div>
+        </a>
+        <div class="item" style="opacity:0.4; cursor:default;">
+          <div class="item-top">
+            <div class="item-dot" style="background:#555"></div>
+            <span class="item-title" style="font-style:italic">Almuerzo</span>
+            <span class="badge badge-muted">14:00–15:00</span>
+          </div>
+        </div>
+        <a class="item" href="https://meet.google.com/vur-uvuf-tmq" target="_blank">
+          <div class="item-top">
+            <div class="item-dot dot-blue"></div>
+            <span class="item-title">Juan Diego / David</span>
+            <span class="badge badge-meet">16:00–16:30</span>
+          </div>
+          <div class="item-meta">Con David Anaya · Google Meet</div>
+        </a>
+        <a class="item" href="https://autopartessalav.zoom.us/j/89008588479?pwd=n9o2Bs7pZjxqAlzPyg2Cavc6rklbID.1" target="_blank">
+          <div class="item-top">
+            <div class="item-dot dot-blue"></div>
+            <span class="item-title">RV: Force Field — Salav</span>
+            <span class="badge badge-soon">17:00–18:00</span>
+          </div>
+          <div class="item-meta">Autopartes Salav · Zoom · Angel Ramirez</div>
+        </a>
+      </div>
+    </div>
 
     <div class="card">
       <div class="card-header">
-        <div class="card-icon" style="background: var(--blue);">📅</div>
-        <h2>Calendar</h2>
-        <span class="count">3 meetings</span>
+        <div class="card-dot dot-purple"></div>
+        <h2>💬 Slack</h2>
       </div>
       <div class="card-body">
-        <a class="item" href="https://teams.microsoft.com/meet/21921164141029?p=UUjGZEnPfpo1h1SojG" target="_blank" rel="noopener">
-          <span class="dot" style="background: var(--blue);"></span>
-          <div class="item-body">
-            <div class="item-title">
-              Planeación Ruteo Inteligente
-              <span class="badge badge-time">8:00–10:30</span>
-            </div>
-            <div class="item-snippet">Paquetexpress — ARACELY MORALES + 8 más. MS Teams. David Anaya también convocado.</div>
+        <a class="item" href="https://simplit-solutions.slack.com/archives/C0B4EJ1JYKZ/p1779454800572379" target="_blank">
+          <div class="item-top">
+            <div class="item-dot dot-purple"></div>
+            <span class="item-title">Videos SimpliRoute — Camilo Morales</span>
+            <span class="badge badge-group">Group DM</span>
           </div>
+          <div class="item-meta">hoy 08:00 · Luigi, David, Sebastian, Salvador, Juli...</div>
+          <div class="item-snippet">Camilo compartió los videos de SimpliRoute en Drive (no llegaron el miércoles). Link: VIDEOS SIMPLIROUTE en Google Drive.</div>
         </a>
-        <a class="item" href="https://www.google.com/calendar/event?eid=M2IzNjVwOGU5Zjl1ZHBvYTRidnJoYjY2bnRfMjAyNjA1MjFUMTMzMDAwWiBqdWFuLnZhc2NvbmV6QHNpbXBsaXQtc29sdXRpb25zLmNvbQ" target="_blank" rel="noopener">
-          <span class="dot" style="background: var(--blue);"></span>
-          <div class="item-body">
-            <div class="item-title">
-              Sales Enablement Certification
-              <span class="badge badge-time">8:30–9:30</span>
-            </div>
-            <div class="item-snippet">Bloque recurrente de certificación / aprendizaje. Solapa con sesión Paquetexpress.</div>
+        <a class="item" href="https://simplit-solutions.slack.com/archives/C0B4EJ1JYKZ/p1779454876346779" target="_blank">
+          <div class="item-top">
+            <div class="item-dot dot-purple"></div>
+            <span class="item-title">Sebastian Lewin — "gracias!!"</span>
+            <span class="badge badge-group">Group DM</span>
           </div>
+          <div class="item-meta">hoy 08:01 · Mismo grupo</div>
+          <div class="item-snippet">Agradecimiento, sin acción directa requerida de Juan.</div>
         </a>
-        <a class="item" href="https://meet.google.com/ihb-pyvh-skf" target="_blank" rel="noopener">
-          <span class="dot" style="background: var(--blue);"></span>
-          <div class="item-body">
-            <div class="item-title">
-              Juan Diego / Johan — FF Hey Marco
-              <span class="badge badge-time">14:30–15:00</span>
-            </div>
-            <div class="item-snippet">Google Meet con Johan Pinzón. Seguimiento de cuenta Hey Marco.</div>
+        <div class="empty">✅ inbox zero — sin DMs directos con acción pendiente</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ROW 3: EMAIL + NOTION -->
+  <div class="grid" style="margin-top:16px">
+    <div class="card">
+      <div class="card-header">
+        <div class="card-dot dot-yellow"></div>
+        <h2>✉️ Email</h2>
+      </div>
+      <div class="card-body">
+        <div class="empty">✅ inbox limpio — sin emails que requieran acción</div>
+        <div class="item" style="cursor:default; opacity:0.45;">
+          <div class="item-top">
+            <div class="item-dot" style="background:#555"></div>
+            <span class="item-title">Karen Castellanos aceptó invitación</span>
+            <span class="badge badge-muted">Info</span>
           </div>
-        </a>
-        <div class="item">
-          <span class="dot" style="background: var(--text-muted); opacity: 0.5;"></span>
-          <div class="item-body">
-            <div class="item-title" style="color: var(--text-muted); font-weight: 500;">
-              <em>Almuerzo · 13:00–14:00 (omitido)</em>
-            </div>
-            <div class="item-snippet">+ Out of office 18:00 en adelante.</div>
+          <div class="item-meta">May 21 · karen.castellanos@simplit-solutions.com</div>
+          <div class="item-snippet">Aceptó la reunión Karen / Juan Diego — sin acción requerida</div>
+        </div>
+        <div class="item" style="cursor:default; opacity:0.45;">
+          <div class="item-top">
+            <div class="item-dot" style="background:#555"></div>
+            <span class="item-title">Dropbox — nuevo inicio de sesión detectado</span>
+            <span class="badge badge-muted">Auto</span>
           </div>
+          <div class="item-meta">May 19 · no-reply@dropbox.com</div>
+          <div class="item-snippet">Alerta de nuevo dispositivo en cuenta Dropbox — revisar si fue Juan</div>
         </div>
       </div>
     </div>
 
     <div class="card">
       <div class="card-header">
-        <div class="card-icon" style="background: var(--purple);">💬</div>
-        <h2>Slack</h2>
-        <span class="count">0 threads</span>
+        <div class="card-dot dot-green"></div>
+        <h2>📝 Notion — Open tasks</h2>
       </div>
       <div class="card-body">
-        <div class="card-empty">Inbox zero — sin DMs ni menciones pendientes ✅</div>
-      </div>
-    </div>
-
-    <div class="card">
-      <div class="card-header">
-        <div class="card-icon" style="background: var(--yellow); color: #1a1d27;">✉️</div>
-        <h2>Email — action</h2>
-        <span class="count">0 action</span>
-      </div>
-      <div class="card-body">
-        <div class="card-empty">Sin correos accionables. (5 no leídos: invitaciones de calendar y alerta Dropbox, sin acción requerida.)</div>
-      </div>
-    </div>
-
-    <div class="card">
-      <div class="card-header">
-        <div class="card-icon" style="background: var(--green);">📝</div>
-        <h2>Notion</h2>
-        <span class="count">1 task</span>
-      </div>
-      <div class="card-body">
-        <a class="item" href="https://www.notion.so/361bbd09805c80cc8df0e30cf177d938?pvs=1" target="_blank" rel="noopener">
-          <span class="dot" style="background: var(--green);"></span>
-          <div class="item-body">
-            <div class="item-title">
-              Ajuste tiempos de servicio — Visitas Agrupadas (PEX)
-              <span class="badge badge-task">Task</span>
-            </div>
-            <div class="item-snippet">Lógica parametrizable: segundos por visita adicional, ajustable a la realidad de PaqueteExpress sin impactar otras cuentas. Relevante para la sesión de 8:00 AM.</div>
+        <a class="item" href="https://www.notion.so/361bbd09805c80cc8df0e30cf177d938?pvs=1" target="_blank">
+          <div class="item-top">
+            <div class="item-dot dot-green"></div>
+            <span class="item-title">Ajuste tiempos de servicio — Visitas Agrupadas PEX</span>
+            <span class="badge badge-task">Notion</span>
           </div>
+          <div class="item-meta">Creado 18-May-2026 · PaqueteExpress</div>
+          <div class="item-snippet">Parametrizar lógica de tiempos según cantidad de paquetes para PEX sin impactar otras cuentas. Definir valor en segundos por visita adicional.</div>
         </a>
       </div>
     </div>
-
   </div>
-
-  <footer>
-    <span>📧 juan.vasconez@simplit-solutions.com</span> ·
-    <span>Generated <span id="gen-time"></span></span> ·
-    <span>America/Guayaquil</span>
-  </footer>
 
 </div>
 
+<div class="footer">
+  <span>juan.vasconez@simplit-solutions.com · Simplit Solutions</span>
+  <span id="last-updated-text">Generado ahora mismo</span>
+</div>
+
 <script>
-  const today = new Date();
-  const opts = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
-  const dateStr = today.toLocaleDateString('es-EC', opts);
-  document.getElementById('today-date').textContent = dateStr.charAt(0).toUpperCase() + dateStr.slice(1);
+  const now = new Date();
+  const opts = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric', timeZone: 'America/Guayaquil' };
+  document.getElementById('today-date').textContent = now.toLocaleDateString('es-EC', opts);
 
-  const genTime = today.toLocaleString('es-EC', { hour: '2-digit', minute: '2-digit', hour12: false });
-  document.getElementById('gen-time').textContent = genTime;
-
-  const startedAt = Date.now();
-  function updateRelative() {
-    const diffSec = Math.floor((Date.now() - startedAt) / 1000);
-    let label;
-    if (diffSec < 60) label = 'Updated just now';
-    else if (diffSec < 3600) label = `Updated ${Math.floor(diffSec/60)} min ago`;
-    else label = `Updated ${Math.floor(diffSec/3600)} h ago`;
-    document.getElementById('last-updated').textContent = label;
+  const genTime = new Date();
+  function tick() {
+    const mins = Math.floor((Date.now() - genTime.getTime()) / 60000);
+    document.getElementById('last-updated-text').textContent =
+      mins < 1 ? 'Actualizado: justo ahora' : mins === 1 ? 'Actualizado: hace 1 min' : `Actualizado: hace ${mins} min`;
   }
-  setInterval(updateRelative, 30000);
+  tick();
+  setInterval(tick, 60000);
 </script>
-
 </body>
 </html>
