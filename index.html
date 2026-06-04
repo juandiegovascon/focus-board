@@ -6,208 +6,204 @@
 <title>Juan's Focus Board</title>
 <style>
   :root{
-    --bg:#0f1117; --surface:#1a1d27; --border:#2e3348; --text:#e8eaf0; --muted:#8b91a7;
+    --bg:#0f1117; --surface:#1a1d27; --border:#2e3348; --text:#e8eaf0; --muted:#8b90a3;
     --blue:#4f8ef7; --purple:#a78bfa; --yellow:#f5c542; --green:#34c785; --red:#f06e6e;
-    --cyan:#22d3ee; --indigo:#818cf8; --amber:#fbbf24;
+    --indigo:#6366f1; --cyan:#22d3ee; --amber:#f59e0b;
   }
   *{box-sizing:border-box;margin:0;padding:0}
-  body{background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;line-height:1.5;padding-bottom:48px}
-  header{position:sticky;top:0;z-index:50;background:rgba(15,17,23,.92);backdrop-filter:blur(8px);border-bottom:1px solid var(--border);padding:16px 24px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px}
-  header h1{font-size:20px;font-weight:700}
+  body{background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;line-height:1.5;padding-bottom:60px}
+  header{position:sticky;top:0;z-index:10;background:rgba(15,17,23,.92);backdrop-filter:blur(8px);border-bottom:1px solid var(--border);padding:18px 28px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px}
+  header h1{font-size:20px;font-weight:700;letter-spacing:.2px}
   header .date{color:var(--muted);font-size:14px;margin-top:2px}
-  .refresh{background:var(--surface);border:1px solid var(--border);color:var(--text);padding:8px 14px;border-radius:8px;font-size:14px;cursor:pointer;transition:.15s}
+  .refresh{background:var(--surface);border:1px solid var(--border);color:var(--text);padding:8px 16px;border-radius:8px;cursor:pointer;font-size:14px;transition:.15s}
   .refresh:hover{border-color:var(--blue);color:var(--blue)}
-  .statbar{display:flex;gap:12px;flex-wrap:wrap;padding:20px 24px 4px}
-  .stat{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:12px 18px;min-width:120px;flex:1}
-  .stat .num{font-size:26px;font-weight:700}
-  .stat .lbl{font-size:12px;color:var(--muted);text-transform:uppercase;letter-spacing:.04em;margin-top:2px}
-  .container{padding:16px 24px;max-width:1280px;margin:0 auto}
-  .mustdo{background:var(--surface);border:1px solid var(--border);border-left:4px solid var(--red);border-radius:12px;padding:18px 20px;margin-bottom:20px}
-  .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:16px}
+  .statbar{display:flex;gap:14px;flex-wrap:wrap;padding:20px 28px}
+  .stat{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:14px 20px;flex:1;min-width:140px}
+  .stat .num{font-size:28px;font-weight:700}
+  .stat .lbl{color:var(--muted);font-size:13px;margin-top:2px}
+  .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(320px,1fr));gap:18px;padding:0 28px}
   .card{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:18px 20px;border-top:3px solid var(--border)}
-  .card.cal{border-top-color:var(--blue)}
-  .card.slack{border-top-color:var(--purple)}
-  .card.email{border-top-color:var(--yellow)}
-  .card.notion{border-top-color:var(--green)}
-  .card h2,.mustdo h2{font-size:15px;font-weight:700;margin-bottom:14px;display:flex;align-items:center;gap:8px}
-  .item{display:flex;gap:10px;padding:10px 0;border-bottom:1px solid var(--border)}
-  .item:last-child{border-bottom:none}
-  .dot{width:9px;height:9px;border-radius:50%;margin-top:6px;flex-shrink:0}
+  .card.cal{border-top-color:var(--blue)} .card.slack{border-top-color:var(--purple)}
+  .card.email{border-top-color:var(--yellow)} .card.notion{border-top-color:var(--green)}
+  .card.mustdo{border-top-color:var(--red);grid-column:1/-1;margin:0 28px;width:auto}
+  .card h2{font-size:15px;font-weight:700;margin-bottom:14px;display:flex;align-items:center;gap:8px}
+  .item{display:flex;gap:10px;padding:11px 0;border-top:1px solid var(--border)}
+  .item:first-of-type{border-top:none}
+  .dot{flex:0 0 9px;width:9px;height:9px;border-radius:50%;margin-top:6px}
   .item .body{flex:1;min-width:0}
   .item .title{font-size:14px;font-weight:600}
-  .item .title a{color:var(--text);text-decoration:none}
-  .item .title a:hover{color:var(--blue);text-decoration:underline}
-  .snippet{font-size:13px;color:var(--muted);margin-top:3px;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
-  .badges{margin-top:6px;display:flex;gap:6px;flex-wrap:wrap}
-  .badge{font-size:11px;font-weight:600;padding:2px 8px;border-radius:6px;letter-spacing:.02em}
-  .badge-action{background:rgba(52,199,133,.16);color:var(--green)}
-  .badge-dm{background:rgba(129,140,248,.16);color:var(--indigo)}
-  .badge-group{background:rgba(34,211,238,.16);color:var(--cyan)}
-  .badge-task{background:rgba(167,139,250,.16);color:var(--purple)}
-  .badge-now{background:rgba(240,110,110,.18);color:var(--red)}
-  .badge-soon{background:rgba(251,191,36,.16);color:var(--amber)}
-  .badge-meet{background:rgba(79,142,247,.16);color:var(--blue)}
-  .deeplink{font-size:12px;color:var(--blue);text-decoration:none;margin-top:5px;display:inline-block}
-  .deeplink:hover{text-decoration:underline}
-  .empty{color:var(--muted);font-size:13px;padding:8px 0}
-  .ooo{color:var(--muted);font-size:12px;font-style:italic;margin-top:8px}
-  footer{text-align:center;color:var(--muted);font-size:12px;padding:28px 24px 8px;border-top:1px solid var(--border);margin-top:24px}
-  footer .upd{margin-top:4px}
+  .item .snippet{color:var(--muted);font-size:13px;margin-top:3px;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+  .item a.link{color:var(--blue);font-size:12.5px;text-decoration:none;margin-top:4px;display:inline-block}
+  .item a.link:hover{text-decoration:underline}
+  .badges{display:flex;gap:6px;flex-wrap:wrap;margin-top:5px}
+  .badge{font-size:11px;font-weight:600;padding:2px 8px;border-radius:20px;border:1px solid}
+  .badge-action{color:var(--green);border-color:var(--green);background:rgba(52,199,133,.1)}
+  .badge-dm{color:var(--indigo);border-color:var(--indigo);background:rgba(99,102,241,.12)}
+  .badge-group{color:var(--cyan);border-color:var(--cyan);background:rgba(34,211,238,.1)}
+  .badge-task{color:var(--purple);border-color:var(--purple);background:rgba(167,139,250,.12)}
+  .badge-now{color:var(--red);border-color:var(--red);background:rgba(240,110,110,.12)}
+  .badge-soon{color:var(--amber);border-color:var(--amber);background:rgba(245,158,11,.12)}
+  .empty{color:var(--muted);font-size:14px;padding:8px 0}
+  footer{margin-top:34px;padding:18px 28px;border-top:1px solid var(--border);color:var(--muted);font-size:12.5px;display:flex;justify-content:space-between;flex-wrap:wrap;gap:8px}
+  .ooo{color:var(--muted);font-style:italic;font-size:13px;padding:6px 0;border-top:1px solid var(--border)}
 </style>
 </head>
 <body>
 <header>
   <div>
     <h1>🎯 Juan's Focus Board</h1>
-    <div class="date" id="todayDate">—</div>
+    <div class="date" id="todayDate"></div>
   </div>
   <button class="refresh" onclick="window.location.reload()">↻ Refresh</button>
 </header>
 
 <div class="statbar">
   <div class="stat"><div class="num" style="color:var(--blue)">3</div><div class="lbl">Meetings</div></div>
-  <div class="stat"><div class="num" style="color:var(--purple)">0</div><div class="lbl">Slack threads</div></div>
+  <div class="stat"><div class="num" style="color:var(--purple)">1</div><div class="lbl">Slack threads</div></div>
   <div class="stat"><div class="num" style="color:var(--yellow)">0</div><div class="lbl">Action emails</div></div>
   <div class="stat"><div class="num" style="color:var(--green)">10</div><div class="lbl">Open tasks</div></div>
 </div>
 
-<div class="container">
-
-  <!-- MUST DO -->
-  <div class="mustdo">
-    <h2>⚡ Must-do today</h2>
-    <div class="item">
-      <div class="dot" style="background:var(--red)"></div>
-      <div class="body">
-        <div class="title">Sales Enablement Certification</div>
-        <div class="badges"><span class="badge badge-now">EN CURSO · 09:00–10:00</span></div>
-        <div class="snippet">Bloque de certificación de Sales Enablement. Está corriendo ahora mismo.</div>
-        <a class="deeplink" href="https://www.google.com/calendar/event?eid=N21oZWxpNDJ2NjQ1Y2RxY3BlOHNuN3Vhdm9fMjAyNjA2MDJUMTQwMDAwWiBqdWFuLnZhc2NvbmV6QHNpbXBsaXQtc29sdXRpb25zLmNvbQ" target="_blank">Abrir en Calendar →</a>
-      </div>
-    </div>
-    <div class="item">
-      <div class="dot" style="background:var(--amber)"></div>
-      <div class="body">
-        <div class="title">Weekly del norte</div>
-        <div class="badges"><span class="badge badge-soon">10:00–11:00</span><span class="badge badge-meet">Google Meet</span></div>
-        <div class="snippet">Weekly con el equipo del norte (David Anaya, Carlos Rojas, Johan Pinzón, Natalia Sánchez y más).</div>
-        <a class="deeplink" href="https://meet.google.com/kos-mejc-qzv" target="_blank">Unirse a Meet →</a>
-      </div>
-    </div>
-    <div class="item">
-      <div class="dot" style="background:var(--amber)"></div>
-      <div class="body">
-        <div class="title">Juan Diego / Johan — Hi Marco</div>
-        <div class="badges"><span class="badge badge-soon">12:00–12:30</span><span class="badge badge-meet">Google Meet</span></div>
-        <div class="snippet">1:1 con Johan Pinzón. Tema: Marco.</div>
-        <a class="deeplink" href="https://meet.google.com/tpy-czix-eae" target="_blank">Unirse a Meet →</a>
-      </div>
+<div class="card mustdo">
+  <h2>⚡ Must-do today</h2>
+  <div class="item">
+    <div class="dot" style="background:var(--red)"></div>
+    <div class="body">
+      <div class="title">Creación de SOLES ADA y TRANS PASAJEROS</div>
+      <div class="badges"><span class="badge badge-now">EN CURSO 10:00–12:00</span></div>
+      <div class="snippet">Bloque de trabajo en curso esta mañana. Confirmar avance antes del mediodía.</div>
+      <a class="link" href="https://www.google.com/calendar/event?eid=NmwzamtuOGp0OW9qMHBrY3V2YmpuNjRzZDgganVhbi52YXNjb25lekBzaW1wbGl0LXNvbHV0aW9ucy5jb20&ctz=America/Guayaquil" target="_blank">Abrir en Calendar →</a>
     </div>
   </div>
-
-  <div class="grid">
-
-    <!-- CALENDAR -->
-    <div class="card cal">
-      <h2>📅 Calendar</h2>
-      <div class="item">
-        <div class="dot" style="background:var(--red)"></div>
-        <div class="body">
-          <div class="title"><a href="https://www.google.com/calendar/event?eid=N21oZWxpNDJ2NjQ1Y2RxY3BlOHNuN3Vhdm9fMjAyNjA2MDJUMTQwMDAwWiBqdWFuLnZhc2NvbmV6QHNpbXBsaXQtc29sdXRpb25zLmNvbQ" target="_blank">Sales Enablement Certification</a></div>
-          <div class="badges"><span class="badge badge-now">09:00–10:00</span></div>
-        </div>
-      </div>
-      <div class="item">
-        <div class="dot" style="background:var(--blue)"></div>
-        <div class="body">
-          <div class="title"><a href="https://meet.google.com/kos-mejc-qzv" target="_blank">Weekly del norte</a></div>
-          <div class="badges"><span class="badge badge-soon">10:00–11:00</span><span class="badge badge-meet">Meet</span></div>
-          <div class="snippet">Organiza David Anaya · 7 asistentes</div>
-        </div>
-      </div>
-      <div class="item">
-        <div class="dot" style="background:var(--blue)"></div>
-        <div class="body">
-          <div class="title"><a href="https://meet.google.com/tpy-czix-eae" target="_blank">Juan Diego / Johan — Hi Marco</a></div>
-          <div class="badges"><span class="badge badge-soon">12:00–12:30</span><span class="badge badge-meet">Meet</span></div>
-          <div class="snippet">1:1 con Johan Pinzón</div>
-        </div>
-      </div>
-      <div class="ooo">Out of office hasta 09:00 y desde 18:00 · Almuerzo 13:00–14:00 (omitidos)</div>
+  <div class="item">
+    <div class="dot" style="background:var(--indigo)"></div>
+    <div class="body">
+      <div class="title">Responder a Paula Rodriguez — módulo de liquidaciones / costos</div>
+      <div class="badges"><span class="badge badge-dm">DM</span><span class="badge badge-action">REQUIERE RESPUESTA</span></div>
+      <div class="snippet">Pregunta directa: "¿necesitas costo, venta, rentabilidad?" + sesión de capacitación pendiente de nuestro lado. Definir alcance y fecha (próxima semana).</div>
+      <a class="link" href="https://simplit-solutions.slack.com/archives/D0A5J5U6F5L/p1780584842510819" target="_blank">Abrir DM en Slack →</a>
     </div>
-
-    <!-- SLACK -->
-    <div class="card slack">
-      <h2>💬 Slack</h2>
-      <div class="empty">Inbox zero ✅ — no hay DMs ni menciones que necesiten respuesta. (Solo agenda automática de Google Calendar.)</div>
+  </div>
+  <div class="item">
+    <div class="dot" style="background:var(--amber)"></div>
+    <div class="body">
+      <div class="title">PREP CAPACITACIONES PARTNERS</div>
+      <div class="badges"><span class="badge badge-soon">HOY 14:00–18:00</span></div>
+      <div class="snippet">Bloque largo de preparación esta tarde. Tener listos materiales/PPT (Paula ofrece compartir demo y documentación).</div>
+      <a class="link" href="https://www.google.com/calendar/event?eid=NzB1cHFubjU4bzRncWV2OGlrYzRqOHZmNjUganVhbi52YXNjb25lekBzaW1wbGl0LXNvbHV0aW9ucy5jb20&ctz=America/Guayaquil" target="_blank">Abrir en Calendar →</a>
     </div>
-
-    <!-- EMAIL -->
-    <div class="card email">
-      <h2>✉️ Email</h2>
-      <div class="empty">Inbox limpio ✅ — ningún correo requiere acción hoy.</div>
-      <div class="item">
-        <div class="dot" style="background:var(--muted)"></div>
-        <div class="body">
-          <div class="title">FYI: Reunión cancelada — "Planeación Ruteo Inteligente"</div>
-          <div class="snippet">armorales@paquetexpress.com.mx canceló la reunión de Teams. Solo informativo, no requiere acción.</div>
-        </div>
-      </div>
-    </div>
-
-    <!-- NOTION -->
-    <div class="card notion">
-      <h2>📝 Notion</h2>
-      <div class="item">
-        <div class="dot" style="background:var(--green)"></div>
-        <div class="body">
-          <div class="title"><a href="https://www.notion.so/36cbbd09805c804183dbc7716af8a0ca" target="_blank">Visita en campo: Los Mochis</a></div>
-          <div class="badges"><span class="badge badge-task">PaqueteExpress</span></div>
-          <div class="snippet">Ruteo en vivo, proyecto continuo liderado por Juan Diego en sede Los Mochis.</div>
-        </div>
-      </div>
-      <div class="item">
-        <div class="dot" style="background:var(--green)"></div>
-        <div class="body">
-          <div class="title"><a href="https://www.notion.so/36cbbd09805c80088aaaeb36af9a78a7" target="_blank">Determinismo en resultados de optimización vía API</a></div>
-          <div class="badges"><span class="badge badge-task">PaqueteExpress</span></div>
-          <div class="snippet">Optimización vía API debe generar resultados reproducibles con el mismo problema de ruteo.</div>
-        </div>
-      </div>
-      <div class="item">
-        <div class="dot" style="background:var(--green)"></div>
-        <div class="body">
-          <div class="title"><a href="https://www.notion.so/36cbbd09805c80e8afacc2344f708c20" target="_blank">Herramienta para estimar jornada en ruteo dinámico</a></div>
-          <div class="badges"><span class="badge badge-task">Producto</span></div>
-        </div>
-      </div>
-      <div class="ooo">+7 tareas abiertas más (Script Paquete Express, Ajuste de tiempos de servicio, Priorización de visitas, Pruebas en ambiente controlado…)</div>
-    </div>
-
   </div>
 </div>
 
+<div class="grid" style="margin-top:18px">
+
+  <div class="card cal">
+    <h2>📅 Calendar</h2>
+    <div class="item">
+      <div class="dot" style="background:var(--blue)"></div>
+      <div class="body">
+        <div class="title">Sales Enablement Certification</div>
+        <div class="badges"><span class="badge badge-soon">09:00–10:00</span></div>
+        <a class="link" href="https://www.google.com/calendar/event?eid=N21oZWxpNDJ2NjQ1Y2RxY3BlOHNuN3Vhdm9fMjAyNjA2MDRUMTQwMDAwWiBqdWFuLnZhc2NvbmV6QHNpbXBsaXQtc29sdXRpb25zLmNvbQ&ctz=America/Guayaquil" target="_blank">Abrir →</a>
+      </div>
+    </div>
+    <div class="item">
+      <div class="dot" style="background:var(--blue)"></div>
+      <div class="body">
+        <div class="title">Creación de SOLES ADA y TRANS PASAJEROS</div>
+        <div class="badges"><span class="badge badge-now">10:00–12:00</span></div>
+        <a class="link" href="https://www.google.com/calendar/event?eid=NmwzamtuOGp0OW9qMHBrY3V2YmpuNjRzZDgganVhbi52YXNjb25lekBzaW1wbGl0LXNvbHV0aW9ucy5jb20&ctz=America/Guayaquil" target="_blank">Abrir →</a>
+      </div>
+    </div>
+    <div class="item">
+      <div class="dot" style="background:var(--blue)"></div>
+      <div class="body">
+        <div class="title">PREP CAPACITACIONES PARTNERS</div>
+        <div class="badges"><span class="badge badge-soon">14:00–18:00</span></div>
+        <a class="link" href="https://www.google.com/calendar/event?eid=NzB1cHFubjU4bzRncWV2OGlrYzRqOHZmNjUganVhbi52YXNjb25lekBzaW1wbGl0LXNvbHV0aW9ucy5jb20&ctz=America/Guayaquil" target="_blank">Abrir →</a>
+      </div>
+    </div>
+    <div class="ooo">🍽️ Almuerzo 13:00–14:00 · 🌙 Out of office hasta 09:00 y desde 18:00</div>
+  </div>
+
+  <div class="card slack">
+    <h2>💬 Slack</h2>
+    <div class="item">
+      <div class="dot" style="background:var(--purple)"></div>
+      <div class="body">
+        <div class="title">Paula Rodriguez (DM)</div>
+        <div class="badges"><span class="badge badge-dm">DM</span><span class="badge badge-action">PREGUNTA ABIERTA</span></div>
+        <div class="snippet">"¿necesitas costo, venta, rentabilidad?" — hilo sobre módulo de liquidaciones/costos. Pendiente sesión de capacitación; proponen próxima semana.</div>
+        <a class="link" href="https://simplit-solutions.slack.com/archives/D0A5J5U6F5L/p1780584842510819" target="_blank">Responder →</a>
+      </div>
+    </div>
+  </div>
+
+  <div class="card email">
+    <h2>✉️ Email — action</h2>
+    <div class="empty">Inbox limpio ✅ — sin correos accionables.</div>
+    <div class="item">
+      <div class="dot" style="background:var(--muted)"></div>
+      <div class="body">
+        <div class="title">Cancelada: PLANEACIÓN RUTEO INTELIGENTE</div>
+        <div class="badges"><span class="badge badge-group">INFO · Paquetexpress</span></div>
+        <div class="snippet">Reunión de Teams cancelada (armorales@paquetexpress.com.mx). Solo informativo — sin acción requerida.</div>
+        <a class="link" href="https://mail.google.com/mail/u/0/#all/19e83d164a8a7d79" target="_blank">Ver en Gmail →</a>
+      </div>
+    </div>
+  </div>
+
+  <div class="card notion">
+    <h2>📝 Notion — open tasks</h2>
+    <div class="item">
+      <div class="dot" style="background:var(--green)"></div>
+      <div class="body">
+        <div class="title">Determinismo en resultados de optimización vía API</div>
+        <div class="badges"><span class="badge badge-task">Paquetexpress</span></div>
+        <div class="snippet">Optimización vía API debe generar resultados reproducibles con el mismo input (visitas, vehículos, capacidades, skills, zonas).</div>
+        <a class="link" href="https://app.notion.com/p/36cbbd09805c80088aaaeb36af9a78a7" target="_blank">Abrir →</a>
+      </div>
+    </div>
+    <div class="item">
+      <div class="dot" style="background:var(--green)"></div>
+      <div class="body">
+        <div class="title">Priorización estricta de visitas por nivel de prioridad</div>
+        <div class="badges"><span class="badge badge-task">Paquetexpress</span></div>
+        <a class="link" href="https://app.notion.com/p/36cbbd09805c80979027e7531995cbb3" target="_blank">Abrir →</a>
+      </div>
+    </div>
+    <div class="item">
+      <div class="dot" style="background:var(--green)"></div>
+      <div class="body">
+        <div class="title">Visita en campo: Los Mochis</div>
+        <div class="badges"><span class="badge badge-task">Proyecto activo</span></div>
+        <div class="snippet">Ruteo en vivo, proyecto continuo liderado por Juan Diego Vásconez en sede Los Mochis.</div>
+        <a class="link" href="https://app.notion.com/p/36cbbd09805c804183dbc7716af8a0ca" target="_blank">Abrir →</a>
+      </div>
+    </div>
+    <div class="empty" style="font-size:13px">+ 7 tareas más abiertas (ruteo dinámico, tiempos de servicio, scripts PEX…)</div>
+  </div>
+
+</div>
+
 <footer>
-  <div>juan.vasconez@simplit-solutions.com</div>
-  <div class="upd" id="lastUpdated">Generado ahora</div>
+  <span>juan.vasconez@simplit-solutions.com</span>
+  <span id="updatedInfo"></span>
 </footer>
 
 <script>
-  var generatedAt = new Date();
-  function fmtDate(){
-    var opts={weekday:'long',year:'numeric',month:'long',day:'numeric'};
-    document.getElementById('todayDate').textContent =
-      generatedAt.toLocaleDateString('es-ES',opts);
+  const generatedAt = new Date();
+  const days = ["domingo","lunes","martes","miércoles","jueves","viernes","sábado"];
+  const months = ["enero","febrero","marzo","abril","mayo","junio","julio","agosto","septiembre","octubre","noviembre","diciembre"];
+  const d = generatedAt;
+  document.getElementById('todayDate').textContent =
+    days[d.getDay()].charAt(0).toUpperCase()+days[d.getDay()].slice(1)+", "+d.getDate()+" de "+months[d.getMonth()]+" de "+d.getFullYear();
+  function updateCounter(){
+    const mins = Math.floor((Date.now()-generatedAt.getTime())/60000);
+    const txt = mins<1 ? "hace un momento" : "hace "+mins+" min";
+    document.getElementById('updatedInfo').textContent = "Generado "+generatedAt.toLocaleTimeString('es-EC',{hour:'2-digit',minute:'2-digit'})+" · actualizado "+txt;
   }
-  function tickUpdated(){
-    var mins = Math.floor((Date.now()-generatedAt.getTime())/60000);
-    var txt = mins<1 ? 'Actualizado hace menos de 1 min'
-            : 'Actualizado hace '+mins+' min'+(mins===1?'':'s');
-    document.getElementById('lastUpdated').textContent = txt;
-  }
-  fmtDate(); tickUpdated();
-  setInterval(tickUpdated,30000);
+  updateCounter(); setInterval(updateCounter,30000);
 </script>
 </body>
 </html>
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    
