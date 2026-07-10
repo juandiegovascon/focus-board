@@ -7,47 +7,47 @@
 <style>
   :root{
     --bg:#0f1117; --surface:#1a1d27; --border:#2e3348; --text:#e8eaf0;
-    --muted:#8a90a6; --blue:#4f8ef7; --purple:#a78bfa; --yellow:#f5c542;
+    --muted:#8b90a4; --blue:#4f8ef7; --purple:#a78bfa; --yellow:#f5c542;
     --green:#34c785; --red:#f06e6e; --indigo:#6366f1; --cyan:#22d3ee; --amber:#f59e0b;
   }
   *{box-sizing:border-box;margin:0;padding:0}
   body{background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;line-height:1.5;padding-bottom:40px}
-  header{position:sticky;top:0;z-index:10;background:rgba(15,17,23,.92);backdrop-filter:blur(8px);border-bottom:1px solid var(--border);padding:16px 24px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px}
+  header{position:sticky;top:0;z-index:50;background:rgba(15,17,23,.92);backdrop-filter:blur(8px);border-bottom:1px solid var(--border);padding:16px 24px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px}
   header h1{font-size:20px;font-weight:700}
-  header .date{color:var(--muted);font-size:14px;margin-top:2px}
+  header .date{color:var(--muted);font-size:13px;margin-top:2px}
   .refresh{background:var(--surface);border:1px solid var(--border);color:var(--text);padding:8px 14px;border-radius:8px;cursor:pointer;font-size:13px;transition:.15s}
-  .refresh:hover{background:#242838}
-  .statbar{display:flex;gap:12px;flex-wrap:wrap;padding:20px 24px 8px}
-  .stat{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:12px 18px;flex:1;min-width:130px}
-  .stat .n{font-size:26px;font-weight:700}
-  .stat .l{font-size:12px;color:var(--muted);text-transform:uppercase;letter-spacing:.5px;margin-top:2px}
-  .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(320px,1fr));gap:16px;padding:16px 24px}
+  .refresh:hover{border-color:var(--blue);color:var(--blue)}
+  .wrap{max-width:1100px;margin:0 auto;padding:20px 24px}
+  .stats{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:22px}
+  .stat{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:16px}
+  .stat .n{font-size:28px;font-weight:700}
+  .stat .l{color:var(--muted);font-size:12px;margin-top:2px}
+  .grid{display:grid;grid-template-columns:repeat(2,1fr);gap:16px}
   .card{background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:18px;border-top:3px solid var(--border)}
-  .card.full{grid-column:1/-1}
-  .card h2{font-size:15px;font-weight:700;margin-bottom:14px;display:flex;align-items:center;gap:8px}
   .card.blue{border-top-color:var(--blue)} .card.purple{border-top-color:var(--purple)}
   .card.yellow{border-top-color:var(--yellow)} .card.green{border-top-color:var(--green)}
-  .card.red{border-top-color:var(--red)}
-  .item{display:flex;gap:10px;padding:11px 0;border-bottom:1px solid var(--border)}
-  .item:last-child{border-bottom:none}
-  .dot{width:9px;height:9px;border-radius:50%;margin-top:6px;flex-shrink:0}
+  .card.red{border-top-color:var(--red);grid-column:1/-1;margin-bottom:16px}
+  .card h2{font-size:14px;font-weight:700;display:flex;align-items:center;gap:8px;margin-bottom:14px}
+  .card h2 .count{margin-left:auto;color:var(--muted);font-weight:500;font-size:12px}
+  .item{display:flex;gap:10px;padding:10px 0;border-top:1px solid var(--border)}
+  .item:first-of-type{border-top:none}
+  .dot{width:8px;height:8px;border-radius:50%;margin-top:6px;flex-shrink:0}
   .item .body{flex:1;min-width:0}
-  .item .title{font-size:14px;font-weight:600}
-  .item .snippet{font-size:13px;color:var(--muted);margin-top:3px}
-  .badges{display:flex;gap:6px;flex-wrap:wrap;margin-top:6px}
-  .badge{font-size:11px;font-weight:600;padding:2px 8px;border-radius:20px;letter-spacing:.3px}
-  .badge-action{background:rgba(52,199,133,.16);color:var(--green)}
-  .badge-dm{background:rgba(99,102,241,.18);color:#a5a8f5}
+  .item .title{font-size:13px;font-weight:600}
+  .item .snippet{font-size:12px;color:var(--muted);margin-top:3px;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+  .badges{display:flex;flex-wrap:wrap;gap:6px;margin-top:6px}
+  .badge{font-size:10px;font-weight:600;padding:2px 8px;border-radius:20px;text-transform:uppercase;letter-spacing:.3px}
+  .badge-action{background:rgba(52,199,133,.15);color:var(--green)}
+  .badge-dm{background:rgba(99,102,241,.18);color:#a5b4fc}
   .badge-group{background:rgba(34,211,238,.15);color:var(--cyan)}
-  .badge-task{background:rgba(167,139,250,.16);color:var(--purple)}
+  .badge-task{background:rgba(167,139,250,.15);color:var(--purple)}
   .badge-now{background:rgba(240,110,110,.18);color:var(--red)}
-  .badge-soon{background:rgba(245,158,11,.16);color:var(--amber)}
-  .badge-time{background:rgba(79,142,247,.15);color:var(--blue)}
-  a.link{color:var(--blue);font-size:12px;text-decoration:none;margin-top:5px;display:inline-block}
-  a.link:hover{text-decoration:underline}
+  .badge-soon{background:rgba(245,158,11,.15);color:var(--amber)}
+  .item a{color:var(--blue);text-decoration:none;font-size:12px;margin-top:5px;display:inline-block}
+  .item a:hover{text-decoration:underline}
   .empty{color:var(--muted);font-size:13px;padding:8px 0}
-  footer{color:var(--muted);font-size:12px;text-align:center;padding:24px;border-top:1px solid var(--border);margin-top:16px}
-  footer a{color:var(--blue);text-decoration:none}
+  footer{max-width:1100px;margin:24px auto 0;padding:16px 24px;color:var(--muted);font-size:12px;border-top:1px solid var(--border);display:flex;justify-content:space-between;flex-wrap:wrap;gap:8px}
+  @media(max-width:720px){.stats{grid-template-columns:repeat(2,1fr)}.grid{grid-template-columns:1fr}}
 </style>
 </head>
 <body>
@@ -59,153 +59,157 @@
   <button class="refresh" onclick="window.location.reload()">↻ Refresh</button>
 </header>
 
-<div class="statbar">
-  <div class="stat"><div class="n" style="color:var(--blue)">4</div><div class="l">Meetings</div></div>
-  <div class="stat"><div class="n" style="color:var(--purple)">1</div><div class="l">Slack threads</div></div>
-  <div class="stat"><div class="n" style="color:var(--yellow)">0</div><div class="l">Action emails</div></div>
-  <div class="stat"><div class="n" style="color:var(--green)">1</div><div class="l">Open tasks</div></div>
-</div>
+<div class="wrap">
+  <div class="stats">
+    <div class="stat"><div class="n" style="color:var(--blue)">3</div><div class="l">Meetings</div></div>
+    <div class="stat"><div class="n" style="color:var(--purple)">1</div><div class="l">Slack threads</div></div>
+    <div class="stat"><div class="n" style="color:var(--yellow)">0</div><div class="l">Action emails</div></div>
+    <div class="stat"><div class="n" style="color:var(--green)">3</div><div class="l">Open tasks</div></div>
+  </div>
 
-<div class="grid">
-  <div class="card full red">
+  <!-- MUST DO -->
+  <div class="card red">
     <h2>⚡ Must-do today</h2>
     <div class="item">
       <div class="dot" style="background:var(--red)"></div>
       <div class="body">
-        <div class="title">Responder a Martina: confirmar reu de 30 min mañana + enviar pantallazo de la propuesta de nombres</div>
-        <div class="snippet">"Hagamos una reu tú y yo mañana… unos 30 min" · "No encuentro la propuesta de nombres, me ayudas con un pantallazo?"</div>
-        <div class="badges"><span class="badge badge-dm">DM</span><span class="badge badge-action">acción</span></div>
-        <a class="link" href="https://simplit-solutions.slack.com/archives/D09RAK24RTJ/p1783436455049889" target="_blank">Abrir en Slack →</a>
+        <div class="title">Demo Day · Producto</div>
+        <div class="badges"><span class="badge badge-now">10:00–11:30</span><span class="badge badge-dm">meeting</span></div>
+        <div class="snippet">Presentación de novedades, mejoras y roadmap de producto (Laura Galván). Salvador ya preguntó si estás conectado.</div>
+        <a href="https://meet.google.com/sxd-htsh-rjj" target="_blank">Join Google Meet →</a>
       </div>
     </div>
     <div class="item">
-      <div class="dot" style="background:var(--blue)"></div>
+      <div class="dot" style="background:var(--amber)"></div>
       <div class="body">
-        <div class="title">Juan Diego / Johan — Cometra</div>
-        <div class="snippet">Videollamada con Johan Pinzón. 11:00–12:00.</div>
-        <div class="badges"><span class="badge badge-time">11:00</span><span class="badge badge-soon">pronto</span></div>
-        <a class="link" href="https://meet.google.com/cwr-emoj-qvm" target="_blank">Unirse a Meet →</a>
+        <div class="title">Juan Diego / Johan · Análisis de deals</div>
+        <div class="badges"><span class="badge badge-soon">14:00–14:45</span><span class="badge badge-dm">meeting</span></div>
+        <div class="snippet">Revisión de deals con Johan Pinzón.</div>
+        <a href="https://meet.google.com/kfy-jwtq-oed" target="_blank">Join Google Meet →</a>
       </div>
     </div>
     <div class="item">
-      <div class="dot" style="background:var(--blue)"></div>
+      <div class="dot" style="background:var(--amber)"></div>
       <div class="body">
-        <div class="title">Revisión Lamosa</div>
-        <div class="snippet">Con Salvador Cabrera. 12:30–13:00.</div>
-        <div class="badges"><span class="badge badge-time">12:30</span></div>
-        <a class="link" href="https://meet.google.com/dhm-fwfg-pxu" target="_blank">Unirse a Meet →</a>
-      </div>
-    </div>
-    <div class="item">
-      <div class="dot" style="background:var(--blue)"></div>
-      <div class="body">
-        <div class="title">Juan Diego / Azalea</div>
-        <div class="snippet">Con Azalea Osorio. 14:30–15:00.</div>
-        <div class="badges"><span class="badge badge-time">14:30</span></div>
-        <a class="link" href="https://meet.google.com/afr-zjcr-eim" target="_blank">Unirse a Meet →</a>
+        <div class="title">Juan Diego / David</div>
+        <div class="badges"><span class="badge badge-soon">15:00–16:00</span><span class="badge badge-dm">meeting</span></div>
+        <div class="snippet">Roadmap de workshops · Status de deals · Pendientes próxima semana (David Anaya).</div>
+        <a href="https://meet.google.com/vur-uvuf-tmq" target="_blank">Join Google Meet →</a>
       </div>
     </div>
   </div>
 
-  <div class="card blue">
-    <h2>📅 Calendar</h2>
-    <div class="item">
-      <div class="dot" style="background:var(--blue)"></div>
-      <div class="body">
-        <div class="title">Flujos Lamosa</div>
-        <div class="snippet">Bloque de trabajo. 09:00–11:00.</div>
-        <div class="badges"><span class="badge badge-time">09:00</span></div>
+  <div class="grid">
+    <!-- CALENDAR -->
+    <div class="card blue">
+      <h2>📅 Calendar <span class="count">3 meetings</span></h2>
+      <div class="item">
+        <div class="dot" style="background:var(--blue)"></div>
+        <div class="body">
+          <div class="title">Demo Day · Producto</div>
+          <div class="badges"><span class="badge badge-now">10:00–11:30</span></div>
+          <div class="snippet">Novedades, mejoras y roadmap de producto.</div>
+          <a href="https://meet.google.com/sxd-htsh-rjj" target="_blank">Join Meet →</a>
+        </div>
+      </div>
+      <div class="item">
+        <div class="dot" style="background:var(--blue)"></div>
+        <div class="body">
+          <div class="title">Juan Diego / Johan · Análisis de deals</div>
+          <div class="badges"><span class="badge badge-soon">14:00–14:45</span></div>
+          <a href="https://meet.google.com/kfy-jwtq-oed" target="_blank">Join Meet →</a>
+        </div>
+      </div>
+      <div class="item">
+        <div class="dot" style="background:var(--blue)"></div>
+        <div class="body">
+          <div class="title">Juan Diego / David</div>
+          <div class="badges"><span class="badge badge-soon">15:00–16:00</span></div>
+          <div class="snippet">Roadmap workshops · status deals · pendientes.</div>
+          <a href="https://meet.google.com/vur-uvuf-tmq" target="_blank">Join Meet →</a>
+        </div>
+      </div>
+      <div class="item">
+        <div class="dot" style="background:var(--muted)"></div>
+        <div class="body">
+          <div class="title" style="color:var(--muted)">Estafeta (bloque de trabajo)</div>
+          <div class="badges"><span class="badge" style="background:#2e3348;color:var(--muted)">08:00–10:00 · pasado</span></div>
+          <div class="snippet">Bloque personal para el deal Estafeta. · <em>OOO nocturno omitido.</em></div>
+        </div>
       </div>
     </div>
-    <div class="item">
-      <div class="dot" style="background:var(--blue)"></div>
-      <div class="body">
-        <div class="title">Juan Diego / Johan — Cometra</div>
-        <div class="snippet">Con Johan Pinzón. 11:00–12:00.</div>
-        <div class="badges"><span class="badge badge-time">11:00</span></div>
-        <a class="link" href="https://meet.google.com/cwr-emoj-qvm" target="_blank">Meet →</a>
-      </div>
-    </div>
-    <div class="item">
-      <div class="dot" style="background:var(--blue)"></div>
-      <div class="body">
-        <div class="title">Revisión Lamosa</div>
-        <div class="snippet">Con Salvador Cabrera. 12:30–13:00.</div>
-        <div class="badges"><span class="badge badge-time">12:30</span></div>
-        <a class="link" href="https://meet.google.com/dhm-fwfg-pxu" target="_blank">Meet →</a>
-      </div>
-    </div>
-    <div class="item">
-      <div class="dot" style="background:var(--blue)"></div>
-      <div class="body">
-        <div class="title">Juan Diego / Azalea</div>
-        <div class="snippet">Con Azalea Osorio. 14:30–15:00.</div>
-        <div class="badges"><span class="badge badge-time">14:30</span></div>
-        <a class="link" href="https://meet.google.com/afr-zjcr-eim" target="_blank">Meet →</a>
-      </div>
-    </div>
-    <div class="item">
-      <div class="dot" style="background:var(--muted)"></div>
-      <div class="body">
-        <div class="snippet"><em>Almuerzo 13:00–14:00 · Out of office hasta 09:00 y desde 18:00</em></div>
-      </div>
-    </div>
-  </div>
 
-  <div class="card purple">
-    <h2>💬 Slack</h2>
-    <div class="item">
-      <div class="dot" style="background:var(--purple)"></div>
-      <div class="body">
-        <div class="title">Martina Jaramillo</div>
-        <div class="snippet">Pide agendar reu de 30 min mañana y un pantallazo de la propuesta de nombres. También menciona a Francisco (nuevo head de Ada) para CX.</div>
-        <div class="badges"><span class="badge badge-dm">DM</span><span class="badge badge-action">acción</span></div>
-        <a class="link" href="https://simplit-solutions.slack.com/archives/D09RAK24RTJ/p1783436455049889" target="_blank">Responder →</a>
+    <!-- SLACK -->
+    <div class="card purple">
+      <h2>💬 Slack <span class="count">1 thread</span></h2>
+      <div class="item">
+        <div class="dot" style="background:var(--purple)"></div>
+        <div class="body">
+          <div class="title">Salvador Cabrera · DM</div>
+          <div class="badges"><span class="badge badge-dm">dm</span><span class="badge badge-action">al día</span></div>
+          <div class="snippet">Chat activo sobre Demo Day, precios y Fireflies. Cerró con "Gracias amigo / el lunes los molesto" — parece resuelto.</div>
+          <a href="https://simplit-solutions.slack.com/archives/D0AB9E0MT42" target="_blank">Abrir DM →</a>
+        </div>
       </div>
     </div>
-    <div class="item">
-      <div class="dot" style="background:var(--muted)"></div>
-      <div class="body">
-        <div class="snippet"><em>Sofía Carrasco (iconografía) y Justine Bordachar (roles): informativos, sin acción pendiente.</em></div>
-      </div>
+
+    <!-- EMAIL -->
+    <div class="card yellow">
+      <h2>✉️ Email · acción <span class="count">0</span></h2>
+      <div class="empty">Inbox limpio ✅ — solo invitaciones de calendario y notificaciones automáticas (Notion, Dropbox). Nada requiere respuesta.</div>
     </div>
-  </div>
 
-  <div class="card yellow">
-    <h2>✉️ Email</h2>
-    <div class="empty">Bandeja limpia ✅ — solo notificaciones automáticas de calendario (invitaciones aceptadas al Workshop Dashboard). Nada requiere respuesta.</div>
-  </div>
-
-  <div class="card green">
-    <h2>📝 Notion</h2>
-    <div class="item">
-      <div class="dot" style="background:var(--green)"></div>
-      <div class="body">
-        <div class="title">Ejecución de planes vía API para simular operación real</div>
-        <div class="snippet">Documento v1.0 (Julio 2026) preparado por Juan Diego. Creado 3 jul.</div>
-        <div class="badges"><span class="badge badge-task">doc</span></div>
-        <a class="link" href="https://app.notion.com/p/392bbd09805c80b6aa1fdeac007f45ff?pvs=1" target="_blank">Abrir en Notion →</a>
+    <!-- NOTION -->
+    <div class="card green">
+      <h2>📝 Notion · tareas abiertas <span class="count">3</span></h2>
+      <div class="item">
+        <div class="dot" style="background:var(--green)"></div>
+        <div class="body">
+          <div class="title">📋 Paquetexpress — Documentación del deal y operación</div>
+          <div class="badges"><span class="badge badge-task">deal</span></div>
+          <div class="snippet">Cuentas CRM en Salesforce (Paquetexpress + Operadora de Servicios). Doc activo del deal.</div>
+          <a href="https://app.notion.com/p/399bbd09805c8104ba6ff94ccca92b48" target="_blank">Abrir en Notion →</a>
+        </div>
+      </div>
+      <div class="item">
+        <div class="dot" style="background:var(--green)"></div>
+        <div class="body">
+          <div class="title">Estafeta — Documentación de la Operación y del Deal</div>
+          <div class="badges"><span class="badge badge-task">deal</span></div>
+          <div class="snippet">Demo de agentes de IA con David Anaya, Carlos Rojas, Salvador Cabrera y Álvaro Echeverría.</div>
+          <a href="https://app.notion.com/p/399bbd09805c814aa45fef3aef14b2a4" target="_blank">Abrir en Notion →</a>
+        </div>
+      </div>
+      <div class="item">
+        <div class="dot" style="background:var(--green)"></div>
+        <div class="body">
+          <div class="title">Ejecución de planes vía API para simular operación real</div>
+          <div class="badges"><span class="badge badge-task">técnico</span></div>
+          <div class="snippet">v1.0 · Julio 2026 · preparado por Juan Diego Vásconez.</div>
+          <a href="https://app.notion.com/p/392bbd09805c80b6aa1fdeac007f45ff" target="_blank">Abrir en Notion →</a>
+        </div>
       </div>
     </div>
   </div>
 </div>
 
 <footer>
-  <div>Generado para juan.vasconez@simplit-solutions.com · <span id="ago"></span></div>
-  <div style="margin-top:6px"><a href="https://juandiegovascon.github.io/focus-board/" target="_blank">Focus Board en GitHub Pages</a></div>
+  <span>juan.vasconez@simplit-solutions.com</span>
+  <span id="gen"></span>
 </footer>
 
 <script>
-  const gen = new Date();
-  const days=['domingo','lunes','martes','miércoles','jueves','viernes','sábado'];
-  const months=['enero','febrero','marzo','abril','mayo','junio','julio','agosto','septiembre','octubre','noviembre','diciembre'];
-  document.getElementById('today').textContent =
-    days[gen.getDay()][0].toUpperCase()+days[gen.getDay()].slice(1)+', '+gen.getDate()+' de '+months[gen.getMonth()]+' de '+gen.getFullYear();
+  const days=["domingo","lunes","martes","miércoles","jueves","viernes","sábado"];
+  const months=["enero","febrero","marzo","abril","mayo","junio","julio","agosto","septiembre","octubre","noviembre","diciembre"];
+  const now=new Date();
+  document.getElementById("today").textContent=days[now.getDay()]+", "+now.getDate()+" de "+months[now.getMonth()]+" de "+now.getFullYear();
+  const gen=now;
   function tick(){
-    const m=Math.floor((Date.now()-gen.getTime())/60000);
-    document.getElementById('ago').textContent = m<1?'actualizado hace instantes':('actualizado hace '+m+' min');
+    const mins=Math.floor((new Date()-gen)/60000);
+    const t=mins<1?"hace unos segundos":(mins===1?"hace 1 min":"hace "+mins+" min");
+    document.getElementById("gen").textContent="Actualizado "+t+" · "+gen.toLocaleTimeString("es",{hour:"2-digit",minute:"2-digit"});
   }
-  tick(); setInterval(tick,30000);
+  tick();setInterval(tick,15000);
 </script>
 </body>
 </html>
