@@ -1,180 +1,253 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-<meta charset="utf-8">
+<meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Juan's Focus Board</title>
 <style>
-:root{
-  --bg:#0f1117; --surface:#1a1d27; --border:#2e3348; --text:#e8eaf0;
-  --muted:#8a90a6; --blue:#4f8ef7; --purple:#a78bfa; --yellow:#f5c542;
-  --green:#34c785; --red:#f06e6e; --indigo:#6c7bf5; --cyan:#38bdf8; --amber:#f59e0b;
-}
-*{box-sizing:border-box;margin:0;padding:0}
-body{background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Inter,Roboto,Helvetica,Arial,sans-serif;line-height:1.5;padding-bottom:48px}
-header{position:sticky;top:0;z-index:50;background:rgba(15,17,23,.92);backdrop-filter:blur(10px);border-bottom:1px solid var(--border);padding:16px 24px;display:flex;align-items:center;gap:16px;flex-wrap:wrap}
-header h1{font-size:19px;font-weight:650;letter-spacing:-.01em}
-header .date{color:var(--muted);font-size:13px}
-header .spacer{flex:1}
-.updated{color:var(--muted);font-size:12px}
-button.refresh{background:var(--surface);border:1px solid var(--border);color:var(--text);border-radius:8px;padding:7px 14px;font-size:13px;cursor:pointer;transition:.15s}
-button.refresh:hover{border-color:var(--blue);color:var(--blue)}
-.wrap{max-width:1180px;margin:0 auto;padding:24px}
-.stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px;margin-bottom:22px}
-.stat{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:14px 16px}
-.stat .n{font-size:26px;font-weight:700;line-height:1.1}
-.stat .l{font-size:12px;color:var(--muted);margin-top:3px;text-transform:uppercase;letter-spacing:.05em}
-.card{background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:18px 20px;margin-bottom:18px}
-.card.urgent{border-color:rgba(240,110,110,.45)}
-.card h2{font-size:14px;font-weight:650;letter-spacing:.02em;text-transform:uppercase;display:flex;align-items:center;gap:9px;margin-bottom:14px}
-.card h2 .count{color:var(--muted);font-weight:500;font-size:12px;text-transform:none;letter-spacing:0}
-.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(330px,1fr));gap:18px}
-.item{display:flex;gap:11px;padding:11px 0;border-top:1px solid rgba(46,51,72,.65)}
-.item:first-of-type{border-top:none;padding-top:2px}
-.dot{width:8px;height:8px;border-radius:50%;margin-top:7px;flex:0 0 8px}
-.body{min-width:0;flex:1}
-.title{font-size:14px;font-weight:550;margin-bottom:4px}
-.title a{color:var(--text);text-decoration:none}
-.title a:hover{color:var(--blue);text-decoration:underline}
-.meta{display:flex;flex-wrap:wrap;gap:6px;align-items:center;margin-bottom:5px}
-.time{font-size:12px;color:var(--muted);font-variant-numeric:tabular-nums}
-.snippet{font-size:12.5px;color:var(--muted);display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
-.link{font-size:12px;color:var(--blue);text-decoration:none;display:inline-block;margin-top:5px}
-.link:hover{text-decoration:underline}
-.badge{font-size:10.5px;font-weight:600;padding:2px 7px;border-radius:5px;letter-spacing:.03em;text-transform:uppercase;white-space:nowrap}
-.badge-action{background:rgba(52,199,133,.16);color:var(--green)}
-.badge-dm{background:rgba(108,123,245,.18);color:#96a2ff}
-.badge-group{background:rgba(56,189,248,.16);color:var(--cyan)}
-.badge-task{background:rgba(167,139,250,.16);color:var(--purple)}
-.badge-now{background:rgba(240,110,110,.18);color:var(--red)}
-.badge-soon{background:rgba(245,158,11,.16);color:var(--amber)}
-.badge-info{background:rgba(138,144,166,.15);color:var(--muted)}
-.empty{font-size:13px;color:var(--muted);padding:6px 0}
-.note{font-size:12px;color:var(--muted);font-style:italic;margin-top:10px;padding-top:10px;border-top:1px solid rgba(46,51,72,.65)}
-footer{max-width:1180px;margin:0 auto;padding:0 24px;color:var(--muted);font-size:12px;display:flex;gap:14px;flex-wrap:wrap;justify-content:space-between}
-footer a{color:var(--blue);text-decoration:none}
-@media(max-width:640px){.wrap{padding:16px}header{padding:14px 16px}}
+  :root{
+    --bg:#0f1117; --surface:#1a1d27; --border:#2e3348; --text:#e8eaf0;
+    --muted:#8b91a8; --blue:#4f8ef7; --purple:#a78bfa; --yellow:#f5c542;
+    --green:#34c785; --red:#f06e6e; --indigo:#7c83f7; --cyan:#3ec8d8; --amber:#f0a544;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;line-height:1.5;padding-bottom:48px}
+  a{color:inherit;text-decoration:none}
+
+  header{position:sticky;top:0;z-index:20;background:rgba(15,17,23,.92);backdrop-filter:blur(10px);border-bottom:1px solid var(--border);padding:18px 28px;display:flex;align-items:center;gap:18px;flex-wrap:wrap}
+  header h1{font-size:20px;font-weight:650;letter-spacing:-.3px}
+  .hdate{color:var(--muted);font-size:13px}
+  .spacer{flex:1}
+  .updated{color:var(--muted);font-size:12px}
+  .refresh{background:var(--surface);border:1px solid var(--border);color:var(--text);border-radius:8px;padding:7px 14px;font-size:13px;cursor:pointer;transition:.15s}
+  .refresh:hover{border-color:var(--blue);color:var(--blue)}
+
+  .wrap{max-width:1180px;margin:0 auto;padding:24px 28px}
+
+  .stats{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:24px}
+  .stat{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:16px 18px}
+  .stat .n{font-size:28px;font-weight:680;line-height:1.1}
+  .stat .l{font-size:12px;color:var(--muted);margin-top:4px;text-transform:uppercase;letter-spacing:.5px}
+
+  .card{background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:18px 20px;margin-bottom:18px}
+  .card h2{font-size:14px;font-weight:650;margin-bottom:14px;display:flex;align-items:center;gap:9px;letter-spacing:.2px}
+  .card h2 .pill{font-size:11px;color:var(--muted);font-weight:500;background:rgba(255,255,255,.05);padding:2px 8px;border-radius:20px}
+  .urgent{border-color:rgba(240,110,110,.45);background:linear-gradient(180deg,rgba(240,110,110,.07),transparent 60%),var(--surface)}
+
+  .grid{display:grid;grid-template-columns:repeat(2,1fr);gap:18px}
+  @media(max-width:860px){.grid,.stats{grid-template-columns:1fr 1fr}}
+  @media(max-width:560px){.grid,.stats{grid-template-columns:1fr}header{padding:14px 18px}.wrap{padding:18px}}
+
+  .item{display:flex;gap:11px;padding:11px 0;border-top:1px solid rgba(255,255,255,.05)}
+  .item:first-of-type{border-top:none}
+  .dot{width:8px;height:8px;border-radius:50%;flex-shrink:0;margin-top:7px}
+  .body{flex:1;min-width:0}
+  .t{font-size:14px;font-weight:560;margin-bottom:4px}
+  .t a:hover{text-decoration:underline}
+  .snip{font-size:12.5px;color:var(--muted);display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;margin-top:3px}
+  .meta{display:flex;gap:6px;flex-wrap:wrap;align-items:center;margin-top:5px}
+  .badge{font-size:10.5px;font-weight:600;padding:2px 8px;border-radius:5px;letter-spacing:.3px;text-transform:uppercase}
+  .badge-action{background:rgba(52,199,133,.16);color:var(--green)}
+  .badge-dm{background:rgba(124,131,247,.18);color:#a0a6ff}
+  .badge-group{background:rgba(62,200,216,.15);color:var(--cyan)}
+  .badge-task{background:rgba(167,139,250,.16);color:var(--purple)}
+  .badge-now{background:rgba(240,110,110,.18);color:var(--red)}
+  .badge-soon{background:rgba(240,165,68,.16);color:var(--amber)}
+  .badge-time{background:rgba(79,142,247,.15);color:var(--blue)}
+  .link{font-size:12px;color:var(--blue);margin-top:5px;display:inline-block}
+  .link:hover{text-decoration:underline}
+  .empty{color:var(--muted);font-size:13px;padding:8px 0}
+
+  footer{max-width:1180px;margin:0 auto;padding:0 28px;color:var(--muted);font-size:12px;border-top:1px solid var(--border);padding-top:16px;margin-top:8px;display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap}
 </style>
 </head>
 <body>
+
 <header>
   <h1>🎯 Juan's Focus Board</h1>
-  <span class="date" id="todayDate"></span>
+  <span class="hdate" id="hdate"></span>
   <span class="spacer"></span>
-  <span class="updated" id="updatedAgo"></span>
+  <span class="updated" id="updated">actualizado recién</span>
   <button class="refresh" onclick="window.location.reload()">↻ Refresh</button>
 </header>
 
 <div class="wrap">
 
   <div class="stats">
-    <div class="stat"><div class="n" style="color:var(--blue)">3</div><div class="l">Meetings</div></div>
-    <div class="stat"><div class="n" style="color:var(--purple)">0</div><div class="l">Slack threads</div></div>
-    <div class="stat"><div class="n" style="color:var(--yellow)">0</div><div class="l">Action emails</div></div>
-    <div class="stat"><div class="n" style="color:var(--green)">1</div><div class="l">Open tasks</div></div>
+    <div class="stat"><div class="n" style="color:var(--blue)">2</div><div class="l">Meetings</div></div>
+    <div class="stat"><div class="n" style="color:var(--purple)">1</div><div class="l">Slack threads</div></div>
+    <div class="stat"><div class="n" style="color:var(--yellow)">1</div><div class="l">Action emails</div></div>
+    <div class="stat"><div class="n" style="color:var(--green)">2</div><div class="l">Open tasks</div></div>
   </div>
 
+  <!-- MUST DO -->
   <div class="card urgent">
-    <h2 style="color:var(--red)">⚡ Must-do today <span class="count">3 items</span></h2>
+    <h2>⚡ Must-do today <span class="pill">4 items</span></h2>
 
     <div class="item">
       <div class="dot" style="background:var(--red)"></div>
       <div class="body">
-        <div class="title">Data Talk — en curso ahora</div>
-        <div class="meta"><span class="time">09:00 – 10:00</span><span class="badge badge-now">Ahora</span></div>
-        <div class="snippet">Sesión de BI &amp; Data: 2–3 presentaciones cortas sobre tablas nuevas, análisis, dashboards y automatizaciones. Organiza Michael Hoffmann.</div>
-        <a class="link" href="https://meet.google.com/ghv-mokn-mpb" target="_blank">Unirse a Meet →</a>
+        <div class="t">Responder a Martina — cargar créditos a su cuenta ADA</div>
+        <div class="meta">
+          <span class="badge badge-now">responder ya</span>
+          <span class="badge badge-dm">DM</span>
+          <span class="badge badge-time">09:14</span>
+        </div>
+        <div class="snip">"Porfa puedes cargar créditos a mi cuenta Ada?" — luego escribió "no entendí" y "qué hago?". Sigue esperando respuesta.</div>
+        <a class="link" href="https://simplit-solutions.slack.com/archives/D09RAK24RTJ/p1790086459323169" target="_blank">Abrir DM en Slack →</a>
       </div>
     </div>
 
     <div class="item">
       <div class="dot" style="background:var(--amber)"></div>
       <div class="body">
-        <div class="title">Weekly ADA Sales Enablement — tú organizas</div>
-        <div class="meta"><span class="time">10:00 – 11:00</span><span class="badge badge-soon">Pronto</span><span class="badge badge-action">Owner</span></div>
-        <div class="snippet">Christian Carrillo aún no confirma asistencia. Francisca Martínez y Daniela Moreno ya aceptaron. Agenda a tu cargo.</div>
-        <a class="link" href="https://meet.google.com/phq-nxoy-win" target="_blank">Unirse a Meet →</a>
+        <div class="t">Flujos Prearmados — con Christian Carrillo</div>
+        <div class="meta">
+          <span class="badge badge-soon">14:00–15:00</span>
+          <span class="badge badge-action">tú organizas</span>
+        </div>
+        <div class="snip">Christian aún no confirma asistencia (needsAction). Vale la pena pingearlo antes. Se conecta con el QA de Flujos Preempaquetados en Notion.</div>
+        <a class="link" href="https://meet.google.com/pnx-hkod-kjz" target="_blank">Google Meet →</a>
       </div>
     </div>
 
     <div class="item">
       <div class="dot" style="background:var(--purple)"></div>
       <div class="body">
-        <div class="title">QA de Flujos Preempaquetados en ADA Copilot — correcciones pendientes</div>
-        <div class="meta"><span class="badge badge-task">Notion</span><span class="badge badge-action">Tuyo</span></div>
-        <div class="snippet">Solicitado por ti (Sales Enablement). Hay correcciones pendientes del lado del Forward Engineer que requieren tu seguimiento.</div>
-        <a class="link" href="https://app.notion.com/p/3cabbd09805c81249ef4ca13a440b173" target="_blank">Abrir en Notion →</a>
+        <div class="t">Cerrar correcciones pendientes — QA de Flujos Preempaquetados en ADA Copilot</div>
+        <div class="meta">
+          <span class="badge badge-task">Notion</span>
+          <span class="badge badge-action">tuyo</span>
+        </div>
+        <div class="snip">Solicitado por ti (Sales Enablement). Hay correcciones pendientes del Forward Engineer — insumo directo para la reunión de las 14:00.</div>
+        <a class="link" href="https://app.notion.com/p/3cabbd09805c81249ef4ca13a440b173?pvs=204" target="_blank">Abrir en Notion →</a>
+      </div>
+    </div>
+
+    <div class="item">
+      <div class="dot" style="background:var(--yellow)"></div>
+      <div class="body">
+        <div class="t">Revisar Simpli_Academy_Propuesta_Verticales (Daniela Moreno)</div>
+        <div class="meta">
+          <span class="badge badge-action">requiere revisión</span>
+          <span class="badge badge-time">ayer 19:58</span>
+        </div>
+        <div class="snip">Te invitó a editar la hoja de cálculo. Camila Burgos, Francisca Mañán y Francisca Martínez en copia — la tuya no es la única mirada, pero sí está pendiente.</div>
+        <a class="link" href="https://mail.google.com/mail/u/0/#inbox/1a0c58c219247db6" target="_blank">Abrir en Gmail →</a>
       </div>
     </div>
   </div>
 
   <div class="grid">
 
+    <!-- CALENDAR -->
     <div class="card">
-      <h2 style="color:var(--blue)">📅 Calendar <span class="count">3 meetings</span></h2>
+      <h2><span style="color:var(--blue)">📅</span> Calendar <span class="pill">2 meetings</span></h2>
 
       <div class="item">
         <div class="dot" style="background:var(--blue)"></div>
         <div class="body">
-          <div class="title"><a href="https://www.google.com/calendar/event?eid=YjMzOG1mMWZjcjVpbm1mZXA4YmV0cWMya3ZfMjAyNjA5MTdUMTQwMDAwWiBqdWFuLnZhc2NvbmV6QHNpbXBsaXQtc29sdXRpb25zLmNvbQ&ctz=America/Guayaquil" target="_blank">Data Talk</a></div>
-          <div class="meta"><span class="time">09:00 – 10:00</span><span class="badge badge-now">Ahora</span><span class="badge badge-info">Opcional</span></div>
-          <div class="snippet">Espacio de presentaciones del equipo BI &amp; Data. Organiza Michael Hoffmann · 15 invitados.</div>
-          <a class="link" href="https://meet.google.com/ghv-mokn-mpb" target="_blank">meet.google.com/ghv-mokn-mpb</a>
+          <div class="t"><a href="https://www.google.com/calendar/event?eid=Nmp1ZzRlcnJtYjRiMWI2c21mMHJjZzZhYWEganVhbi52YXNjb25lekBzaW1wbGl0LXNvbHV0aW9ucy5jb20&ctz=America/Guayaquil" target="_blank">3B Simulación</a></div>
+          <div class="meta"><span class="badge badge-time">09:00–10:00</span><span class="badge badge-action">solo tú</span></div>
+          <div class="snip">Bloque creado ayer por la noche. Sin invitados ni link de conferencia — bloque de trabajo propio.</div>
         </div>
       </div>
 
       <div class="item">
-        <div class="dot" style="background:var(--blue)"></div>
+        <div class="dot" style="background:var(--amber)"></div>
         <div class="body">
-          <div class="title"><a href="https://www.google.com/calendar/event?eid=MmQ2bnB2Z2tpdmR2bTY4ZGxlYXVoMTRwaXJfMjAyNjA5MTdUMTUwMDAwWiBqdWFuLnZhc2NvbmV6QHNpbXBsaXQtc29sdXRpb25zLmNvbQ&ctz=America/Guayaquil" target="_blank">Weekly ADA Sales Enablement</a></div>
-          <div class="meta"><span class="time">10:00 – 11:00</span><span class="badge badge-soon">Pronto</span><span class="badge badge-action">Organizas</span></div>
-          <div class="snippet">Con Francisca Martínez, Daniela Moreno y Christian Carrillo (sin respuesta).</div>
-          <a class="link" href="https://meet.google.com/phq-nxoy-win" target="_blank">meet.google.com/phq-nxoy-win</a>
+          <div class="t"><a href="https://www.google.com/calendar/event?eid=NTE0MjZmazg3OWY0ZXMyajJpNnRhZDVvMTEganVhbi52YXNjb25lekBzaW1wbGl0LXNvbHV0aW9ucy5jb20&ctz=America/Guayaquil" target="_blank">Flujos Prearmados</a></div>
+          <div class="meta"><span class="badge badge-time">14:00–15:00</span><span class="badge badge-soon">sin confirmar</span></div>
+          <div class="snip">Con Christian Carrillo — respuesta pendiente de su lado. Meet: pnx-hkod-kjz</div>
+          <a class="link" href="https://meet.google.com/pnx-hkod-kjz" target="_blank">Unirse al Meet →</a>
         </div>
       </div>
 
       <div class="item">
-        <div class="dot" style="background:var(--blue)"></div>
-        <div class="body">
-          <div class="title"><a href="https://www.google.com/calendar/event?eid=MzMwMWZjaGpvcjl0ZTdiOWVhZHBoa2w1aXAganVhbi52YXNjb25lekBzaW1wbGl0LXNvbHV0aW9ucy5jb20&ctz=America/Guayaquil" target="_blank">David / Juan Diego</a></div>
-          <div class="meta"><span class="time">15:00 – 15:30</span><span class="badge badge-action">Organizas</span></div>
-          <div class="snippet">1:1 con David Anaya — aún no confirma la invitación.</div>
-          <a class="link" href="https://meet.google.com/cot-sckj-eob" target="_blank">meet.google.com/cot-sckj-eob</a>
-        </div>
-      </div>
-
-      <div class="note">Bloques no considerados reuniones: «No agendar» 12:00–13:00 · Almuerzo 13:00–14:00 · Out of office desde 18:00.</div>
-    </div>
-
-    <div class="card">
-      <h2 style="color:var(--purple)">💬 Slack <span class="count">0 threads</span></h2>
-      <div class="empty">Inbox zero ✅ — sin menciones ni DMs que requieran respuesta desde ayer.</div>
-      <div class="note">Solo se recibieron notificaciones automáticas del bot de Google Calendar.</div>
-      <a class="link" href="https://simplit-solutions.slack.com/" target="_blank">Abrir Slack →</a>
-    </div>
-
-    <div class="card">
-      <h2 style="color:var(--yellow)">✉️ Email <span class="count">0 need action</span></h2>
-      <div class="empty">Inbox limpio ✅ — nada que requiera tu respuesta.</div>
-      <div class="item" style="margin-top:8px">
         <div class="dot" style="background:var(--muted)"></div>
         <div class="body">
-          <div class="title"><a href="https://mail.google.com/mail/u/0/#inbox/1a0ade19467a9855" target="_blank">Kapso terms and privacy update</a></div>
-          <div class="meta"><span class="time">17 sep · 00:40</span><span class="badge badge-info">Solo lectura</span></div>
-          <div class="snippet">Actualización de Términos de Servicio, Política de Privacidad y DPA de Kapso, vigente desde hoy. Notificación informativa, sin acción requerida.</div>
+          <div class="t" style="color:var(--muted);font-weight:500"><em>Almuerzo 13:00–14:00 · Out of office desde 18:00</em></div>
+          <div class="snip">Bloques personales — no cuentan como reuniones.</div>
         </div>
       </div>
     </div>
 
+    <!-- SLACK -->
     <div class="card">
-      <h2 style="color:var(--green)">📝 Notion <span class="count">1 open task</span></h2>
+      <h2><span style="color:var(--purple)">💬</span> Slack <span class="pill">1 hilo</span></h2>
+
+      <div class="item">
+        <div class="dot" style="background:var(--red)"></div>
+        <div class="body">
+          <div class="t"><a href="https://simplit-solutions.slack.com/archives/D09RAK24RTJ/p1790086459323169" target="_blank">Martina Jaramillo</a></div>
+          <div class="meta">
+            <span class="badge badge-dm">DM</span>
+            <span class="badge badge-now">necesita respuesta</span>
+            <span class="badge badge-time">09:14–09:21</span>
+          </div>
+          <div class="snip">"Porfa puedes cargar créditos a mi cuenta Ada?" → "no entendí" → "qué hago?" → "me refería a esto". Cuatro mensajes sin respuesta tuya.</div>
+          <a class="link" href="https://simplit-solutions.slack.com/archives/D09RAK24RTJ" target="_blank">Responder en Slack →</a>
+        </div>
+      </div>
+
+      <div class="item">
+        <div class="dot" style="background:var(--muted)"></div>
+        <div class="body">
+          <div class="t" style="color:var(--muted);font-weight:500"><em>Resto: solo el resumen diario de Google Calendar (bot)</em></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- EMAIL -->
+    <div class="card">
+      <h2><span style="color:var(--yellow)">✉️</span> Email <span class="pill">1 requiere acción</span></h2>
+
+      <div class="item">
+        <div class="dot" style="background:var(--yellow)"></div>
+        <div class="body">
+          <div class="t"><a href="https://mail.google.com/mail/u/0/#inbox/1a0c58c219247db6" target="_blank">Se compartió una hoja de cálculo: "Simpli_Academy_Propuesta_Verticales"</a></div>
+          <div class="meta">
+            <span class="badge badge-action">revisar</span>
+            <span class="badge badge-group">4 personas</span>
+            <span class="badge badge-time">ayer 19:58</span>
+          </div>
+          <div class="snip">Daniela Moreno te invitó a editar. CC: Camila Burgos, Francisca Mañán, Francisca Martínez.</div>
+        </div>
+      </div>
+
+      <div class="item">
+        <div class="dot" style="background:var(--muted)"></div>
+        <div class="body">
+          <div class="t" style="color:var(--muted);font-weight:500"><em>Sin acción: "Accepted: Simulaciones 3B" (Salvador Cabrera confirmó el mié 23) · newsletter de Granola</em></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- NOTION -->
+    <div class="card">
+      <h2><span style="color:var(--green)">📝</span> Notion <span class="pill">2 abiertas</span></h2>
+
       <div class="item">
         <div class="dot" style="background:var(--green)"></div>
         <div class="body">
-          <div class="title"><a href="https://app.notion.com/p/3cabbd09805c81249ef4ca13a440b173" target="_blank">QA de Flujos Preempaquetados en ADA Copilot</a></div>
-          <div class="meta"><span class="badge badge-task">Tarea</span><span class="time">ADA Sales Enablement — Gestión de Proyecto</span></div>
-          <div class="snippet">Solicitado por Juan Diego Vásconez (Sales Enablement). Correcciones pendientes del Forward Engineer en varios flujos.</div>
-          <a class="link" href="https://app.notion.com/p/3cabbd09805c81249ef4ca13a440b173" target="_blank">Abrir en Notion →</a>
+          <div class="t"><a href="https://app.notion.com/p/3cabbd09805c81249ef4ca13a440b173?pvs=204" target="_blank">QA de Flujos Preempaquetados en ADA Copilot</a></div>
+          <div class="meta">
+            <span class="badge badge-task">tuya</span>
+            <span class="badge badge-now">pendientes abiertos</span>
+          </div>
+          <div class="snip">Solicitado por Juan Diego Vásconez (Sales Enablement). Correcciones pendientes del Forward Engineer sin cerrar.</div>
+        </div>
+      </div>
+
+      <div class="item">
+        <div class="dot" style="background:var(--purple)"></div>
+        <div class="body">
+          <div class="t"><a href="https://app.notion.com/p/3e2bbd09805c816fb077dc3556fad81c?pvs=204" target="_blank">Flujo de venta — ADA Standalone</a></div>
+          <div class="meta">
+            <span class="badge badge-task">tuya</span>
+            <span class="badge badge-soon">decisiones pendientes</span>
+          </div>
+          <div class="snip">Autores: tú y Angelo Rodríguez. Sección 9 "Decisiones pendientes" abierta — incluye la regla de asignación del FDE (3 cuentas por FDE).</div>
         </div>
       </div>
     </div>
@@ -184,26 +257,34 @@ footer a{color:var(--blue);text-decoration:none}
 
 <footer>
   <span>juan.vasconez@simplit-solutions.com</span>
-  <span>Generado <span id="genStamp"></span> · <a href="https://juandiegovascon.github.io/focus-board/">Focus Board</a></span>
+  <span id="gen"></span>
 </footer>
 
 <script>
-(function(){
-  var generatedAt = new Date("2026-09-17T09:05:00-05:00");
-  var fmt = new Intl.DateTimeFormat('es-EC',{weekday:'long',day:'numeric',month:'long',year:'numeric',timeZone:'America/Guayaquil'});
-  var d = fmt.format(new Date());
-  document.getElementById('todayDate').textContent = d.charAt(0).toUpperCase()+d.slice(1);
-  document.getElementById('genStamp').textContent = new Intl.DateTimeFormat('es-EC',{dateStyle:'short',timeStyle:'short',timeZone:'America/Guayaquil'}).format(generatedAt);
+  var GENERATED = new Date();
+
+  document.getElementById('hdate').textContent = GENERATED.toLocaleDateString('es-EC', {
+    weekday:'long', year:'numeric', month:'long', day:'numeric'
+  });
+
+  document.getElementById('gen').textContent = 'Generado ' + GENERATED.toLocaleString('es-EC', {
+    hour:'2-digit', minute:'2-digit', day:'2-digit', month:'2-digit', year:'numeric'
+  });
+
   function tick(){
-    var mins = Math.max(0, Math.round((Date.now()-generatedAt.getTime())/60000));
-    var txt;
-    if(mins < 1) txt = 'actualizado hace un momento';
-    else if(mins < 60) txt = 'actualizado hace ' + mins + ' min';
-    else txt = 'actualizado hace ' + Math.floor(mins/60) + ' h ' + (mins%60) + ' min';
-    document.getElementById('updatedAgo').textContent = txt;
+    var m = Math.floor((new Date() - GENERATED) / 60000);
+    var el = document.getElementById('updated');
+    if (m < 1) el.textContent = 'actualizado recién';
+    else if (m === 1) el.textContent = 'actualizado hace 1 min';
+    else if (m < 60) el.textContent = 'actualizado hace ' + m + ' min';
+    else {
+      var h = Math.floor(m/60);
+      el.textContent = 'actualizado hace ' + h + (h === 1 ? ' hora' : ' horas');
+    }
   }
-  tick(); setInterval(tick, 30000);
-})();
+  tick();
+  setInterval(tick, 30000);
 </script>
+
 </body>
 </html>
